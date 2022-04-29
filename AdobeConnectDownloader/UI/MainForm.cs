@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace AdobeConnectDownloader.UI
 {
@@ -39,7 +40,7 @@ namespace AdobeConnectDownloader.UI
             UrlTextBox.Text = String.Empty;
         }
 
-        private void AddToQueeButton_Click(object sender, EventArgs e)
+        private void AddToQueueButton_Click(object sender, EventArgs e)
         {
             if (UrlTextBox.Text.Trim() != "" || UrlTextBox.Text.Trim() != String.Empty)
             {
@@ -70,13 +71,13 @@ namespace AdobeConnectDownloader.UI
                 ProcessDataGridView.Rows.Remove(ProcessDataGridView.SelectedRows[0]);
         }
 
-        private void DownloadQueeButton_Click(object sender, EventArgs e)
+        private void DownloadQueueButton_Click(object sender, EventArgs e)
         {
             if (ProcessDataGridView.Rows.Count == 0)
                 return;
 
             DataGridView copyDataGridView = ProcessDataGridView;
-            if (MessageBox.Show("Are you sure to download quee list ? ", "Adobe Downloader", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("Are you sure to download Queue list ? ", "Adobe Downloader", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 for (int i = 0; i < ProcessDataGridView.Rows.Count; i++)
                 {
@@ -138,7 +139,52 @@ namespace AdobeConnectDownloader.UI
             }
         }
 
-        private void convertFlvToMp4ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void convertFlvvideosToMp4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Choose your flv Video|*.flv";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string finalPath = openFileDialog.FileName.Substring(0, openFileDialog.FileName.Length - 4);
+                string command = Application.FFMPEGManager.ConvertFlvVideoToMp4(openFileDialog.FileName, finalPath + ".mp4");
+                ProcessStartInfo processStartInfo = new ProcessStartInfo();
+                processStartInfo.FileName = FFMPEGAddress;
+                processStartInfo.Arguments = command;
+                Process process = new Process();
+                process.StartInfo = processStartInfo;
+
+                MessageBox.Show("Please Dont Click On Opened Page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                process.Start();
+            }
+        }
+
+        private void convertFlvAudioToMP3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Choose your flv Audio|*.flv";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string finalPath = openFileDialog.FileName.Substring(0, openFileDialog.FileName.Length - 4);
+                string command = Application.FFMPEGManager.ConvertFlvAudioToMp3(openFileDialog.FileName, finalPath + ".mp3");
+                ProcessStartInfo processStartInfo = new ProcessStartInfo();
+                processStartInfo.FileName = FFMPEGAddress;
+                processStartInfo.Arguments = command;
+                Process process = new Process();
+                process.StartInfo = processStartInfo;
+
+                MessageBox.Show("Please Dont Click On Opened Page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                process.Start();
+            }
+        }
+
+        private void mergeZipFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Open This Github Page : https://github.com/HosseinShams00");
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
         {
 
         }

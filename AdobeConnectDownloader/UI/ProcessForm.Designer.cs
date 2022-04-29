@@ -172,6 +172,7 @@
             this.Name = "ProcessForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Process ";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProcessForm_FormClosing);
             this.Load += new System.EventHandler(this.ProcessForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

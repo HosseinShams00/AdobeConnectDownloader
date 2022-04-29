@@ -33,7 +33,7 @@ namespace AdobeConnectDownloader.UI
         public AudioManager AudioManager = null;
         public VideoManager VideoManager = null;
 
-        public DataGridView QueeDataGridView { get; set; } = null;
+        public DataGridView QueueDataGridView { get; set; } = null;
 
         public ProcessForm()
         {
@@ -152,7 +152,7 @@ namespace AdobeConnectDownloader.UI
 
                 if (CancelProcess == true)
                 {
-                    MessageBox.Show("Process Caneled Wait");
+                    MessageBox.Show("Process Caneled");
                     return;
                 }
 
@@ -162,7 +162,7 @@ namespace AdobeConnectDownloader.UI
 
                 if (CancelProcess == true)
                 {
-                    MessageBox.Show("Process Caneled Please Wait");
+                    MessageBox.Show("Process Caneled");
                     return;
                 }
 
@@ -173,9 +173,8 @@ namespace AdobeConnectDownloader.UI
 
                 if (CancelProcess == true)
                 {
-                    MessageBox.Show("Process Caneled Please Wait");
+                    MessageBox.Show("Process Caneled");
                     return;
-
                 }
 
                 string finalVideoAddress = Path.Combine(WorkFolderPath, "Final Video Witout Sound.flv");
@@ -186,7 +185,6 @@ namespace AdobeConnectDownloader.UI
 
                 SyncAllDataLabel.ForeColor = Color.Green;
 
-                Directory.Delete(ExtractFolder, true);
             });
         }
 
@@ -231,5 +229,10 @@ namespace AdobeConnectDownloader.UI
 
         }
 
+        private void ProcessForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (Directory.Exists(ExtractFolder))
+                Directory.Delete(ExtractFolder, true);
+        }
     }
 }

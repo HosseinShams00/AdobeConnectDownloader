@@ -34,19 +34,20 @@
             this.DataGridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.editSaveFolderAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddToQueeButton = new System.Windows.Forms.Button();
-            this.DownloadQueeButton = new System.Windows.Forms.Button();
+            this.AddToQueueButton = new System.Windows.Forms.Button();
+            this.DownloadQueueButton = new System.Windows.Forms.Button();
             this.FileFolderAddressColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.UrlColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProcessDataGridView = new System.Windows.Forms.DataGridView();
-            this.AddToQueeButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
+            this.AddToQueueButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.convertFlvToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertFlvvideosToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertYourZipFileToVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertFlvAudioToMP3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mergeZipFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.DownloadQueeDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
+            this.DownloadQueueDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
             this.ClearButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
             this.DataGridContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ProcessDataGridView)).BeginInit();
@@ -100,33 +101,33 @@
             this.removeToolStripMenuItem.Text = "Remove ";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
-            // AddToQueeButton
+            // AddToQueueButton
             // 
-            this.AddToQueeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(47)))), ((int)(((byte)(60)))));
-            this.AddToQueeButton.FlatAppearance.BorderSize = 0;
-            this.AddToQueeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddToQueeButton.ForeColor = System.Drawing.Color.White;
-            this.AddToQueeButton.Location = new System.Drawing.Point(143, 64);
-            this.AddToQueeButton.Name = "AddToQueeButton";
-            this.AddToQueeButton.Size = new System.Drawing.Size(108, 36);
-            this.AddToQueeButton.TabIndex = 10;
-            this.AddToQueeButton.Text = "Add To Quee";
-            this.AddToQueeButton.UseVisualStyleBackColor = false;
-            this.AddToQueeButton.Click += new System.EventHandler(this.AddToQueeButton_Click);
+            this.AddToQueueButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(47)))), ((int)(((byte)(60)))));
+            this.AddToQueueButton.FlatAppearance.BorderSize = 0;
+            this.AddToQueueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AddToQueueButton.ForeColor = System.Drawing.Color.White;
+            this.AddToQueueButton.Location = new System.Drawing.Point(143, 64);
+            this.AddToQueueButton.Name = "AddToQueueButton";
+            this.AddToQueueButton.Size = new System.Drawing.Size(108, 36);
+            this.AddToQueueButton.TabIndex = 10;
+            this.AddToQueueButton.Text = "Add To Queue";
+            this.AddToQueueButton.UseVisualStyleBackColor = false;
+            this.AddToQueueButton.Click += new System.EventHandler(this.AddToQueueButton_Click);
             // 
-            // DownloadQueeButton
+            // DownloadQueueButton
             // 
-            this.DownloadQueeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(47)))), ((int)(((byte)(60)))));
-            this.DownloadQueeButton.FlatAppearance.BorderSize = 0;
-            this.DownloadQueeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DownloadQueeButton.ForeColor = System.Drawing.Color.White;
-            this.DownloadQueeButton.Location = new System.Drawing.Point(12, 64);
-            this.DownloadQueeButton.Name = "DownloadQueeButton";
-            this.DownloadQueeButton.Size = new System.Drawing.Size(113, 36);
-            this.DownloadQueeButton.TabIndex = 12;
-            this.DownloadQueeButton.Text = "Download Quee";
-            this.DownloadQueeButton.UseVisualStyleBackColor = false;
-            this.DownloadQueeButton.Click += new System.EventHandler(this.DownloadQueeButton_Click);
+            this.DownloadQueueButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(47)))), ((int)(((byte)(60)))));
+            this.DownloadQueueButton.FlatAppearance.BorderSize = 0;
+            this.DownloadQueueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DownloadQueueButton.ForeColor = System.Drawing.Color.White;
+            this.DownloadQueueButton.Location = new System.Drawing.Point(12, 64);
+            this.DownloadQueueButton.Name = "DownloadQueueButton";
+            this.DownloadQueueButton.Size = new System.Drawing.Size(113, 36);
+            this.DownloadQueueButton.TabIndex = 12;
+            this.DownloadQueueButton.Text = "Download Queue";
+            this.DownloadQueueButton.UseVisualStyleBackColor = false;
+            this.DownloadQueueButton.Click += new System.EventHandler(this.DownloadQueueButton_Click);
             // 
             // FileFolderAddressColumn
             // 
@@ -161,17 +162,17 @@
             this.ProcessDataGridView.Size = new System.Drawing.Size(672, 362);
             this.ProcessDataGridView.TabIndex = 9;
             // 
-            // AddToQueeButtonDesignComponent
+            // AddToQueueButtonDesignComponent
             // 
-            this.AddToQueeButtonDesignComponent._SetButton = this.AddToQueeButton;
-            this.AddToQueeButtonDesignComponent.BackGroundHtmlColorCode = "#212F3C";
-            this.AddToQueeButtonDesignComponent.ForeGroundHtmlColorCode = "White";
-            this.AddToQueeButtonDesignComponent.LowLeft = true;
-            this.AddToQueeButtonDesignComponent.LowRight = true;
-            this.AddToQueeButtonDesignComponent.UpLeft = true;
-            this.AddToQueeButtonDesignComponent.UpRight = true;
-            this.AddToQueeButtonDesignComponent.XRadius = 6F;
-            this.AddToQueeButtonDesignComponent.YRadius = 8F;
+            this.AddToQueueButtonDesignComponent._SetButton = this.AddToQueueButton;
+            this.AddToQueueButtonDesignComponent.BackGroundHtmlColorCode = "#212F3C";
+            this.AddToQueueButtonDesignComponent.ForeGroundHtmlColorCode = "White";
+            this.AddToQueueButtonDesignComponent.LowLeft = true;
+            this.AddToQueueButtonDesignComponent.LowRight = true;
+            this.AddToQueueButtonDesignComponent.UpLeft = true;
+            this.AddToQueueButtonDesignComponent.UpRight = true;
+            this.AddToQueueButtonDesignComponent.XRadius = 6F;
+            this.AddToQueueButtonDesignComponent.YRadius = 8F;
             // 
             // menuStrip1
             // 
@@ -188,17 +189,18 @@
             // 
             this.convertFlvToMp4ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.convertFlvvideosToMp4ToolStripMenuItem,
-            this.convertYourZipFileToVideoToolStripMenuItem});
+            this.convertYourZipFileToVideoToolStripMenuItem,
+            this.convertFlvAudioToMP3ToolStripMenuItem});
             this.convertFlvToMp4ToolStripMenuItem.Name = "convertFlvToMp4ToolStripMenuItem";
             this.convertFlvToMp4ToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.convertFlvToMp4ToolStripMenuItem.Text = "Convert";
-            this.convertFlvToMp4ToolStripMenuItem.Click += new System.EventHandler(this.convertFlvToMp4ToolStripMenuItem_Click);
             // 
             // convertFlvvideosToMp4ToolStripMenuItem
             // 
             this.convertFlvvideosToMp4ToolStripMenuItem.Name = "convertFlvvideosToMp4ToolStripMenuItem";
             this.convertFlvvideosToMp4ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.convertFlvvideosToMp4ToolStripMenuItem.Text = "Convert Flv (videos) to mp4";
+            this.convertFlvvideosToMp4ToolStripMenuItem.Click += new System.EventHandler(this.convertFlvvideosToMp4ToolStripMenuItem_Click);
             // 
             // convertYourZipFileToVideoToolStripMenuItem
             // 
@@ -206,6 +208,13 @@
             this.convertYourZipFileToVideoToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.convertYourZipFileToVideoToolStripMenuItem.Text = "Convert your zip file to video";
             this.convertYourZipFileToVideoToolStripMenuItem.Click += new System.EventHandler(this.convertYourZipFileToVideoToolStripMenuItem_Click);
+            // 
+            // convertFlvAudioToMP3ToolStripMenuItem
+            // 
+            this.convertFlvAudioToMP3ToolStripMenuItem.Name = "convertFlvAudioToMP3ToolStripMenuItem";
+            this.convertFlvAudioToMP3ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.convertFlvAudioToMP3ToolStripMenuItem.Text = "Convert Flv audio to MP3";
+            this.convertFlvAudioToMP3ToolStripMenuItem.Click += new System.EventHandler(this.convertFlvAudioToMP3ToolStripMenuItem_Click);
             // 
             // zipToolStripMenuItem
             // 
@@ -218,21 +227,21 @@
             // mergeZipFileToolStripMenuItem
             // 
             this.mergeZipFileToolStripMenuItem.Name = "mergeZipFileToolStripMenuItem";
-            this.mergeZipFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mergeZipFileToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.mergeZipFileToolStripMenuItem.Text = "About Creator";
-
+            this.mergeZipFileToolStripMenuItem.Click += new System.EventHandler(this.mergeZipFileToolStripMenuItem_Click);
             // 
-            // DownloadQueeDesignComponent
+            // DownloadQueueDesignComponent
             // 
-            this.DownloadQueeDesignComponent._SetButton = this.DownloadQueeButton;
-            this.DownloadQueeDesignComponent.BackGroundHtmlColorCode = "#212F3C";
-            this.DownloadQueeDesignComponent.ForeGroundHtmlColorCode = "White";
-            this.DownloadQueeDesignComponent.LowLeft = true;
-            this.DownloadQueeDesignComponent.LowRight = true;
-            this.DownloadQueeDesignComponent.UpLeft = true;
-            this.DownloadQueeDesignComponent.UpRight = true;
-            this.DownloadQueeDesignComponent.XRadius = 7F;
-            this.DownloadQueeDesignComponent.YRadius = 8F;
+            this.DownloadQueueDesignComponent._SetButton = this.DownloadQueueButton;
+            this.DownloadQueueDesignComponent.BackGroundHtmlColorCode = "#212F3C";
+            this.DownloadQueueDesignComponent.ForeGroundHtmlColorCode = "White";
+            this.DownloadQueueDesignComponent.LowLeft = true;
+            this.DownloadQueueDesignComponent.LowRight = true;
+            this.DownloadQueueDesignComponent.UpLeft = true;
+            this.DownloadQueueDesignComponent.UpRight = true;
+            this.DownloadQueueDesignComponent.XRadius = 7F;
+            this.DownloadQueueDesignComponent.YRadius = 8F;
             // 
             // ClearButtonDesignComponent
             // 
@@ -253,14 +262,15 @@
             this.ClientSize = new System.Drawing.Size(696, 476);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.ProcessDataGridView);
-            this.Controls.Add(this.DownloadQueeButton);
-            this.Controls.Add(this.AddToQueeButton);
+            this.Controls.Add(this.DownloadQueueButton);
+            this.Controls.Add(this.AddToQueueButton);
             this.Controls.Add(this.ClearButton);
             this.Controls.Add(this.UrlTextBox);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Adobe Connect Downloader";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.DataGridContextMenuStrip.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ProcessDataGridView)).EndInit();
             this.menuStrip1.ResumeLayout(false);
@@ -273,22 +283,23 @@
         #endregion
         private System.Windows.Forms.TextBox UrlTextBox;
         private System.Windows.Forms.Button ClearButton;
-        private System.Windows.Forms.Button AddToQueeButton;
+        private System.Windows.Forms.Button AddToQueueButton;
         private System.Windows.Forms.ContextMenuStrip DataGridContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem editSaveFolderAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
-        private System.Windows.Forms.Button DownloadQueeButton;
+        private System.Windows.Forms.Button DownloadQueueButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn FileFolderAddressColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn UrlColumn;
         private System.Windows.Forms.DataGridView ProcessDataGridView;
-        private DesignComponent AddToQueeButtonDesignComponent;
+        private DesignComponent AddToQueueButtonDesignComponent;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem convertFlvToMp4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertFlvvideosToMp4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zipToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mergeZipFileToolStripMenuItem;
-        private DesignComponent DownloadQueeDesignComponent;
+        private DesignComponent DownloadQueueDesignComponent;
         private System.Windows.Forms.ToolStripMenuItem convertYourZipFileToVideoToolStripMenuItem;
         private DesignComponent ClearButtonDesignComponent;
+        private System.Windows.Forms.ToolStripMenuItem convertFlvAudioToMP3ToolStripMenuItem;
     }
 }

@@ -145,62 +145,6 @@ namespace AdobeConnectDownloader.Application
             FFMPEGManager = fFMPEGManager;
         }
 
-        public static void CreateWaveFile(int miliSecond, string pathFile)
-        {
-            var ChunID = Encoding.ASCII.GetBytes("RIFF"); //  Contains the letters "RIFF" in ASCII form (0x52494646 big-endian form)
-
-            var AudioFormat = Encoding.ASCII.GetBytes("WAVE"); // Contains the letters "WAVE" in ASCII form (0x57415645 big-endian form)
-
-            var SubChunk1ID = Encoding.ASCII.GetBytes("fmt "); // Contains the letters "fmt " (0x666d7420 big-endian form)
-
-            var SubChunk1Size = 16; // 16 for PCM.  This is the size of the rest of the Subchunk which follows this number.
-
-            var AudioFormat1 = 1; // PCM = 1 (i.e. Linear quantization) Values other than 1 indicate some form of compression.
-
-            var NumChannels = 1; // Mono = 1, Stereo = 2, etc.
-
-            var BitsPerSample = 8; // 8 bits = 8, 16 bits = 16, etc.
-
-            var SampleRate = 44100; // 8000, 44100, etc.
-
-            uint ByteRate = (uint)(SampleRate * NumChannels * (BitsPerSample / 8));
-
-            var NumBytes = (uint)(miliSecond * ByteRate / 1000);
-
-            ushort BlockAlign = (ushort)(NumChannels * (BitsPerSample / 8));
-
-            var SubChunk2ID = Encoding.ASCII.GetBytes("data"); // Contains the letters "data" (0x64617461 big-endian form)
-
-            uint SubChunk2Size = (uint)(NumBytes * NumChannels * (BitsPerSample / 8)); // This is the number of bytes in the data. You can also think of this as the size of the read of the subchunk following this number
-
-            uint ChunkSize = (uint)(36 + SubChunk2Size); // or 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size)
-
-            byte[] data = new byte[NumBytes];
-
-
-            if (File.Exists(pathFile))
-            {
-                File.Delete(pathFile);
-            }
-
-            using (FileStream fs = new FileStream(pathFile, FileMode.Create))
-            {
-                fs.Write(ChunID, 0, ChunID.Length);
-                fs.Write(BitConverter.GetBytes(ChunkSize), 0, 4);
-                fs.Write(AudioFormat, 0, AudioFormat.Length);
-                fs.Write(SubChunk1ID, 0, SubChunk1ID.Length);
-                fs.Write(BitConverter.GetBytes(SubChunk1Size), 0, 4);
-                fs.Write(BitConverter.GetBytes(AudioFormat1), 0, 2);
-                fs.Write(BitConverter.GetBytes(NumChannels), 0, 2);
-                fs.Write(BitConverter.GetBytes(SampleRate), 0, 4);
-                fs.Write(BitConverter.GetBytes(ByteRate), 0, 4);
-                fs.Write(BitConverter.GetBytes(BlockAlign), 0, 2);
-                fs.Write(BitConverter.GetBytes(BitsPerSample), 0, 2);
-                fs.Write(SubChunk2ID, 0, SubChunk2ID.Length);
-                fs.Write(BitConverter.GetBytes(SubChunk2Size), 0, 4);
-                fs.Write(data, 0, data.Length);
-            }
-        }
 
         public string MatchAllAudio(List<StreamData> audioStreamDatas, string dataFolderPath, string outputFileFolder, string ffmpegAddress)
         {
@@ -224,6 +168,7 @@ namespace AdobeConnectDownloader.Application
 
             if (x.NewInput.Count != 0)
             {
+                streamData.FileNames = streamData.FileNames.Substring(0, streamData.FileNames.Length - 4);
                 streamDatas.Add(streamData);
                 while (true)
                 {
@@ -419,7 +364,7 @@ namespace AdobeConnectDownloader.Application
 
             if (firstTime != 0)
             {
-                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"CustomVideo{counter}.flv");
+                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"EmptyVideo{counter}.flv");
                 string command = FFMPEGManager.GetCommandForCreateEmptyVideo(firstTime, folderPathForCreateFiles, videoSize, imageAddress, fileAddress);
 
                 FFMPEGManager.RunProcess(processStartInfo, command);
@@ -431,7 +376,7 @@ namespace AdobeConnectDownloader.Application
             for (int i = 1; i < streamDatas.Count; i++)
             {
                 uint offset = streamDatas[i].StartFilesTime - streamDatas[i - 1].EndFilesTime;
-                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"CustomVideo{counter}.flv");
+                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"EmptyVideo{counter}.flv");
                 string command = FFMPEGManager.GetCommandForCreateEmptyVideo(offset, folderPathForCreateFiles, videoSize, imageAddress, fileAddress);
                 FFMPEGManager.RunProcess(processStartInfo, command);
                 res.Add(fileAddress);

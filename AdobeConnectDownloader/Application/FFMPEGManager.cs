@@ -126,6 +126,17 @@ namespace AdobeConnectDownloader.Application
             return Size;
         }
 
+        public static string ConvertFlvVideoToMp4(string videoAddress, string outputAddress)
+        {
+            string command = $"-hide_banner -i \"{videoAddress}\" -y -preset ultrafast -vf fps=30 -codec libx264 -c:a libmp3lame -quality good \"{outputAddress}\"";
+            return command;
+        }
+
+        public static string ConvertFlvAudioToMp3(string audioAddress, string output)
+        {
+            string command = $"-hide_banner -i \"{audioAddress}\" -y -c:a libmp3lame -b:a 320k -preset ultrafast \"{output}\"";
+            return command;
+        }
 
     }
 }
