@@ -6,13 +6,17 @@
 و همچنین در فایل های تصویری ( فیلم ها ) با توجه به CPU زمانی بین 20 تا 40 دقیقه طول خواهد کشید و در نهایت خروجی فایل ها در پوشه ای که تعیین میکنید به صورت :
 فایل زیپ دانلود شده - فایل صوتی - فایل تصویری بدون صدا ( اگر موجود باشد ) و ترکیب فایل صوتی و تصویری با فرمت flv است.
 
+همچنین این نرم افزار با کمک نرم افزار FFMPEG ساخته شده که در فایل ریلیز برنامه موجود می باشد.
+
 This program is for downloading files created by Adobe Connect.
-To work with this software, if you want to download the file related to the class from the for example university, you must first login to your university website
-Then give the link to your recorded class to the program and download according to the available options.
+To work with this software, it is enough if you want to download the file related to the class from the university, for example, you must first log in to your university website Then give the link to your recorded class to the program and download according to the available options.
 Of course, do not forget that this program can only download the sounds and images that the master shares from his screen screen and then combine them together.
 Also for sounds, usually every 2 hours depending on your hardware will take a time between 3 minutes to 20 minutes, this time depends on the speed and power of your CPU
 Also in video files (videos) depending on the CPU will take between 20 to 40 minutes and finally the output of the files in the folder you specify as:
 Downloaded zip file - audio file - video file without sound (if available) and a combination of audio and video file in flv format.
 
+Also, this software is made with the help of FFMPEG software, which is available in the program release file.
 
-![image](https://user-images.githubusercontent.com/72279011/165932548-b9fb2c8d-d7a8-4174-b6c2-0c99ffa2f34a.png)
+
+![image](https://user-images.githubusercontent.com/72279011/165969468-52da8824-7d54-427f-bc7c-e0e2f5666e50.png)
+
