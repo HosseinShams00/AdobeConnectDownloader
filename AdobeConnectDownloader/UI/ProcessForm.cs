@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using AdobeConnectDownloader.Application;
 
-namespace AdobeConnectDownloader
+namespace AdobeConnectDownloader.UI
 {
     public partial class ProcessForm : Form
     {
@@ -20,9 +20,10 @@ namespace AdobeConnectDownloader
         public string CustomVideoForGetResolotion { get; set; } = String.Empty;
         public string FFMPEGAddress { get; set; } = String.Empty;
         public string NotAvailableVideoImageAddress { get; set; } = String.Empty;
+        public string Title { get; set; }
 
         public bool CancelProcess { get; set; } = false;
-        public bool IsEverythingOk { get; set; } = false;
+        public bool IsEverythingOk { get; set; } = true;
 
         public FFMPEGManager FFMPEGManager = new FFMPEGManager();
 
@@ -44,6 +45,7 @@ namespace AdobeConnectDownloader
 
         private async void ProcessForm_Load(object sender, EventArgs e)
         {
+            this.Text += " " + Title;
             ExtractFolder = Path.Combine(WorkFolderPath, "Extracted Data");
             FileManager = new FileManager();
 
@@ -112,6 +114,7 @@ namespace AdobeConnectDownloader
             else
             {
                 WebManager.CancelDownload();
+                this.Close();
             }
 
         }
@@ -125,6 +128,7 @@ namespace AdobeConnectDownloader
             else
             {
                 MessageBox.Show("Download Process Canceled");
+
             }
 
             this.Close();
@@ -226,7 +230,6 @@ namespace AdobeConnectDownloader
             }
 
         }
-
 
     }
 }

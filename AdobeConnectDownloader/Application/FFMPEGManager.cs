@@ -54,7 +54,7 @@ namespace AdobeConnectDownloader.Application
         {
 
             string imageAdressCopy = imageAddress.Replace("\\", "\\\\");
-            string duration = Helper.ConvertUintToDuration(milieSecond);
+            string duration = Helper.Time.ConvertUintToDuration(milieSecond);
             var emptyConcatAddress = CreateConcatForEmptyVideo(folderPathForCreateFile, duration, imageAdressCopy);
 
             string command = $"-hide_banner -safe 0 -f concat -i \"{emptyConcatAddress}\" -r 1 -crf 22 -threads 2 -vf scale={size.Replace('x', ':') } -preset veryfast -y \"{outputAddress}\"";

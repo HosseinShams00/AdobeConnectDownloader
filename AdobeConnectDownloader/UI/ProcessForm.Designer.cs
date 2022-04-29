@@ -1,4 +1,4 @@
-﻿namespace AdobeConnectDownloader
+﻿namespace AdobeConnectDownloader.UI
 {
     partial class ProcessForm
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.DownloadProcessTitleLabel = new System.Windows.Forms.Label();
             this.DownloadProcessLabel = new System.Windows.Forms.Label();
             this.ExtractZipDataLabel = new System.Windows.Forms.Label();
@@ -37,6 +38,7 @@
             this.SyncAllDataLabel = new System.Windows.Forms.Label();
             this.CancelButton = new System.Windows.Forms.Button();
             this.DownloadProgressBar = new System.Windows.Forms.ProgressBar();
+            this.CancelButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
             this.SuspendLayout();
             // 
             // DownloadProcessTitleLabel
@@ -65,7 +67,7 @@
             // 
             this.ExtractZipDataLabel.AutoSize = true;
             this.ExtractZipDataLabel.ForeColor = System.Drawing.Color.Red;
-            this.ExtractZipDataLabel.Location = new System.Drawing.Point(12, 109);
+            this.ExtractZipDataLabel.Location = new System.Drawing.Point(28, 109);
             this.ExtractZipDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ExtractZipDataLabel.Name = "ExtractZipDataLabel";
             this.ExtractZipDataLabel.Size = new System.Drawing.Size(211, 31);
@@ -76,7 +78,7 @@
             // 
             this.GetStreamsDataLabel.AutoSize = true;
             this.GetStreamsDataLabel.ForeColor = System.Drawing.Color.Red;
-            this.GetStreamsDataLabel.Location = new System.Drawing.Point(12, 166);
+            this.GetStreamsDataLabel.Location = new System.Drawing.Point(22, 160);
             this.GetStreamsDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.GetStreamsDataLabel.Name = "GetStreamsDataLabel";
             this.GetStreamsDataLabel.Size = new System.Drawing.Size(222, 31);
@@ -87,7 +89,7 @@
             // 
             this.FixAudiosLabel.AutoSize = true;
             this.FixAudiosLabel.ForeColor = System.Drawing.Color.Red;
-            this.FixAudiosLabel.Location = new System.Drawing.Point(16, 215);
+            this.FixAudiosLabel.Location = new System.Drawing.Point(59, 212);
             this.FixAudiosLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.FixAudiosLabel.Name = "FixAudiosLabel";
             this.FixAudiosLabel.Size = new System.Drawing.Size(140, 31);
@@ -109,7 +111,7 @@
             // 
             this.SyncAllDataLabel.AutoSize = true;
             this.SyncAllDataLabel.ForeColor = System.Drawing.Color.Red;
-            this.SyncAllDataLabel.Location = new System.Drawing.Point(14, 307);
+            this.SyncAllDataLabel.Location = new System.Drawing.Point(40, 307);
             this.SyncAllDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.SyncAllDataLabel.Name = "SyncAllDataLabel";
             this.SyncAllDataLabel.Size = new System.Drawing.Size(174, 31);
@@ -118,13 +120,14 @@
             // 
             // CancelButton
             // 
-            this.CancelButton.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.CancelButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(105)))), ((int)(((byte)(92)))));
             this.CancelButton.FlatAppearance.BorderSize = 0;
             this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelButton.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.CancelButton.Location = new System.Drawing.Point(16, 363);
+            this.CancelButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
+            this.CancelButton.Location = new System.Drawing.Point(70, 358);
             this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(73, 35);
+            this.CancelButton.Size = new System.Drawing.Size(117, 38);
             this.CancelButton.TabIndex = 7;
             this.CancelButton.Text = "Cancel";
             this.CancelButton.UseVisualStyleBackColor = false;
@@ -137,11 +140,23 @@
             this.DownloadProgressBar.Size = new System.Drawing.Size(231, 23);
             this.DownloadProgressBar.TabIndex = 8;
             // 
+            // CancelButtonDesignComponent
+            // 
+            this.CancelButtonDesignComponent._SetButton = this.CancelButton;
+            this.CancelButtonDesignComponent.BackGroundHtmlColorCode = "#00695C";
+            this.CancelButtonDesignComponent.ForeGroundHtmlColorCode = "#FAFAFA";
+            this.CancelButtonDesignComponent.LowLeft = true;
+            this.CancelButtonDesignComponent.LowRight = true;
+            this.CancelButtonDesignComponent.UpLeft = true;
+            this.CancelButtonDesignComponent.UpRight = true;
+            this.CancelButtonDesignComponent.XRadius = 15F;
+            this.CancelButtonDesignComponent.YRadius = 15F;
+            // 
             // ProcessForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(265, 450);
+            this.ClientSize = new System.Drawing.Size(265, 420);
             this.Controls.Add(this.DownloadProgressBar);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.SyncAllDataLabel);
@@ -156,7 +171,7 @@
             this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "ProcessForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Process Form";
+            this.Text = "Process ";
             this.Load += new System.EventHandler(this.ProcessForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -174,5 +189,6 @@
         private System.Windows.Forms.Label SyncAllDataLabel;
         private System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.ProgressBar DownloadProgressBar;
+        private DesignComponent CancelButtonDesignComponent;
     }
 }
