@@ -5,10 +5,17 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
-    <FileVersion>1.0</FileVersion>
-    <AssemblyVersion>1.0</AssemblyVersion>
+    <FileVersion>1.0.3</FileVersion>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
     <Description>This program made for download adobe connect files</Description>
+    <PackageLicenseFile>C:\Users\Anonymous\Desktop\LICENSE.txt</PackageLicenseFile>
+    <Copyright>Copyright (c) AdobeConnectDownloader . All rights reserved.</Copyright>
+    <Version>1.0.3</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.7.5" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

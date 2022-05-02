@@ -39,6 +39,7 @@
             this.CancelButton = new System.Windows.Forms.Button();
             this.DownloadProgressBar = new System.Windows.Forms.ProgressBar();
             this.CancelButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
+            this.DownloadAssetsLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // DownloadProcessTitleLabel
@@ -89,7 +90,7 @@
             // 
             this.FixAudiosLabel.AutoSize = true;
             this.FixAudiosLabel.ForeColor = System.Drawing.Color.Red;
-            this.FixAudiosLabel.Location = new System.Drawing.Point(59, 212);
+            this.FixAudiosLabel.Location = new System.Drawing.Point(59, 269);
             this.FixAudiosLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.FixAudiosLabel.Name = "FixAudiosLabel";
             this.FixAudiosLabel.Size = new System.Drawing.Size(140, 31);
@@ -100,7 +101,7 @@
             // 
             this.FixVideosLabel.AutoSize = true;
             this.FixVideosLabel.ForeColor = System.Drawing.Color.Red;
-            this.FixVideosLabel.Location = new System.Drawing.Point(14, 265);
+            this.FixVideosLabel.Location = new System.Drawing.Point(14, 322);
             this.FixVideosLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.FixVideosLabel.Name = "FixVideosLabel";
             this.FixVideosLabel.Size = new System.Drawing.Size(229, 31);
@@ -111,7 +112,7 @@
             // 
             this.SyncAllDataLabel.AutoSize = true;
             this.SyncAllDataLabel.ForeColor = System.Drawing.Color.Red;
-            this.SyncAllDataLabel.Location = new System.Drawing.Point(40, 307);
+            this.SyncAllDataLabel.Location = new System.Drawing.Point(40, 364);
             this.SyncAllDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.SyncAllDataLabel.Name = "SyncAllDataLabel";
             this.SyncAllDataLabel.Size = new System.Drawing.Size(174, 31);
@@ -125,7 +126,7 @@
             this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelButton.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.CancelButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.CancelButton.Location = new System.Drawing.Point(70, 358);
+            this.CancelButton.Location = new System.Drawing.Point(70, 415);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(117, 38);
             this.CancelButton.TabIndex = 7;
@@ -152,11 +153,23 @@
             this.CancelButtonDesignComponent.XRadius = 15F;
             this.CancelButtonDesignComponent.YRadius = 15F;
             // 
+            // DownloadAssetsLabel
+            // 
+            this.DownloadAssetsLabel.AutoSize = true;
+            this.DownloadAssetsLabel.ForeColor = System.Drawing.Color.Red;
+            this.DownloadAssetsLabel.Location = new System.Drawing.Point(26, 218);
+            this.DownloadAssetsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.DownloadAssetsLabel.Name = "DownloadAssetsLabel";
+            this.DownloadAssetsLabel.Size = new System.Drawing.Size(212, 31);
+            this.DownloadAssetsLabel.TabIndex = 9;
+            this.DownloadAssetsLabel.Text = "Download Assets";
+            // 
             // ProcessForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(265, 420);
+            this.ClientSize = new System.Drawing.Size(265, 466);
+            this.Controls.Add(this.DownloadAssetsLabel);
             this.Controls.Add(this.DownloadProgressBar);
             this.Controls.Add(this.CancelButton);
             this.Controls.Add(this.SyncAllDataLabel);
@@ -191,5 +204,6 @@
         private System.Windows.Forms.Button CancelButton;
         private System.Windows.Forms.ProgressBar DownloadProgressBar;
         private DesignComponent CancelButtonDesignComponent;
+        private System.Windows.Forms.Label DownloadAssetsLabel;
     }
 }

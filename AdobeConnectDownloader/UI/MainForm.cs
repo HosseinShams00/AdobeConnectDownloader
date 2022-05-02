@@ -2,6 +2,11 @@
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using AdobeConnectDownloader.Model;
+using System.Collections.Generic;
+using System.Net;
+using AdobeConnectDownloader.Application;
+using System.Threading.Tasks;
 
 namespace AdobeConnectDownloader.UI
 {
@@ -10,10 +15,17 @@ namespace AdobeConnectDownloader.UI
 
         public string FFMPEGAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Tools", "ffmpeg.exe");
         public string NotAvailableVideoAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Not Avaliable Video.png");
+        public string SwfFileAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Tools", "swfrender.exe");
+        public string SwfAddress = Path.Combine(@"C:\\", "Swf Files");
+        private SwfManager SwfManager;
 
         public MainForm()
         {
             InitializeComponent();
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            SwfManager = new SwfManager(SwfFileAddress);
         }
 
         private void LinkProcessorButton_Click(object sender, EventArgs e)
@@ -87,6 +99,8 @@ namespace AdobeConnectDownloader.UI
                     ProcessForm processForm = new ProcessForm();
                     processForm.Title = $"{i + 1} / {ProcessDataGridView.Rows.Count}";
                     processForm.FFMPEGAddress = FFMPEGAddress;
+                    processForm.SwfFileAddress = SwfFileAddress;
+                    processForm.swfFolder = SwfAddress;
                     processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
                     processForm.Url = url;
                     processForm.WorkFolderPath = WorkFolderPath;
@@ -108,7 +122,6 @@ namespace AdobeConnectDownloader.UI
             ProcessDataGridView = copyDataGridView;
             this.Show();
         }
-
 
         private void convertYourZipFileToVideoToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -184,9 +197,153 @@ namespace AdobeConnectDownloader.UI
             MessageBox.Show("Open This Github Page : https://github.com/HosseinShams00");
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+
+        private async void downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string assetsUrl = WebManager.GetAssetsDownloadUrl(UrlTextBox.Text.Trim());
+            var cookies = WebManager.GetCookieForm(UrlTextBox.Text.Trim(), WebManager.GetSessionCookieFrom(UrlTextBox.Text.Trim()));
+
+            if (cookies.Count == 0)
+            {
+                MessageBox.Show("Have a problem try again and make sure you login adobe connect server.");
+                return;
+            }
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "choose indexstream.xml  | *.xml";
+            openFileDialog.Title = "select indexstream.xml from your downloaded zip file";
+            var ofdResult = openFileDialog.ShowDialog();
+            if (ofdResult == DialogResult.Cancel || ofdResult == DialogResult.No)
+                return;
+
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            folderBrowserDialog.ShowNewFolderButton = true;
+            folderBrowserDialog.UseDescriptionForTitle = true;
+            folderBrowserDialog.Description = "Select for for save yout data";
+            var fbdResult = folderBrowserDialog.ShowDialog();
+            if (fbdResult == DialogResult.Cancel || fbdResult == DialogResult.No)
+                return;
+
+            await Task.Run(() =>
+            {
+
+                if (Directory.Exists(SwfAddress) == false)
+                    Directory.CreateDirectory(SwfAddress);
+
+                var checkAssetsMethod = DownloadAssetsMethod1(assetsUrl, cookies, folderBrowserDialog.SelectedPath);
+
+
+                if (checkAssetsMethod == false)
+                {
+                    string xmlData = File.ReadAllText(openFileDialog.FileName);
+
+                    var method2 = DownloadAssetsMethod2(xmlData, UrlTextBox.Text.Trim(), cookies, folderBrowserDialog.SelectedPath);
+
+                    if (method2 == true)
+                        MessageBox.Show("Completed");
+                    else
+                        MessageBox.Show("Faild");
+
+                }
+                else
+                    MessageBox.Show("Completed");
+
+                if (Directory.Exists(SwfAddress))
+                    Directory.Delete(SwfAddress, true);
+
+            });
 
         }
+
+        private void UrlTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (UrlTextBox.Text.Trim().StartsWith("http://"))
+                downloadPdfToolStripMenuItem.Enabled = true;
+            else
+                downloadPdfToolStripMenuItem.Enabled = false;
+        }
+
+
+        private bool DownloadAssetsMethod1(string url, List<Cookie> cookies, string workFolderPath)
+        {
+            string assetUrl = WebManager.GetAssetsDownloadUrl(url);
+            string fileAddress = Path.Combine(workFolderPath, "Assets.zip");
+
+            var downloadResult = WebManager.GetStreamData(assetUrl, cookies, WebManager.HttpContentType.Zip, fileAddress, true);
+
+            return downloadResult;
+        }
+
+        private bool DownloadAssetsMethod2(string xmlFileData, string url, List<Cookie> cookies, string outputFolder)
+        {
+            string baseUrl = url.Substring(0, url.IndexOf(".ir/") + 4);
+            var baseDownloadAssetUrls = XmlReader.GetDefaultPdfPathForDownload(xmlFileData, baseUrl);
+
+            if (baseDownloadAssetUrls.Count != 0 && cookies.Count != 0)
+            {
+                int couner = 1;
+                foreach (var baseDownloadAddress in baseDownloadAssetUrls)
+                {
+                    string response = GetDataForPdf(baseDownloadAddress, cookies);
+
+                    var pdfDetail = XmlReader.GetPdfDetail(response);
+                    pdfDetail.FileName = Path.Combine(outputFolder, $"Pdf {couner}.pdf");
+
+                    DownloadSlides(pdfDetail, baseDownloadAddress, cookies);
+
+                    SwfManager.ConvertSwfToPdf(pdfDetail, SwfAddress);
+                    couner++;
+                }
+                return true;
+            }
+            else
+                return false;
+        }
+        private string GetDataForPdf(string defaultAddress, List<Cookie> cookies)
+        {
+            string xmlPdfFilesname = defaultAddress + "layout.xml";
+            Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, cookies, WebManager.HttpContentType.Xml);
+            string response = string.Empty;
+
+            using (var reader = new StreamReader(layoutStreamData))
+            {
+                response = reader.ReadToEnd();
+            }
+
+            layoutStreamData.Dispose();
+            return response;
+        }
+
+        private void DownloadSlides(PdfDetail pdfDetail, string baseUrlAddressForDownload, List<Cookie> Cookies)
+        {
+            for (int i = 1; i <= pdfDetail.PageNumber; i++)
+            {
+                string fileUrl = baseUrlAddressForDownload + i + ".swf";
+
+                string counter = "";
+                for (int j = 0; j < pdfDetail.PageNumber.ToString().Length - i.ToString().Length; j++)
+                    counter += "0";
+
+                string filePath = Path.Combine(SwfAddress, counter + i + ".swf");
+
+                try
+                {
+                    bool checkProblemWithFile = WebManager.GetStreamData(fileUrl, Cookies, WebManager.HttpContentType.Flash, filePath, true);
+                    if (checkProblemWithFile == false)
+                    {
+                        MessageBox.Show("We Have Problem Try Again");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+
+            }
+        }
+
+
+
     }
 }

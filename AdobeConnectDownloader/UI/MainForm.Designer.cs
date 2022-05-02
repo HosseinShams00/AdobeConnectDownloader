@@ -41,10 +41,11 @@
             this.ProcessDataGridView = new System.Windows.Forms.DataGridView();
             this.AddToQueueButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.convertFlvToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolsStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertFlvvideosToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertYourZipFileToVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertFlvAudioToMP3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadPdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mergeZipFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DownloadQueueDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
@@ -64,9 +65,11 @@
             this.UrlTextBox.PlaceholderText = "Url : ";
             this.UrlTextBox.Size = new System.Drawing.Size(601, 23);
             this.UrlTextBox.TabIndex = 3;
+            this.UrlTextBox.TextChanged += new System.EventHandler(this.UrlTextBox_TextChanged);
             // 
             // ClearButton
             // 
+            this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ClearButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(165)))), ((int)(((byte)(137)))));
             this.ClearButton.FlatAppearance.BorderSize = 0;
             this.ClearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -177,7 +180,7 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertFlvToMp4ToolStripMenuItem,
+            this.ToolsStripMenuItem,
             this.zipToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -185,15 +188,16 @@
             this.menuStrip1.TabIndex = 13;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // convertFlvToMp4ToolStripMenuItem
+            // ToolsStripMenuItem
             // 
-            this.convertFlvToMp4ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolsStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.convertFlvvideosToMp4ToolStripMenuItem,
             this.convertYourZipFileToVideoToolStripMenuItem,
-            this.convertFlvAudioToMP3ToolStripMenuItem});
-            this.convertFlvToMp4ToolStripMenuItem.Name = "convertFlvToMp4ToolStripMenuItem";
-            this.convertFlvToMp4ToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.convertFlvToMp4ToolStripMenuItem.Text = "Convert";
+            this.convertFlvAudioToMP3ToolStripMenuItem,
+            this.downloadPdfToolStripMenuItem});
+            this.ToolsStripMenuItem.Name = "ToolsStripMenuItem";
+            this.ToolsStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.ToolsStripMenuItem.Text = "Tools";
             // 
             // convertFlvvideosToMp4ToolStripMenuItem
             // 
@@ -215,6 +219,14 @@
             this.convertFlvAudioToMP3ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             this.convertFlvAudioToMP3ToolStripMenuItem.Text = "Convert Flv audio to MP3";
             this.convertFlvAudioToMP3ToolStripMenuItem.Click += new System.EventHandler(this.convertFlvAudioToMP3ToolStripMenuItem_Click);
+            // 
+            // downloadPdfToolStripMenuItem
+            // 
+            this.downloadPdfToolStripMenuItem.Enabled = false;
+            this.downloadPdfToolStripMenuItem.Name = "downloadPdfToolStripMenuItem";
+            this.downloadPdfToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.downloadPdfToolStripMenuItem.Text = "Download Pdf";
+            this.downloadPdfToolStripMenuItem.Click += new System.EventHandler(this.downloadPdfToolStripMenuItem_Click);
             // 
             // zipToolStripMenuItem
             // 
@@ -293,7 +305,7 @@
         private System.Windows.Forms.DataGridView ProcessDataGridView;
         private DesignComponent AddToQueueButtonDesignComponent;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem convertFlvToMp4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ToolsStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertFlvvideosToMp4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zipToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mergeZipFileToolStripMenuItem;
@@ -301,5 +313,6 @@
         private System.Windows.Forms.ToolStripMenuItem convertYourZipFileToVideoToolStripMenuItem;
         private DesignComponent ClearButtonDesignComponent;
         private System.Windows.Forms.ToolStripMenuItem convertFlvAudioToMP3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem downloadPdfToolStripMenuItem;
     }
 }

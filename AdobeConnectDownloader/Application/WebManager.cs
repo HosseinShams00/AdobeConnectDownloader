@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using AdobeConnectDownloader.Model;
@@ -27,6 +28,15 @@ namespace AdobeConnectDownloader.Application
                 FileId = id,
                 Url = $"{linkSplit[0]}//{linkSplit[2]}/{id}/output/{id}.zip?download=zip"
             };
+        }
+
+        public static string GetAssetsDownloadUrl(string url)
+        {
+            var linkSplit = url.Split('/');
+            string id = linkSplit[3];
+
+            return $"{linkSplit[0]}//{linkSplit[2]}/{id}/source/{id}.zip?download=zip";
+            
         }
 
         public static Cookie? GetSessionCookieFrom(string url)
@@ -135,5 +145,73 @@ namespace AdobeConnectDownloader.Application
             else
                 return false;
         }
+
+        public static Stream GetStreamData(string url, List<Cookie> cookies, HttpContentType httpContentType)
+        {
+            HttpWebRequest httpWebRequest = WebRequest.CreateHttp(url);
+            httpWebRequest.CookieContainer = new CookieContainer();
+            foreach (var cookie in cookies)
+            {
+                httpWebRequest.CookieContainer.Add(cookie);
+            }
+
+            httpWebRequest.Accept = "*/*";
+            httpWebRequest.Method = "GET";
+
+            var response = (HttpWebResponse)httpWebRequest.GetResponse();
+            if (httpContentType == HttpContentType.All)
+            {
+                return response.GetResponseStream();
+            }
+            else if (response.ContentType == ConvertContentToString(httpContentType))
+                return response.GetResponseStream();
+            else
+                return null;
+
+        }
+
+        public static bool GetStreamData(string url, List<Cookie> cookies, HttpContentType httpContentType, string fileAddress, bool overwrite)
+        {
+            Stream result = GetStreamData(url, cookies, httpContentType);
+
+            if (result == null)
+                return false;
+
+            bool checkFileExist = File.Exists(fileAddress);
+
+            if (checkFileExist == true && overwrite == false)
+                return false;
+
+            else if (checkFileExist == true)
+                File.Delete(fileAddress);
+
+
+            using (var file = File.Create(fileAddress))
+            {
+                result.CopyTo(file);
+                result.Close();
+                result.Dispose();
+                file.Close();
+            }
+            return true;
+        }
+        private static string ConvertContentToString(HttpContentType httpContentType) => httpContentType switch
+        {
+            HttpContentType.Flash => "application/x-shockwave-flash",
+            HttpContentType.Text => "text/plain",
+            HttpContentType.Xml => "application/xml",
+            HttpContentType.Zip => "application/zip",
+            HttpContentType.All => "*/*"
+        };
+
+        public enum HttpContentType
+        {
+            Xml,
+            Text,
+            Zip,
+            Flash,
+            All
+        }
+
     }
 }
