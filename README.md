@@ -126,9 +126,6 @@ http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
     فایل صوتی کامل از جلسه
   </li>
   <li>
-    فایل تصویری بدون صدا ( اگر موجود باشد ) از جلسه  
-  </li>
-  <li>
     ترکیب فایل صوتی و تصویری به صورت ترکیب شده
   </li>
   <li>
@@ -270,9 +267,6 @@ Files and PDFs that the master shares in the Adobe application
   </li>
   <li>
     Full audio file of the meeting
-  </li>
-  <li>
-    Silent video file (if available) of the session
   </li>
   <li>
     Combine audio and video files as a combination
