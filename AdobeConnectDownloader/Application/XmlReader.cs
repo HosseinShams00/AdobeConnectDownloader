@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AdobeConnectDownloader.Model;
 
@@ -144,14 +145,22 @@ namespace AdobeConnectDownloader.Application
             index2 = xmlData.IndexOf("\"", indexXvalue);
             string xMaxSize = xmlData.Substring(indexXvalue, index2 - indexXvalue);
 
-            pdfDetail.XSize = int.Parse(xMaxSize);
+            if (xMaxSize.IndexOf(".") != -1)
+                pdfDetail.XSize = int.Parse(xMaxSize.Split('.')[0]) + 1;
+            else
+                pdfDetail.XSize = int.Parse(xMaxSize);
+
 
             string yValueStr = "yMax=\"";
             int indexYvalue = xmlData.IndexOf(yValueStr, index2) + yValueStr.Length;
             index2 = xmlData.IndexOf("\"", indexYvalue);
             string yMaxSize = xmlData.Substring(indexYvalue, index2 - indexYvalue);
 
-            pdfDetail.YSize = int.Parse(yMaxSize);
+            if (xMaxSize.IndexOf(".") != -1)
+                pdfDetail.YSize = int.Parse(yMaxSize.Split('.')[0]) + 1;
+            else
+                pdfDetail.YSize = int.Parse(yMaxSize);
+
 
             return pdfDetail;
         }

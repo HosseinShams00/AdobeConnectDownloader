@@ -67,7 +67,7 @@
             // ExtractZipDataLabel
             // 
             this.ExtractZipDataLabel.AutoSize = true;
-            this.ExtractZipDataLabel.ForeColor = System.Drawing.Color.Red;
+            this.ExtractZipDataLabel.ForeColor = System.Drawing.Color.Black;
             this.ExtractZipDataLabel.Location = new System.Drawing.Point(28, 109);
             this.ExtractZipDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ExtractZipDataLabel.Name = "ExtractZipDataLabel";
@@ -78,7 +78,7 @@
             // GetStreamsDataLabel
             // 
             this.GetStreamsDataLabel.AutoSize = true;
-            this.GetStreamsDataLabel.ForeColor = System.Drawing.Color.Red;
+            this.GetStreamsDataLabel.ForeColor = System.Drawing.Color.Black;
             this.GetStreamsDataLabel.Location = new System.Drawing.Point(22, 160);
             this.GetStreamsDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.GetStreamsDataLabel.Name = "GetStreamsDataLabel";
@@ -89,7 +89,7 @@
             // FixAudiosLabel
             // 
             this.FixAudiosLabel.AutoSize = true;
-            this.FixAudiosLabel.ForeColor = System.Drawing.Color.Red;
+            this.FixAudiosLabel.ForeColor = System.Drawing.Color.Black;
             this.FixAudiosLabel.Location = new System.Drawing.Point(59, 269);
             this.FixAudiosLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.FixAudiosLabel.Name = "FixAudiosLabel";
@@ -100,7 +100,7 @@
             // FixVideosLabel
             // 
             this.FixVideosLabel.AutoSize = true;
-            this.FixVideosLabel.ForeColor = System.Drawing.Color.Red;
+            this.FixVideosLabel.ForeColor = System.Drawing.Color.Black;
             this.FixVideosLabel.Location = new System.Drawing.Point(14, 322);
             this.FixVideosLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.FixVideosLabel.Name = "FixVideosLabel";
@@ -111,7 +111,7 @@
             // SyncAllDataLabel
             // 
             this.SyncAllDataLabel.AutoSize = true;
-            this.SyncAllDataLabel.ForeColor = System.Drawing.Color.Red;
+            this.SyncAllDataLabel.ForeColor = System.Drawing.Color.Black;
             this.SyncAllDataLabel.Location = new System.Drawing.Point(40, 364);
             this.SyncAllDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.SyncAllDataLabel.Name = "SyncAllDataLabel";
@@ -156,7 +156,7 @@
             // DownloadAssetsLabel
             // 
             this.DownloadAssetsLabel.AutoSize = true;
-            this.DownloadAssetsLabel.ForeColor = System.Drawing.Color.Red;
+            this.DownloadAssetsLabel.ForeColor = System.Drawing.Color.Black;
             this.DownloadAssetsLabel.Location = new System.Drawing.Point(26, 218);
             this.DownloadAssetsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.DownloadAssetsLabel.Name = "DownloadAssetsLabel";

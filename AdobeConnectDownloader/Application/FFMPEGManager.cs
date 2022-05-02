@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 
 namespace AdobeConnectDownloader.Application
@@ -50,14 +51,12 @@ namespace AdobeConnectDownloader.Application
             return Command;
         }
 
-        public static string GetCommandForCreateEmptyVideo(uint milieSecond, string folderPathForCreateFile, string size, string imageAddress, string outputAddress)
+        public static string GetCommandForCreateEmptyVideo(uint milieSecond, string imageAddress, string outputAddress)
         {
 
             string imageAdressCopy = imageAddress.Replace("\\", "\\\\");
             string duration = Helper.Time.ConvertUintToDuration(milieSecond);
-            var emptyConcatAddress = CreateConcatForEmptyVideo(folderPathForCreateFile, duration, imageAdressCopy);
-
-            string command = $"-hide_banner -safe 0 -f concat -i \"{emptyConcatAddress}\" -r 1 -crf 22 -threads 2 -vf scale={size.Replace('x', ':') } -preset veryfast -y \"{outputAddress}\"";
+            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAdressCopy}\" -y -t {duration} -shortest \"{outputAddress}\" ";
 
             return command;
         }
@@ -83,17 +82,18 @@ namespace AdobeConnectDownloader.Application
             return fileAddress;
         }
 
-        public static string CreateConcatFile(List<string> listOfFilePath, string outputAddress)
+        public static string CreateConcatFile(List<string> listOfFilePath, string audioAddress, string outputAddress)
         {
-            string command = "-hide_banner ";
+            string command = $"-hide_banner -i \"{audioAddress}\" ";
             string filter_Complex = "-filter_complex \"";
+
             for (int i = 0; i < listOfFilePath.Count; i++)
             {
                 command += $"-i \"{listOfFilePath[i]}\" ";
-                filter_Complex += $"[{i}:v] ";
+                filter_Complex += $"[{i + 1}:v] ";
             }
 
-            filter_Complex += $"concat=n={listOfFilePath.Count}:v=1[v]\" -map \"[v]\" -y \"{outputAddress}\"";
+            filter_Complex += $"concat=n={listOfFilePath.Count}:v=1[v]\" -map \"[v]\" -map 0:a -c:a aac -y -shortest \"{outputAddress}\"";
             command += filter_Complex;
 
             return command;

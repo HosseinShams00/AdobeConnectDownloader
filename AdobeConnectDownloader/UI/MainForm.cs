@@ -134,7 +134,8 @@ namespace AdobeConnectDownloader.UI
                 ProcessForm processForm = new ProcessForm();
                 processForm.FFMPEGAddress = FFMPEGAddress;
                 processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
-
+                processForm.SwfFileAddress = SwfFileAddress;
+                processForm.swfFolder = SwfAddress;
                 FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
                 folderBrowserDialog.ShowNewFolderButton = true;
 
@@ -200,8 +201,12 @@ namespace AdobeConnectDownloader.UI
 
         private async void downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string assetsUrl = WebManager.GetAssetsDownloadUrl(UrlTextBox.Text.Trim());
-            var cookies = WebManager.GetCookieForm(UrlTextBox.Text.Trim(), WebManager.GetSessionCookieFrom(UrlTextBox.Text.Trim()));
+            UrlTextBox.Enabled = false;
+            string url = UrlTextBox.Text.Trim();
+            UrlTextBox.Text = null;
+
+            string assetsUrl = WebManager.GetAssetsDownloadUrl(url);
+            var cookies = WebManager.GetCookieForm(url, WebManager.GetSessionCookieFrom(url));
 
             if (cookies.Count == 0)
             {
@@ -237,7 +242,7 @@ namespace AdobeConnectDownloader.UI
                 {
                     string xmlData = File.ReadAllText(openFileDialog.FileName);
 
-                    var method2 = DownloadAssetsMethod2(xmlData, UrlTextBox.Text.Trim(), cookies, folderBrowserDialog.SelectedPath);
+                    var method2 = DownloadAssetsMethod2(xmlData, url, cookies, folderBrowserDialog.SelectedPath);
 
                     if (method2 == true)
                         MessageBox.Show("Completed");
@@ -253,11 +258,14 @@ namespace AdobeConnectDownloader.UI
 
             });
 
+            UrlTextBox.Enabled = true;
+
+
         }
 
         private void UrlTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (UrlTextBox.Text.Trim().StartsWith("http://"))
+            if (UrlTextBox.Text.Trim().StartsWith("http://") || UrlTextBox.Text.Trim().StartsWith("https://"))
                 downloadPdfToolStripMenuItem.Enabled = true;
             else
                 downloadPdfToolStripMenuItem.Enabled = false;
@@ -285,6 +293,8 @@ namespace AdobeConnectDownloader.UI
                 foreach (var baseDownloadAddress in baseDownloadAssetUrls)
                 {
                     string response = GetDataForPdf(baseDownloadAddress, cookies);
+                    if (response == null)
+                        continue;
 
                     var pdfDetail = XmlReader.GetPdfDetail(response);
                     pdfDetail.FileName = Path.Combine(outputFolder, $"Pdf {couner}.pdf");
@@ -299,19 +309,28 @@ namespace AdobeConnectDownloader.UI
             else
                 return false;
         }
+
         private string GetDataForPdf(string defaultAddress, List<Cookie> cookies)
         {
-            string xmlPdfFilesname = defaultAddress + "layout.xml";
-            Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, cookies, WebManager.HttpContentType.Xml);
-            string response = string.Empty;
-
-            using (var reader = new StreamReader(layoutStreamData))
+            try
             {
-                response = reader.ReadToEnd();
-            }
+                string xmlPdfFilesname = defaultAddress + "layout.xml";
+                Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, cookies, WebManager.HttpContentType.Xml);
+                string response = string.Empty;
 
-            layoutStreamData.Dispose();
-            return response;
+                using (var reader = new StreamReader(layoutStreamData))
+                {
+                    response = reader.ReadToEnd();
+                }
+
+                layoutStreamData.Dispose();
+                return response;
+
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private void DownloadSlides(PdfDetail pdfDetail, string baseUrlAddressForDownload, List<Cookie> Cookies)

@@ -36,7 +36,7 @@ namespace AdobeConnectDownloader.Application
             string id = linkSplit[3];
 
             return $"{linkSplit[0]}//{linkSplit[2]}/{id}/source/{id}.zip?download=zip";
-            
+
         }
 
         public static Cookie? GetSessionCookieFrom(string url)
@@ -158,15 +158,22 @@ namespace AdobeConnectDownloader.Application
             httpWebRequest.Accept = "*/*";
             httpWebRequest.Method = "GET";
 
-            var response = (HttpWebResponse)httpWebRequest.GetResponse();
-            if (httpContentType == HttpContentType.All)
+            try
             {
-                return response.GetResponseStream();
+                var response = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpContentType == HttpContentType.All)
+                {
+                    return response.GetResponseStream();
+                }
+                else if (response.ContentType == ConvertContentToString(httpContentType))
+                    return response.GetResponseStream();
+                else
+                    return null;
             }
-            else if (response.ContentType == ConvertContentToString(httpContentType))
-                return response.GetResponseStream();
-            else
+            catch
+            {
                 return null;
+            }
 
         }
 

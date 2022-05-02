@@ -14,7 +14,7 @@ namespace AdobeConnectDownloader.UI
 {
     public partial class ProcessForm : Form
     {
-        public string Url { get; set; } = string.Empty;
+        public string Url { get; set; } = null;
 
         public string WorkFolderPath = string.Empty;
         public string ExtractFolder { get; set; } = String.Empty;
@@ -40,6 +40,7 @@ namespace AdobeConnectDownloader.UI
 
         public DataGridView QueueDataGridView { get; set; } = null;
         private List<Cookie> Cookies { get; set; } = new List<Cookie>();
+        public uint endRoomTime { get; private set; }
 
         public ProcessForm()
         {
@@ -153,7 +154,7 @@ namespace AdobeConnectDownloader.UI
 
                 var zipEntriesName = FileManager.ExtractZipFile(ZipFileAddress, ExtractFolder);
 
-                if (ExtractFolder.Length == 0)
+                if (zipEntriesName.Count == 0)
                 {
                     MessageBox.Show("Your zip file have wrong format please try againg");
                     return;
@@ -169,7 +170,10 @@ namespace AdobeConnectDownloader.UI
 
                 Model.ListOfStreamData filesTime = GetStreamData(zipEntriesName);
 
-                GetStreamsDataLabel.ForeColor = Color.Green;
+                if (filesTime == null)
+                    GetStreamsDataLabel.ForeColor = Color.Red;
+                else
+                    GetStreamsDataLabel.ForeColor = Color.Green;
 
                 if (CancelProcess == true)
                 {
@@ -177,27 +181,40 @@ namespace AdobeConnectDownloader.UI
                     return;
                 }
 
-                var checkAssetsMethod = DownloadAssetsMethod1(Url, Cookies);
-
-                if (CancelProcess == true)
+                if (Url != null)
                 {
-                    MessageBox.Show("Process Caneled");
-                    return;
-                }
+                    bool checkAssetsMethod = DownloadAssetsMethod1(Url, Cookies);
 
-                if (checkAssetsMethod == false)
-                {
-                    var method2 = DownloadAssetsMethod2(zipEntriesName, Cookies, WorkFolderPath);
+                    if (CancelProcess == true)
+                    {
+                        MessageBox.Show("Process Caneled");
+                        return;
+                    }
 
-                    if (method2 == true)
+                    if (checkAssetsMethod == false)
+                    {
+                        var method2 = DownloadAssetsMethod2(zipEntriesName, Cookies, WorkFolderPath);
+
+                        if (method2 == true)
+                            DownloadAssetsLabel.ForeColor = Color.Green;
+                        else
+                            DownloadAssetsLabel.ForeColor = Color.Red;
+                    }
+                    else
                         DownloadAssetsLabel.ForeColor = Color.Green;
+
+                    if (CancelProcess == true)
+                    {
+                        MessageBox.Show("Process Caneled");
+                        return;
+                    }
                 }
                 else
-                    DownloadAssetsLabel.ForeColor = Color.Green;
+                    DownloadAssetsLabel.ForeColor = Color.Red;
 
-                if (CancelProcess == true)
+                if (filesTime == null)
                 {
-                    MessageBox.Show("Process Caneled");
+                    MessageBox.Show("Have a problem");
                     return;
                 }
 
@@ -212,11 +229,13 @@ namespace AdobeConnectDownloader.UI
                     return;
                 }
 
-                string finalVideoAddress = Path.Combine(WorkFolderPath, "Final Video Witout Sound.flv");
+                string finalVideoAddress = Path.Combine(WorkFolderPath, "Final Meeting Video.flv");
                 if (filesTime.ScreenStreamData.Count != 0)
                 {
-                    GetFinalVideo(filesTime, finalVideoAddress, finalAudioAddress);
+                    GetFinalVideo(filesTime, endRoomTime, finalVideoAddress, finalAudioAddress);
                 }
+                else
+                    FixVideosLabel.ForeColor = Color.Red;
 
                 SyncAllDataLabel.ForeColor = Color.Green;
             });
@@ -244,6 +263,9 @@ namespace AdobeConnectDownloader.UI
                 foreach (var baseDownloadAddress in baseDownloadAssetUrls)
                 {
                     string response = GetDataForPdf(baseDownloadAddress);
+
+                    if (response == null)
+                        continue;
 
                     var pdfDetail = XmlReader.GetPdfDetail(response);
                     pdfDetail.FileName = Path.Combine(outputFolder, $"Pdf {counter}.pdf");
@@ -275,9 +297,13 @@ namespace AdobeConnectDownloader.UI
 
         private string GetDataForPdf(string defaultAddress)
         {
+
             string xmlPdfFilesname = defaultAddress + "layout.xml";
             Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, Cookies, WebManager.HttpContentType.Xml);
             string response = string.Empty;
+
+            if (layoutStreamData == null)
+                return null;
 
             using (var reader = new StreamReader(layoutStreamData))
             {
@@ -286,6 +312,7 @@ namespace AdobeConnectDownloader.UI
 
             layoutStreamData.Dispose();
             return response;
+
         }
 
         private void DownloadSlides(PdfDetail pdfDetail, string baseUrlAddressForDownload, List<Cookie> Cookies)
@@ -317,31 +344,32 @@ namespace AdobeConnectDownloader.UI
             }
         }
 
-        private void GetFinalVideo(ListOfStreamData filesTime, string finalVideoAddress, string finalAudioAddress)
+        private void GetFinalVideo(ListOfStreamData filesTime, uint endTime, string finalVideoAddress, string finalAudioAddress)
         {
             CustomVideoForGetResolotion = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
 
             string videoSize = FFMPEGManager.GetVideosResolotion(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + ".flv"), FFMPEGAddress);
 
             VideoManager.FFMPEGManager = FFMPEGManager;
-            var y = VideoManager.GetVideoLine(filesTime.ScreenStreamData, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, FFMPEGAddress);
+            var y = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, FFMPEGAddress);
 
-            string ffmpegCommand = FFMPEGManager.CreateConcatFile(y, finalVideoAddress);
+            string ffmpegCommand = FFMPEGManager.CreateConcatFile(y, finalAudioAddress, finalVideoAddress);
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = FFMPEGAddress;
             FFMPEGManager.RunProcess(processStartInfo, ffmpegCommand);
 
             FixVideosLabel.ForeColor = Color.Green;
-
-
-            string finalCommandFormMixAudioAndVideo = $"-hide_banner -i \"{finalVideoAddress}\" -i \"{finalAudioAddress}\" -c:v copy -c:a aac -y -shortest \"{Path.Combine(WorkFolderPath, "Final Room Video.flv")}\"";
-            FFMPEGManager.RunProcess(processStartInfo, finalCommandFormMixAudioAndVideo);
         }
 
         private ListOfStreamData GetStreamData(List<string> zipEntriesName)
         {
-            string xmlFileData = File.ReadAllText(zipEntriesName.Find(i => i.EndsWith("indexstream.xml") == true));
-            uint endRoomTime = XmlReader.GetEndOfTime(xmlFileData);
+
+            string xmlAddress = zipEntriesName.Find(i => i.EndsWith("indexstream.xml") == true);
+            if (xmlAddress == null)
+                return null;
+
+            string xmlFileData = File.ReadAllText(xmlAddress);
+            endRoomTime = XmlReader.GetEndOfTime(xmlFileData);
             var filesTime = XmlReader.GetTimesOfFiles(FileManager.GetZipFilesName(ZipFileAddress), xmlFileData, endRoomTime);
             FileManager.CheckHealthyFiles(filesTime, ExtractFolder, FFMPEGAddress);
             return filesTime;
@@ -365,7 +393,7 @@ namespace AdobeConnectDownloader.UI
             if (Directory.Exists(ExtractFolder))
                 Directory.Delete(ExtractFolder, true);
 
-            
+
             if (Directory.Exists(swfFolder))
                 Directory.Delete(swfFolder, true);
         }
