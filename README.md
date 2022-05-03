@@ -193,11 +193,9 @@ Files and PDFs that the master shares in the Adobe application
   </p>
   <br>
   <table dir = 'ltr' align = 'center'>
-    <tr dir = 'rtl' align = 'center'>
+    <tr dir = 'ltr' align = 'center'>
       <th>
-        <span style = "color: red;">
           File types
-        </span>
       </th>
       <th>
         Conference time
@@ -209,7 +207,7 @@ Files and PDFs that the master shares in the Adobe application
         Output format
       </th>
   </tr>
-  <tr dir = 'rtl' align = 'center'>
+  <tr dir = 'ltr' align = 'center'>
     <td>
       Voice
     </td>
@@ -225,7 +223,7 @@ Files and PDFs that the master shares in the Adobe application
       FLV
     </td>
   </tr>
-  <tr dir = 'rtl' align = 'center'>
+  <tr dir = 'ltr' align = 'center'>
     <td>
       the movie
     </td>
@@ -241,7 +239,7 @@ Files and PDFs that the master shares in the Adobe application
       FLV
     </td>
   </tr>
-  <tr dir = 'rtl' align = 'center'>
+  <tr dir = 'ltr' align = 'center'>
     <td>
       PDF
     </td>
@@ -283,5 +281,6 @@ Files and PDFs that the master shares in the Adobe application
 
 <br>
 
-![image](https://user-images.githubusercontent.com/72279011/165969468-52da8824-7d54-427f-bc7c-e0e2f5666e50.png)
+<img src="https://user-images.githubusercontent.com/72279011/165969468-52da8824-7d54-427f-bc7c-e0e2f5666e50.png">
+
 
