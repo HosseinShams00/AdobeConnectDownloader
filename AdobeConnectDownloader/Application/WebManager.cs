@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using AdobeConnectDownloader.Model;
 
 namespace AdobeConnectDownloader.Application
@@ -202,6 +203,59 @@ namespace AdobeConnectDownloader.Application
             }
             return true;
         }
+
+        public static void GetFiles(string baseUrl, string xmlFileData, List<Cookie> cookies, string workFolderPath)
+        {
+            var urls = XmlReader.GetFilesDownloadLink(xmlFileData, baseUrl);
+            string filesFolder = Path.Combine(workFolderPath, "Files");
+            if (Directory.Exists(filesFolder) == false)
+                Directory.CreateDirectory(filesFolder);
+
+            if (urls.Count != 0)
+            {
+                for (int i = 0; i < urls.Count; i++)
+                {
+                    string[] filename = urls[i].Split('/');
+                    string fileNameDecoded = HttpUtility.UrlDecode(filename[filename.Length - 1]);
+                    string fileAddres = Path.Combine(filesFolder, i + fileNameDecoded);
+                    WebManager.GetStreamData(urls[i], cookies, WebManager.HttpContentType.All, fileAddres, true);
+                }
+            }
+        }
+
+        public static bool DownloadAssetsMethod1(string url, List<Cookie> cookies, string workFolderPath)
+        {
+            string assetUrl = WebManager.GetAssetsDownloadUrl(url);
+            string fileAddress = Path.Combine(workFolderPath, "Assets.zip");
+
+            var downloadResult = WebManager.GetStreamData(assetUrl, cookies, WebManager.HttpContentType.Zip, fileAddress, true);
+
+            return downloadResult;
+        }
+
+        public static string GetDataForPdf(string defaultAddress, List<Cookie> cookies)
+        {
+            try
+            {
+                string xmlPdfFilesname = defaultAddress + "layout.xml";
+                Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, cookies, WebManager.HttpContentType.Xml);
+                string response = string.Empty;
+
+                using (var reader = new StreamReader(layoutStreamData))
+                {
+                    response = reader.ReadToEnd();
+                }
+
+                layoutStreamData.Dispose();
+                return response;
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private static string ConvertContentToString(HttpContentType httpContentType) => httpContentType switch
         {
             HttpContentType.Flash => "application/x-shockwave-flash",

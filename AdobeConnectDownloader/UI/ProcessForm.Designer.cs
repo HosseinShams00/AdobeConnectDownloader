@@ -40,6 +40,7 @@
             this.DownloadProgressBar = new System.Windows.Forms.ProgressBar();
             this.CancelButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
             this.DownloadAssetsLabel = new System.Windows.Forms.Label();
+            this.CheckWebcamLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // DownloadProcessTitleLabel
@@ -68,7 +69,7 @@
             // 
             this.ExtractZipDataLabel.AutoSize = true;
             this.ExtractZipDataLabel.ForeColor = System.Drawing.Color.Black;
-            this.ExtractZipDataLabel.Location = new System.Drawing.Point(28, 109);
+            this.ExtractZipDataLabel.Location = new System.Drawing.Point(34, 109);
             this.ExtractZipDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ExtractZipDataLabel.Name = "ExtractZipDataLabel";
             this.ExtractZipDataLabel.Size = new System.Drawing.Size(211, 31);
@@ -79,7 +80,7 @@
             // 
             this.GetStreamsDataLabel.AutoSize = true;
             this.GetStreamsDataLabel.ForeColor = System.Drawing.Color.Black;
-            this.GetStreamsDataLabel.Location = new System.Drawing.Point(22, 160);
+            this.GetStreamsDataLabel.Location = new System.Drawing.Point(28, 160);
             this.GetStreamsDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.GetStreamsDataLabel.Name = "GetStreamsDataLabel";
             this.GetStreamsDataLabel.Size = new System.Drawing.Size(222, 31);
@@ -90,7 +91,7 @@
             // 
             this.FixAudiosLabel.AutoSize = true;
             this.FixAudiosLabel.ForeColor = System.Drawing.Color.Black;
-            this.FixAudiosLabel.Location = new System.Drawing.Point(59, 269);
+            this.FixAudiosLabel.Location = new System.Drawing.Point(59, 261);
             this.FixAudiosLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.FixAudiosLabel.Name = "FixAudiosLabel";
             this.FixAudiosLabel.Size = new System.Drawing.Size(140, 31);
@@ -101,7 +102,7 @@
             // 
             this.FixVideosLabel.AutoSize = true;
             this.FixVideosLabel.ForeColor = System.Drawing.Color.Black;
-            this.FixVideosLabel.Location = new System.Drawing.Point(14, 322);
+            this.FixVideosLabel.Location = new System.Drawing.Point(22, 314);
             this.FixVideosLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.FixVideosLabel.Name = "FixVideosLabel";
             this.FixVideosLabel.Size = new System.Drawing.Size(229, 31);
@@ -112,7 +113,7 @@
             // 
             this.SyncAllDataLabel.AutoSize = true;
             this.SyncAllDataLabel.ForeColor = System.Drawing.Color.Black;
-            this.SyncAllDataLabel.Location = new System.Drawing.Point(40, 364);
+            this.SyncAllDataLabel.Location = new System.Drawing.Point(40, 412);
             this.SyncAllDataLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.SyncAllDataLabel.Name = "SyncAllDataLabel";
             this.SyncAllDataLabel.Size = new System.Drawing.Size(174, 31);
@@ -126,7 +127,7 @@
             this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelButton.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.CancelButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(250)))), ((int)(((byte)(250)))));
-            this.CancelButton.Location = new System.Drawing.Point(70, 415);
+            this.CancelButton.Location = new System.Drawing.Point(68, 459);
             this.CancelButton.Name = "CancelButton";
             this.CancelButton.Size = new System.Drawing.Size(117, 38);
             this.CancelButton.TabIndex = 7;
@@ -138,7 +139,7 @@
             // 
             this.DownloadProgressBar.Location = new System.Drawing.Point(12, 40);
             this.DownloadProgressBar.Name = "DownloadProgressBar";
-            this.DownloadProgressBar.Size = new System.Drawing.Size(231, 23);
+            this.DownloadProgressBar.Size = new System.Drawing.Size(253, 23);
             this.DownloadProgressBar.TabIndex = 8;
             // 
             // CancelButtonDesignComponent
@@ -157,18 +158,30 @@
             // 
             this.DownloadAssetsLabel.AutoSize = true;
             this.DownloadAssetsLabel.ForeColor = System.Drawing.Color.Black;
-            this.DownloadAssetsLabel.Location = new System.Drawing.Point(26, 218);
+            this.DownloadAssetsLabel.Location = new System.Drawing.Point(31, 210);
             this.DownloadAssetsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.DownloadAssetsLabel.Name = "DownloadAssetsLabel";
             this.DownloadAssetsLabel.Size = new System.Drawing.Size(212, 31);
             this.DownloadAssetsLabel.TabIndex = 9;
             this.DownloadAssetsLabel.Text = "Download Assets";
             // 
+            // CheckWebcamLabel
+            // 
+            this.CheckWebcamLabel.AutoSize = true;
+            this.CheckWebcamLabel.ForeColor = System.Drawing.Color.Black;
+            this.CheckWebcamLabel.Location = new System.Drawing.Point(12, 363);
+            this.CheckWebcamLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.CheckWebcamLabel.Name = "CheckWebcamLabel";
+            this.CheckWebcamLabel.Size = new System.Drawing.Size(253, 31);
+            this.CheckWebcamLabel.TabIndex = 10;
+            this.CheckWebcamLabel.Text = "Fix Webcam If Exist";
+            // 
             // ProcessForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(265, 466);
+            this.ClientSize = new System.Drawing.Size(278, 509);
+            this.Controls.Add(this.CheckWebcamLabel);
             this.Controls.Add(this.DownloadAssetsLabel);
             this.Controls.Add(this.DownloadProgressBar);
             this.Controls.Add(this.CancelButton);
@@ -205,5 +218,6 @@
         private System.Windows.Forms.ProgressBar DownloadProgressBar;
         private DesignComponent CancelButtonDesignComponent;
         private System.Windows.Forms.Label DownloadAssetsLabel;
+        private System.Windows.Forms.Label CheckWebcamLabel;
     }
 }

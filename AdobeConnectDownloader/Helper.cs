@@ -30,6 +30,18 @@ namespace AdobeConnectDownloader.Helper
 
             return result;
         }
+
+        public static uint ConvertTimeToMilisecond(string time)
+        {
+            string[] data = time.Split(':');
+            uint hour = uint.Parse(data[0]);
+            uint min = uint.Parse(data[1]);
+            uint second = uint.Parse(data[2].Split('.')[0]);
+            uint miliSecond = uint.Parse(data[2].Split('.')[1]);
+
+            uint result = ((hour * 3600) + (min * 60) + second) * 1000 + miliSecond;
+            return result;
+        }
     }
 
 

@@ -45,14 +45,15 @@ namespace AdobeConnectDownloader.UI
         public ProcessForm()
         {
             InitializeComponent();
-
-            AudioManager = new AudioManager(FFMPEGManager);
-            VideoManager = new VideoManager(FFMPEGManager);
         }
 
         private async void ProcessForm_Load(object sender, EventArgs e)
         {
+            AudioManager = new AudioManager(FFMPEGManager);
+            VideoManager = new VideoManager(FFMPEGManager, FFMPEGAddress);
             SwfManager = new SwfManager(SwfFileAddress);
+
+
             this.Text += " " + Title;
             ExtractFolder = Path.Combine(WorkFolderPath, "Extracted Data");
             FileManager = new FileManager();
@@ -160,7 +161,9 @@ namespace AdobeConnectDownloader.UI
                     return;
                 }
 
+
                 ExtractZipDataLabel.ForeColor = Color.Green;
+                string xmlFileData = File.ReadAllText(zipEntriesName.Find(i => i.EndsWith("indexstream.xml") == true));
 
                 if (CancelProcess == true)
                 {
@@ -168,7 +171,7 @@ namespace AdobeConnectDownloader.UI
                     return;
                 }
 
-                Model.ListOfStreamData filesTime = GetStreamData(zipEntriesName);
+                Model.ListOfStreamData filesTime = GetStreamData(xmlFileData);
 
                 if (filesTime == null)
                     GetStreamsDataLabel.ForeColor = Color.Red;
@@ -183,7 +186,17 @@ namespace AdobeConnectDownloader.UI
 
                 if (Url != null)
                 {
-                    bool checkAssetsMethod = DownloadAssetsMethod1(Url, Cookies);
+                    string baseUrl = Url.Substring(0, Url.IndexOf("/", 9) + 1);
+
+                    WebManager.GetFiles(baseUrl, xmlFileData, Cookies, WorkFolderPath);
+
+                    if (CancelProcess == true)
+                    {
+                        MessageBox.Show("Process Caneled");
+                        return;
+                    }
+
+                    bool checkAssetsMethod = WebManager.DownloadAssetsMethod1(Url, Cookies, WorkFolderPath);
 
                     if (CancelProcess == true)
                     {
@@ -193,7 +206,7 @@ namespace AdobeConnectDownloader.UI
 
                     if (checkAssetsMethod == false)
                     {
-                        var method2 = DownloadAssetsMethod2(zipEntriesName, Cookies, WorkFolderPath);
+                        var method2 = DownloadAssetsMethod2(baseUrl, xmlFileData, Cookies, WorkFolderPath);
 
                         if (method2 == true)
                             DownloadAssetsLabel.ForeColor = Color.Green;
@@ -229,32 +242,76 @@ namespace AdobeConnectDownloader.UI
                     return;
                 }
 
-                string finalVideoAddress = Path.Combine(WorkFolderPath, "Final Meeting Video.flv");
+                string finalVideoAddress = null;
                 if (filesTime.ScreenStreamData.Count != 0)
                 {
+                    finalVideoAddress = Path.Combine(WorkFolderPath, "Final Meeting Video.flv");
                     GetFinalVideo(filesTime, endRoomTime, finalVideoAddress, finalAudioAddress);
                 }
                 else
                     FixVideosLabel.ForeColor = Color.Red;
 
+                var result = VideoManager.ChekHaveWebcamVideo(filesTime.AudioStreamData, ExtractFolder);
+
+                if (result.Count == 0)
+                    CheckWebcamLabel.ForeColor = Color.Red;
+                else
+                    CheckWebcamLabel.ForeColor = Color.Green;
+
+                bool isWebcamFixed = CheckWebcam(result, finalAudioAddress, finalVideoAddress);
+
+
                 SyncAllDataLabel.ForeColor = Color.Green;
+
             });
         }
 
-        private bool DownloadAssetsMethod1(string url, List<Cookie> cookies)
+
+
+        private bool CheckWebcam(List<StreamData> webcamStreams, string finalAudioAddress, string finalVideoAddress)
         {
-            string assetUrl = WebManager.GetAssetsDownloadUrl(url);
-            string fileAddress = Path.Combine(WorkFolderPath, "Assets.zip");
+            if (webcamStreams.Count != 0)
+            {
+                CustomVideoForGetResolotion = Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv");
 
-            var downloadResult = WebManager.GetStreamData(assetUrl, cookies, WebManager.HttpContentType.Zip, fileAddress, true);
+                string videoSize = FFMPEGManager.GetVideosResolotion(Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv"), FFMPEGAddress);
 
-            return downloadResult;
+                VideoManager.FFMPEGManager = FFMPEGManager;
+                var videoLines = VideoManager.GetVideoLine(webcamStreams, endRoomTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, "WebCamVideo");
+                string webcamVideoFileAddress = Path.Combine(WorkFolderPath, "Final WebCam Video Witout Sound.flv");
+                string ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLines, webcamVideoFileAddress);
+                ProcessStartInfo processStartInfo = new ProcessStartInfo();
+                processStartInfo.FileName = FFMPEGAddress;
+                processStartInfo.Arguments = ffmpegCommand;
+                FFMPEGManager.RunProcess(processStartInfo);
+                string finalVideoAddressForWebcam = Path.Combine(WorkFolderPath, "Final Video With Webcam.flv");
+                string command = string.Empty;
+
+                if (finalVideoAddress == null)
+                {
+                    command = $"-hide_banner -i \"{finalAudioAddress}\" -i \"{webcamVideoFileAddress}\" -map 0:a -map 1:v -c:v copy -c:a copy -shortest -y \"{finalVideoAddressForWebcam}\"";
+                }
+                else
+                {
+                    string screenShareRes = FFMPEGManager.GetVideosResolotion(finalVideoAddress, FFMPEGAddress);
+                    string webcamRes = FFMPEGManager.GetVideosResolotion(webcamVideoFileAddress, FFMPEGAddress);
+                    int fullWidthRes = int.Parse(screenShareRes.Split('x')[0]) - int.Parse(webcamRes.Split('x')[0]);
+
+                    command = $"-hide_banner -i {finalVideoAddress }  -i \"{webcamVideoFileAddress}\" " +
+                    $"-filter_complex \"color=s={fullWidthRes + "x" + int.Parse(screenShareRes.Split('x')[1])}:c=black[base]; [0:v] setpts=PTS-STARTPTS[upperleft];[1:v]setpts=PTS-STARTPTS[upperright]; [base][upperleft]overlay=shortest=1[tmp1]; [tmp1][upperright] overlay=shortest=1:x={screenShareRes.Split('x')[0]}\"  -map 0:a -c:a copy -y -shortest \"{finalVideoAddressForWebcam}\"";
+                }
+
+                processStartInfo.Arguments = command;
+                FFMPEGManager.RunProcess(processStartInfo);
+                return true;
+            }
+            else
+                return false;
         }
 
-        private bool DownloadAssetsMethod2(List<string> zipEntriesName, List<Cookie> Cookies, string outputFolder)
+
+        public bool DownloadAssetsMethod2(string baseUrl, string xmlFileData, List<Cookie> Cookies, string outputFolder)
         {
-            string xmlFileData = File.ReadAllText(zipEntriesName.Find(i => i.EndsWith("indexstream.xml") == true));
-            string baseUrl = Url.Substring(0, Url.IndexOf(".ir/") + 4);
             var baseDownloadAssetUrls = XmlReader.GetDefaultPdfPathForDownload(xmlFileData, baseUrl);
 
             if (baseDownloadAssetUrls.Count != 0 && Cookies.Count != 0)
@@ -351,24 +408,22 @@ namespace AdobeConnectDownloader.UI
             string videoSize = FFMPEGManager.GetVideosResolotion(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + ".flv"), FFMPEGAddress);
 
             VideoManager.FFMPEGManager = FFMPEGManager;
-            var y = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, FFMPEGAddress);
+            var y = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
 
             string ffmpegCommand = FFMPEGManager.CreateConcatFile(y, finalAudioAddress, finalVideoAddress);
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = FFMPEGAddress;
-            FFMPEGManager.RunProcess(processStartInfo, ffmpegCommand);
+            processStartInfo.Arguments = ffmpegCommand;
+            FFMPEGManager.RunProcess(processStartInfo);
 
             FixVideosLabel.ForeColor = Color.Green;
         }
 
-        private ListOfStreamData GetStreamData(List<string> zipEntriesName)
+        private ListOfStreamData GetStreamData(string xmlFileData)
         {
-
-            string xmlAddress = zipEntriesName.Find(i => i.EndsWith("indexstream.xml") == true);
-            if (xmlAddress == null)
+            if (xmlFileData == null)
                 return null;
 
-            string xmlFileData = File.ReadAllText(xmlAddress);
             endRoomTime = XmlReader.GetEndOfTime(xmlFileData);
             var filesTime = XmlReader.GetTimesOfFiles(FileManager.GetZipFilesName(ZipFileAddress), xmlFileData, endRoomTime);
             FileManager.CheckHealthyFiles(filesTime, ExtractFolder, FFMPEGAddress);
@@ -397,6 +452,7 @@ namespace AdobeConnectDownloader.UI
             if (Directory.Exists(swfFolder))
                 Directory.Delete(swfFolder, true);
         }
+
 
     }
 }

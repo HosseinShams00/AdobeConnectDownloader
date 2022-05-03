@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AdobeConnectDownloader.Model;
 
@@ -57,7 +56,7 @@ namespace AdobeConnectDownloader.Application
             string startTime = xmlFileData.Substring(startTimeIndex, (endTimeIndex - startTimeIndex));
 
 
-            int index2 = xmlFileData.IndexOf(streamNameXml, index1);
+            int index2 = xmlFileData.IndexOf(streamNameXml, endTimeIndex);
 
             if (index2 != -1)
             {
@@ -163,6 +162,34 @@ namespace AdobeConnectDownloader.Application
 
 
             return pdfDetail;
+        }
+
+        public static List<string> GetFilesDownloadLink(string xmlFileData, string baseUrl)
+        {
+            List<string> files = new List<string>();
+            string theUrlStringStart = "<theUrl><![CDATA[/_a7/";
+            string theUrlStringEnd = "]]></theUrl>";
+            int index1 = 0;
+
+            while (true)
+            {
+
+                index1 = xmlFileData.IndexOf(theUrlStringStart , index1);
+
+                if (index1 == -1)
+                    break;
+
+                index1 += theUrlStringStart.Length;
+                int index2 = xmlFileData.IndexOf(theUrlStringEnd, index1);
+                files.Add(baseUrl + xmlFileData.Substring(index1, index2 - index1));
+                index1 = index2;
+            }
+
+            if (files.Count != 0)
+                files = files.Distinct().ToList();
+
+            return files;
+
         }
 
     }

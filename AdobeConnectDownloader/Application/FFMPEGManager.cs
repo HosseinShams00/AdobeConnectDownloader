@@ -1,8 +1,6 @@
 ﻿using AdobeConnectDownloader.Model;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 
 namespace AdobeConnectDownloader.Application
@@ -10,21 +8,33 @@ namespace AdobeConnectDownloader.Application
     public class FFMPEGManager
     {
         public Process? CurrentProcess { get; set; }
-        public void RunProcess(ProcessStartInfo processStartInfo, string command)
+        public void RunProcess(ProcessStartInfo processStartInfo)
         {
             Process? ffmpegProcess;
             processStartInfo.CreateNoWindow = true;
-            processStartInfo.Arguments = command;
             ffmpegProcess = Process.Start(processStartInfo);
             CurrentProcess = ffmpegProcess;
             ffmpegProcess?.WaitForExit();
+        }
+        public string RunProcessAndGetOutput(ProcessStartInfo processStartInfo)
+        {
+            Process? ffmpegProcess;
+            processStartInfo.CreateNoWindow = true;
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.RedirectStandardError = true;
+            ffmpegProcess = Process.Start(processStartInfo);
+            CurrentProcess = ffmpegProcess;
+            string result = ffmpegProcess?.StandardError.ReadToEnd();
+            ffmpegProcess?.WaitForExit();
+            return result;
         }
 
         public void RunMultiProcess(ProcessStartInfo processStartInfo, List<string> commands)
         {
             foreach (var command in commands)
             {
-                RunProcess(processStartInfo, command);
+                processStartInfo.Arguments = command;
+                RunProcess(processStartInfo);
             }
         }
 
@@ -53,34 +63,29 @@ namespace AdobeConnectDownloader.Application
 
         public static string GetCommandForCreateEmptyVideo(uint milieSecond, string imageAddress, string outputAddress)
         {
-
-            string imageAdressCopy = imageAddress.Replace("\\", "\\\\");
             string duration = Helper.Time.ConvertUintToDuration(milieSecond);
-            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAdressCopy}\" -y -t {duration} -shortest \"{outputAddress}\" ";
+            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAddress}\" -y -t {duration} -shortest \"{outputAddress}\" ";
 
             return command;
         }
 
-        private static string CreateConcatForEmptyVideo(string folderPathForCreateFile, string duration, string imageAddress)
+        public static string CreateConcatFile(List<string> listOfFilePath, string outputAddress)
         {
-            string fileAddress = Path.Combine(folderPathForCreateFile, "ConcatTextFile.txt");
-            string concatData = $"file \'{imageAddress}\'{Environment.NewLine}" +
-                $"duration {duration + Environment.NewLine}" +
-                $"file \'{imageAddress}\'";
+            string command = $"-hide_banner ";
+            string filter_Complex = "-filter_complex \"";
 
-            if (File.Exists(fileAddress))
+            for (int i = 0; i < listOfFilePath.Count; i++)
             {
-                File.WriteAllText(fileAddress, concatData);
-            }
-            else
-            {
-                var x = File.Create(fileAddress);
-                x.Close();
-                File.WriteAllText(fileAddress, concatData);
+                command += $"-i \"{listOfFilePath[i]}\" ";
+                filter_Complex += $"[{i}:v] ";
             }
 
-            return fileAddress;
+            filter_Complex += $"concat=n={listOfFilePath.Count}:v=1[v]\" -map \"[v]\" -y -shortest \"{outputAddress}\"";
+            command += filter_Complex;
+
+            return command;
         }
+
 
         public static string CreateConcatFile(List<string> listOfFilePath, string audioAddress, string outputAddress)
         {
@@ -115,7 +120,7 @@ namespace AdobeConnectDownloader.Application
             process.StartInfo = processStartInfo;
             process.Start();
             string data = process.StandardError.ReadToEnd();
-            var index1 = data.IndexOf("Stream #0:1: Video:");
+            var index1 = data.IndexOf("Video:");
             int index2 = data.IndexOf('x', index1);
             int index3 = data.IndexOf(',', index2);
             int index4 = data.IndexOf(',', index2 - 8);
@@ -138,5 +143,9 @@ namespace AdobeConnectDownloader.Application
             return command;
         }
 
+        public static string RemoveAudioFromVideoCommand(string videoAddress, string outputAddress)
+        {
+            return $"-hide_banner -i \"{videoAddress}\" -an -c:v copy -y \"{outputAddress}\"";
+        }
     }
 }

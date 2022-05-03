@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net;
 using AdobeConnectDownloader.Application;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace AdobeConnectDownloader.UI
 {
@@ -235,12 +236,18 @@ namespace AdobeConnectDownloader.UI
                 if (Directory.Exists(SwfAddress) == false)
                     Directory.CreateDirectory(SwfAddress);
 
-                var checkAssetsMethod = DownloadAssetsMethod1(assetsUrl, cookies, folderBrowserDialog.SelectedPath);
+                string xmlData = File.ReadAllText(openFileDialog.FileName);
+
+                string baseUrl = url.Substring(0, url.IndexOf("/", 9) + 1);
+
+
+                WebManager.GetFiles(baseUrl, xmlData, cookies, folderBrowserDialog.SelectedPath);
+
+                var checkAssetsMethod = WebManager.DownloadAssetsMethod1(assetsUrl, cookies, folderBrowserDialog.SelectedPath);
 
 
                 if (checkAssetsMethod == false)
                 {
-                    string xmlData = File.ReadAllText(openFileDialog.FileName);
 
                     var method2 = DownloadAssetsMethod2(xmlData, url, cookies, folderBrowserDialog.SelectedPath);
 
@@ -262,24 +269,12 @@ namespace AdobeConnectDownloader.UI
 
 
         }
-
         private void UrlTextBox_TextChanged(object sender, EventArgs e)
         {
             if (UrlTextBox.Text.Trim().StartsWith("http://") || UrlTextBox.Text.Trim().StartsWith("https://"))
                 downloadPdfToolStripMenuItem.Enabled = true;
             else
                 downloadPdfToolStripMenuItem.Enabled = false;
-        }
-
-
-        private bool DownloadAssetsMethod1(string url, List<Cookie> cookies, string workFolderPath)
-        {
-            string assetUrl = WebManager.GetAssetsDownloadUrl(url);
-            string fileAddress = Path.Combine(workFolderPath, "Assets.zip");
-
-            var downloadResult = WebManager.GetStreamData(assetUrl, cookies, WebManager.HttpContentType.Zip, fileAddress, true);
-
-            return downloadResult;
         }
 
         private bool DownloadAssetsMethod2(string xmlFileData, string url, List<Cookie> cookies, string outputFolder)
@@ -292,7 +287,7 @@ namespace AdobeConnectDownloader.UI
                 int couner = 1;
                 foreach (var baseDownloadAddress in baseDownloadAssetUrls)
                 {
-                    string response = GetDataForPdf(baseDownloadAddress, cookies);
+                    string response = WebManager.GetDataForPdf(baseDownloadAddress, cookies);
                     if (response == null)
                         continue;
 
@@ -308,29 +303,6 @@ namespace AdobeConnectDownloader.UI
             }
             else
                 return false;
-        }
-
-        private string GetDataForPdf(string defaultAddress, List<Cookie> cookies)
-        {
-            try
-            {
-                string xmlPdfFilesname = defaultAddress + "layout.xml";
-                Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, cookies, WebManager.HttpContentType.Xml);
-                string response = string.Empty;
-
-                using (var reader = new StreamReader(layoutStreamData))
-                {
-                    response = reader.ReadToEnd();
-                }
-
-                layoutStreamData.Dispose();
-                return response;
-
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         private void DownloadSlides(PdfDetail pdfDetail, string baseUrlAddressForDownload, List<Cookie> Cookies)
@@ -361,8 +333,6 @@ namespace AdobeConnectDownloader.UI
 
             }
         }
-
-
 
     }
 }
