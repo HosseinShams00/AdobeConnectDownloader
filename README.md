@@ -52,7 +52,7 @@ http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
   را می تواند دانلود کند و سپس به شما تحویل دهد و همچنین زمان ساخت هر فایل در جدول زیر آمده است : 
   </p>
   <br>
-  <table dir='ltr' align='center'>
+  <table dir='rtl' align='center'>
     <tr dir='rtl' align='center'>
       <th>
         <span style="color: red;">
@@ -87,7 +87,7 @@ http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
   </tr>
   <tr dir='rtl' align='center'>
     <td>
-      فیلم صفحه مانیتور
+      فیلم صفحه ی مانیتور
     </td>
     <td>
       <b>
