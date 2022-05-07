@@ -89,7 +89,8 @@ namespace AdobeConnectDownloader.UI
             if (ProcessDataGridView.Rows.Count == 0)
                 return;
 
-            DataGridView copyDataGridView = ProcessDataGridView;
+            List<DataGridViewRow> dataGridViewRows = new List<DataGridViewRow>();
+
             if (MessageBox.Show("Are you sure to download Queue list ? ", "Adobe Downloader", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 for (int i = 0; i < ProcessDataGridView.Rows.Count; i++)
@@ -110,17 +111,19 @@ namespace AdobeConnectDownloader.UI
 
                     if (processForm.IsEverythingOk == true)
                     {
-                        copyDataGridView.Rows.Remove(ProcessDataGridView.Rows[i]);
+                        dataGridViewRows.Add(ProcessDataGridView.Rows[i]);
                     }
-                    else if (processForm.CancelProcess == true)
-                    {
+                    else
                         break;
-                    }
 
                 }
 
             }
-            ProcessDataGridView = copyDataGridView;
+
+            foreach (var item in dataGridViewRows)
+            {
+                ProcessDataGridView.Rows.Remove(item);
+            }
             this.Show();
         }
 
@@ -154,24 +157,9 @@ namespace AdobeConnectDownloader.UI
             }
         }
 
-        private void convertFlvvideosToMp4ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void convertFlvvideoToMp4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Choose your flv Video|*.flv";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                string finalPath = openFileDialog.FileName.Substring(0, openFileDialog.FileName.Length - 4);
-                string command = Application.FFMPEGManager.ConvertFlvVideoToMp4(openFileDialog.FileName, finalPath + ".mp4");
-                ProcessStartInfo processStartInfo = new ProcessStartInfo();
-                processStartInfo.FileName = FFMPEGAddress;
-                processStartInfo.Arguments = command;
-                Process process = new Process();
-                process.StartInfo = processStartInfo;
 
-                MessageBox.Show("Please Dont Click On Opened Page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                process.Start();
-            }
         }
 
         private void convertFlvAudioToMP3ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -198,7 +186,6 @@ namespace AdobeConnectDownloader.UI
         {
             MessageBox.Show("Open This Github Page : https://github.com/HosseinShams00");
         }
-
 
         private async void downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)
         {

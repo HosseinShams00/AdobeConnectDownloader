@@ -42,7 +42,7 @@
             this.AddToQueueButtonDesignComponent = new AdobeConnectDownloader.UI.DesignComponent(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.ToolsStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertFlvvideosToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertFlvvideoToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertYourZipFileToVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertFlvAudioToMP3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadPdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -191,7 +191,7 @@
             // ToolsStripMenuItem
             // 
             this.ToolsStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertFlvvideosToMp4ToolStripMenuItem,
+            this.convertFlvvideoToMp4ToolStripMenuItem,
             this.convertYourZipFileToVideoToolStripMenuItem,
             this.convertFlvAudioToMP3ToolStripMenuItem,
             this.downloadPdfToolStripMenuItem});
@@ -199,12 +199,12 @@
             this.ToolsStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.ToolsStripMenuItem.Text = "Tools";
             // 
-            // convertFlvvideosToMp4ToolStripMenuItem
+            // convertFlvvideoToMp4ToolStripMenuItem
             // 
-            this.convertFlvvideosToMp4ToolStripMenuItem.Name = "convertFlvvideosToMp4ToolStripMenuItem";
-            this.convertFlvvideosToMp4ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.convertFlvvideosToMp4ToolStripMenuItem.Text = "Convert Flv (videos) to mp4";
-            this.convertFlvvideosToMp4ToolStripMenuItem.Click += new System.EventHandler(this.convertFlvvideosToMp4ToolStripMenuItem_Click);
+            this.convertFlvvideoToMp4ToolStripMenuItem.Name = "convertFlvvideoToMp4ToolStripMenuItem";
+            this.convertFlvvideoToMp4ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.convertFlvvideoToMp4ToolStripMenuItem.Text = "Convert Flv (video) to mp4";
+            this.convertFlvvideoToMp4ToolStripMenuItem.Click += new System.EventHandler(this.convertFlvvideoToMp4ToolStripMenuItem_Click);
             // 
             // convertYourZipFileToVideoToolStripMenuItem
             // 
@@ -306,7 +306,7 @@
         private DesignComponent AddToQueueButtonDesignComponent;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem ToolsStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem convertFlvvideosToMp4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convertFlvvideoToMp4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zipToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mergeZipFileToolStripMenuItem;
         private DesignComponent DownloadQueueDesignComponent;

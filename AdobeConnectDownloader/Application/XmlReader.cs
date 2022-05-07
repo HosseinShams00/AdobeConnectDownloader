@@ -80,10 +80,23 @@ namespace AdobeConnectDownloader.Application
             string numberStr = "<Number><![CDATA[";
             string endNumberStr = "]]></Number>";
 
-            int indexStop = xmlFileData.IndexOf(endTimeString) + endTimeString.Length;
-            int indexData1 = xmlFileData.IndexOf(numberStr, indexStop) + numberStr.Length;
-            int indexData2 = xmlFileData.IndexOf(endNumberStr, indexData1);
-            string timeValue = xmlFileData.Substring(indexData1, indexData2 - indexData1);
+            string endItemString = "<Message time=\"";
+            string timeValue = string.Empty;
+            int indexStop = xmlFileData.IndexOf(endTimeString);
+            if (indexStop != -1)
+            {
+                indexStop += endTimeString.Length;
+                int indexData1 = xmlFileData.IndexOf(numberStr, indexStop) + numberStr.Length;
+                int indexData2 = xmlFileData.IndexOf(endNumberStr, indexData1);
+                timeValue = xmlFileData.Substring(indexData1, indexData2 - indexData1);
+            }
+            else
+            {
+                int lastTimeIndex = xmlFileData.LastIndexOf(endItemString) + endItemString.Length;
+                int indexData1 = xmlFileData.IndexOf("\"", lastTimeIndex);
+                timeValue = xmlFileData.Substring(lastTimeIndex, indexData1 - lastTimeIndex);
+
+            }
 
             uint data = uint.Parse(timeValue);
 
@@ -174,7 +187,7 @@ namespace AdobeConnectDownloader.Application
             while (true)
             {
 
-                index1 = xmlFileData.IndexOf(theUrlStringStart , index1);
+                index1 = xmlFileData.IndexOf(theUrlStringStart, index1);
 
                 if (index1 == -1)
                     break;
