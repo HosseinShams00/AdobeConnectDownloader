@@ -159,7 +159,22 @@ namespace AdobeConnectDownloader.UI
 
         private void convertFlvvideoToMp4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Choose your flv Video|*.flv";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string finalPath = openFileDialog.FileName.Substring(0, openFileDialog.FileName.Length - 4);
+                string command = Application.FFMPEGManager.ConvertFlvVideoToMp4(openFileDialog.FileName, finalPath + ".mp4");
+                ProcessStartInfo processStartInfo = new ProcessStartInfo();
+                processStartInfo.FileName = FFMPEGAddress;
+                processStartInfo.Arguments = command;
+                Process process = new Process();
+                process.StartInfo = processStartInfo;
 
+                MessageBox.Show("Please Dont Click On Opened Page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                process.Start();
+            }
         }
 
         private void convertFlvAudioToMP3ToolStripMenuItem_Click(object sender, EventArgs e)
