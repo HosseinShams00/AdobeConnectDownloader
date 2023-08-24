@@ -47,7 +47,6 @@
             zipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             mergeZipFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DownloadQueueDesignComponent = new DesignComponent(components);
-            ClearButtonDesignComponent = new DesignComponent(components);
             DataGridContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ProcessDataGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -213,17 +212,6 @@
             DownloadQueueDesignComponent.XRadius = 7F;
             DownloadQueueDesignComponent.YRadius = 8F;
             // 
-            // ClearButtonDesignComponent
-            // 
-            ClearButtonDesignComponent.BackGroundHtmlColorCode = "#17A589";
-            ClearButtonDesignComponent.ForeGroundHtmlColorCode = "#1C2833";
-            ClearButtonDesignComponent.LowLeft = true;
-            ClearButtonDesignComponent.LowRight = true;
-            ClearButtonDesignComponent.UpLeft = true;
-            ClearButtonDesignComponent.UpRight = true;
-            ClearButtonDesignComponent.XRadius = 7F;
-            ClearButtonDesignComponent.YRadius = 6F;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -263,7 +251,6 @@
         private System.Windows.Forms.ToolStripMenuItem mergeZipFileToolStripMenuItem;
         private DesignComponent DownloadQueueDesignComponent;
         private System.Windows.Forms.ToolStripMenuItem convertYourZipFileToVideoToolStripMenuItem;
-        private DesignComponent ClearButtonDesignComponent;
         private System.Windows.Forms.ToolStripMenuItem convertFlvAudioToMP3ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadPdfToolStripMenuItem;
     }
