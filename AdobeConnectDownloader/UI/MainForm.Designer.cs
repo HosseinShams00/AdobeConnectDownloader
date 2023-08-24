@@ -180,7 +180,6 @@
             // 
             // downloadPdfToolStripMenuItem
             // 
-            downloadPdfToolStripMenuItem.Enabled = false;
             downloadPdfToolStripMenuItem.Name = "downloadPdfToolStripMenuItem";
             downloadPdfToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             downloadPdfToolStripMenuItem.Text = "Download Pdf";

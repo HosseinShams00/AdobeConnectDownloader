@@ -26,14 +26,15 @@ namespace AdobeConnectDownloader.UI
             if ((UrlTextBox.Text.Trim().StartsWith("http://") || UrlTextBox.Text.Trim().StartsWith("https://")) == false)
                 return;
 
-            SubmitButton.Enabled = string.IsNullOrEmpty(UrlTextBox.Text.Trim()) == false && string.IsNullOrEmpty(SaveDialogButton.Text.Trim()) == false;
+            SubmitButton.Enabled = string.IsNullOrEmpty(UrlTextBox.Text.Trim()) == false && string.IsNullOrEmpty(SaveInTextBox.Text.Trim()) == false;
             Url = UrlTextBox.Text.Trim();
         }
 
         private void SaveInTextBox_TextChanged(object sender, EventArgs e)
         {
-            SubmitButton.Enabled = string.IsNullOrEmpty(UrlTextBox.Text.Trim()) == false && string.IsNullOrEmpty(SaveDialogButton.Text.Trim()) == false;
-            WorkFolderPath = SaveDialogButton.Text.Trim();
+            SubmitButton.Enabled = ((UrlTextBox.Text.Trim().StartsWith("http://") || UrlTextBox.Text.Trim().StartsWith("https://")) 
+                                    && string.IsNullOrEmpty(UrlTextBox.Text.Trim()) == false )
+                                    && string.IsNullOrEmpty(SaveInTextBox.Text.Trim()) == false;
         }
 
         private void SaveDialogButton_Click(object sender, EventArgs e)
@@ -44,6 +45,7 @@ namespace AdobeConnectDownloader.UI
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 {
                     SaveInTextBox.Text = folderBrowserDialog.SelectedPath;
+                    WorkFolderPath = folderBrowserDialog.SelectedPath;
                 }
             }
             else
