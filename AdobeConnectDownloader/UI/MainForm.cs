@@ -15,10 +15,10 @@ namespace AdobeConnectDownloader.UI
     {
 
         public string FFMPEGAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Tools", "ffmpeg.exe");
-        public string NotAvailableVideoAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Not Avaliable Video.png");
+        public string NotAvailableVideoAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Not Available Video.png");
         public string SwfFileAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Tools", "swfrender.exe");
         public string SwfAddress = Path.Combine(@"C:\\", "Swf Files");
-        private SwfManager SwfManager;
+        private SwfManager _swfManager;
 
         public MainForm()
         {
@@ -26,7 +26,7 @@ namespace AdobeConnectDownloader.UI
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
-            SwfManager = new SwfManager(SwfFileAddress);
+            _swfManager = new SwfManager(SwfFileAddress);
         }
 
         private void LinkProcessorButton_Click(object sender, EventArgs e)
@@ -89,23 +89,33 @@ namespace AdobeConnectDownloader.UI
             if (ProcessDataGridView.Rows.Count == 0)
                 return;
 
-            List<DataGridViewRow> dataGridViewRows = new List<DataGridViewRow>();
+            var downloadMessage = "Do you want the corresponding file to be generated for each download, or do you want all the files to be downloaded first and then converted to files in order at the end?" +
+                                  "\r\nYes = generate the corresponding file for each download" +
+                                  "\r\nNo = all files are downloaded first and then converted to files in order at the end" +
+                                  "\r\nCancel = cancel downloading files";
 
-            if (MessageBox.Show("Are you sure to download Queue list ? ", "Adobe Downloader", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            var downloadQuestionResult = MessageBox.Show(downloadMessage, "", MessageBoxButtons.YesNoCancel);
+            if (downloadQuestionResult == DialogResult.Cancel)
+                return;
+
+            var dataGridViewRows = new List<DataGridViewRow>();
+            string workFolderPath;
+
+            if (downloadQuestionResult == DialogResult.Yes)
             {
                 for (int i = 0; i < ProcessDataGridView.Rows.Count; i++)
                 {
                     string url = (string)ProcessDataGridView.Rows[i].Cells[0].Value;
-                    string WorkFolderPath = (string)ProcessDataGridView.Rows[i].Cells[1].Value;
+                    workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[1].Value;
 
-                    ProcessForm processForm = new ProcessForm();
+                    using ProcessForm processForm = new ProcessForm();
                     processForm.Title = $"{i + 1} / {ProcessDataGridView.Rows.Count}";
                     processForm.FFMPEGAddress = FFMPEGAddress;
                     processForm.SwfFileAddress = SwfFileAddress;
                     processForm.swfFolder = SwfAddress;
                     processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
                     processForm.Url = url;
-                    processForm.WorkFolderPath = WorkFolderPath;
+                    processForm.WorkFolderPath = workFolderPath;
                     this.Hide();
                     processForm.ShowDialog();
 
@@ -115,11 +125,69 @@ namespace AdobeConnectDownloader.UI
                     }
                     else
                         break;
+                }
+            }
+            else if (downloadQuestionResult == DialogResult.No)
+            {
+                List<string> completedDownloadFiles = new(dataGridViewRows.Count);
 
+                for (int i = 0; i < ProcessDataGridView.Rows.Count; i++)
+                {
+                    string url = (string)ProcessDataGridView.Rows[i].Cells[0].Value;
+                    workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[1].Value;
+
+                    using ProcessForm processForm = new ProcessForm();
+                    processForm.Title = $"Download {i + 1} / {ProcessDataGridView.Rows.Count}";
+                    processForm.FFMPEGAddress = FFMPEGAddress;
+                    processForm.SwfFileAddress = SwfFileAddress;
+                    processForm.swfFolder = SwfAddress;
+                    processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
+                    processForm.Url = url;
+                    processForm.WorkFolderPath = workFolderPath;
+                    processForm.JustDownloadFiles = true;
+                    this.Hide();
+                    processForm.ShowDialog();
+
+                    if (processForm.IsEverythingOk)
+                    {
+                        completedDownloadFiles.Add(processForm.ZipFileAddress);
+                    }
+                    else
+                        break;
+                }
+
+                if (completedDownloadFiles.Count != ProcessDataGridView.Rows.Count)
+                {
+                    this.Show();
+                    return;
+                }
+
+                for (int i = 0; i < completedDownloadFiles.Count; i++)
+                {
+                    workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[1].Value;
+
+                    using ProcessForm processForm = new ProcessForm();
+                    processForm.Title = $"Append {i + 1} / {ProcessDataGridView.Rows.Count}";
+                    processForm.FFMPEGAddress = FFMPEGAddress;
+                    processForm.SwfFileAddress = SwfFileAddress;
+                    processForm.swfFolder = SwfAddress;
+                    processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
+                    processForm.JustDownloadFiles = false;
+                    processForm.WorkFolderPath = workFolderPath;
+                    processForm.ZipFileAddress = completedDownloadFiles[i];
+
+                    this.Hide();
+                    processForm.ShowDialog();
+
+                    if (processForm.IsEverythingOk)
+                    {
+                        dataGridViewRows.Add(ProcessDataGridView.Rows[i]);
+                    }
+                    else
+                        break;
                 }
 
             }
-
             foreach (var item in dataGridViewRows)
             {
                 ProcessDataGridView.Rows.Remove(item);
@@ -135,31 +203,33 @@ namespace AdobeConnectDownloader.UI
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                ProcessForm processForm = new ProcessForm();
-                processForm.FFMPEGAddress = FFMPEGAddress;
-                processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
-                processForm.SwfFileAddress = SwfFileAddress;
-                processForm.swfFolder = SwfAddress;
-                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-                folderBrowserDialog.ShowNewFolderButton = true;
-
-
-                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                using (ProcessForm processForm = new ProcessForm())
                 {
-                    processForm.WorkFolderPath = folderBrowserDialog.SelectedPath;
-                    processForm.ZipFileAddress = openFileDialog.FileName;
 
-                    this.Hide();
+                    processForm.FFMPEGAddress = FFMPEGAddress;
+                    processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
+                    processForm.SwfFileAddress = SwfFileAddress;
+                    processForm.swfFolder = SwfAddress;
+                    using FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                    folderBrowserDialog.ShowNewFolderButton = true;
 
-                    processForm.ShowDialog();
-                    this.Show();
+                    if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        processForm.WorkFolderPath = folderBrowserDialog.SelectedPath;
+                        processForm.ZipFileAddress = openFileDialog.FileName;
+
+                        this.Hide();
+
+                        processForm.ShowDialog();
+                        this.Show();
+                    }
                 }
             }
         }
 
         private void convertFlvvideoToMp4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            using OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Choose your flv Video|*.flv";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -168,7 +238,7 @@ namespace AdobeConnectDownloader.UI
                 ProcessStartInfo processStartInfo = new ProcessStartInfo();
                 processStartInfo.FileName = FFMPEGAddress;
                 processStartInfo.Arguments = command;
-                Process process = new Process();
+                using Process process = new Process();
                 process.StartInfo = processStartInfo;
 
                 MessageBox.Show("Please Dont Click On Opened Page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -179,7 +249,7 @@ namespace AdobeConnectDownloader.UI
 
         private void convertFlvAudioToMP3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            using OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Choose your flv Audio|*.flv";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -188,7 +258,7 @@ namespace AdobeConnectDownloader.UI
                 ProcessStartInfo processStartInfo = new ProcessStartInfo();
                 processStartInfo.FileName = FFMPEGAddress;
                 processStartInfo.Arguments = command;
-                Process process = new Process();
+                using Process process = new Process();
                 process.StartInfo = processStartInfo;
 
                 MessageBox.Show("Please Dont Click On Opened Page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -217,14 +287,14 @@ namespace AdobeConnectDownloader.UI
                 return;
             }
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            using OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "choose indexstream.xml  | *.xml";
             openFileDialog.Title = "select indexstream.xml from your downloaded zip file";
             var ofdResult = openFileDialog.ShowDialog();
             if (ofdResult == DialogResult.Cancel || ofdResult == DialogResult.No)
                 return;
 
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            using FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
             folderBrowserDialog.ShowNewFolderButton = true;
             folderBrowserDialog.UseDescriptionForTitle = true;
             folderBrowserDialog.Description = "Select for for save yout data";
@@ -298,7 +368,7 @@ namespace AdobeConnectDownloader.UI
 
                     DownloadSlides(pdfDetail, baseDownloadAddress, cookies);
 
-                    SwfManager.ConvertSwfToPdf(pdfDetail, SwfAddress);
+                    _swfManager.ConvertSwfToPdf(pdfDetail, SwfAddress);
                     couner++;
                 }
                 return true;
@@ -335,6 +405,5 @@ namespace AdobeConnectDownloader.UI
 
             }
         }
-
     }
 }

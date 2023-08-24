@@ -3,7 +3,7 @@
     public class ZipFileData
     {
         public string CameraVoipAddress { get; set; } = string.Empty;
-        public string ScreeanShare { get; set; } = string.Empty;
+        public string ScreenShare { get; set; } = string.Empty;
 
     }
 

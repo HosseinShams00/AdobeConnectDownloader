@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using AdobeConnectDownloader.Application;
 using System.Net;
 using AdobeConnectDownloader.Model;
+using System.Threading;
 
 namespace AdobeConnectDownloader.UI
 {
@@ -16,7 +17,7 @@ namespace AdobeConnectDownloader.UI
     {
         public string Url { get; set; } = null;
 
-        public string WorkFolderPath = string.Empty;
+        public string WorkFolderPath { get; set; } = string.Empty;
         public string ExtractFolder { get; set; } = String.Empty;
         public string ZipFileAddress { get; set; } = String.Empty;
         public string CustomVideoForGetResolotion { get; set; } = String.Empty;
@@ -28,6 +29,7 @@ namespace AdobeConnectDownloader.UI
 
         public bool CancelProcess { get; set; } = false;
         public bool IsEverythingOk { get; set; } = true;
+        public bool JustDownloadFiles { get; set; }
 
         public FFMPEGManager FFMPEGManager = new FFMPEGManager();
 
@@ -38,9 +40,9 @@ namespace AdobeConnectDownloader.UI
         public AudioManager AudioManager = null;
         public VideoManager VideoManager = null;
 
-        public DataGridView QueueDataGridView { get; set; } = null;
+        public DataGridView? QueueDataGridView { get; set; } = null;
         private List<Cookie> Cookies { get; set; } = new List<Cookie>();
-        public uint endRoomTime { get; private set; }
+        public uint EndRoomTime { get; private set; }
 
         public ProcessForm()
         {
@@ -74,7 +76,6 @@ namespace AdobeConnectDownloader.UI
                 await MergeAllFiles();
                 this.Close();
             }
-
         }
 
         public async Task DownloadZipFile(string url)
@@ -225,6 +226,12 @@ namespace AdobeConnectDownloader.UI
                 else
                     DownloadAssetsLabel.ForeColor = Color.Red;
 
+                if (JustDownloadFiles)
+                {
+                    IsEverythingOk = true;
+                    return;
+                }
+
                 if (filesTime == null)
                 {
                     MessageBox.Show("Have a problem");
@@ -246,7 +253,7 @@ namespace AdobeConnectDownloader.UI
                 if (filesTime.ScreenStreamData.Count != 0)
                 {
                     finalVideoAddress = Path.Combine(WorkFolderPath, "Final Meeting Video.flv");
-                    GetFinalVideo(filesTime, endRoomTime, finalVideoAddress, finalAudioAddress);
+                    GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
                 }
                 else
                     FixVideosLabel.ForeColor = Color.Red;
@@ -266,8 +273,6 @@ namespace AdobeConnectDownloader.UI
             });
         }
 
-
-
         private bool CheckWebcam(List<StreamData> webcamStreams, string finalAudioAddress, string finalVideoAddress)
         {
             if (webcamStreams.Count != 0)
@@ -277,7 +282,7 @@ namespace AdobeConnectDownloader.UI
                 string videoSize = FFMPEGManager.GetVideosResolotion(Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv"), FFMPEGAddress);
 
                 VideoManager.FFMPEGManager = FFMPEGManager;
-                var videoLines = VideoManager.GetVideoLine(webcamStreams, endRoomTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, "WebCamVideo");
+                var videoLines = VideoManager.GetVideoLine(webcamStreams, EndRoomTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, "WebCamVideo");
                 string webcamVideoFileAddress = Path.Combine(WorkFolderPath, "Final WebCam Video Witout Sound.flv");
                 string ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLines, webcamVideoFileAddress);
                 ProcessStartInfo processStartInfo = new ProcessStartInfo();
@@ -297,7 +302,7 @@ namespace AdobeConnectDownloader.UI
                     string webcamRes = FFMPEGManager.GetVideosResolotion(webcamVideoFileAddress, FFMPEGAddress);
                     int fullWidthRes = int.Parse(screenShareRes.Split('x')[0]) - int.Parse(webcamRes.Split('x')[0]);
 
-                    command = $"-hide_banner -i {finalVideoAddress }  -i \"{webcamVideoFileAddress}\" " +
+                    command = $"-hide_banner -i {finalVideoAddress}  -i \"{webcamVideoFileAddress}\" " +
                     $"-filter_complex \"color=s={fullWidthRes + "x" + int.Parse(screenShareRes.Split('x')[1])}:c=black[base]; [0:v] setpts=PTS-STARTPTS[upperleft];[1:v]setpts=PTS-STARTPTS[upperright]; [base][upperleft]overlay=shortest=1[tmp1]; [tmp1][upperright] overlay=shortest=1:x={screenShareRes.Split('x')[0]}\"  -map 0:a -c:a copy -y -shortest \"{finalVideoAddressForWebcam}\"";
                 }
 
@@ -308,7 +313,6 @@ namespace AdobeConnectDownloader.UI
             else
                 return false;
         }
-
 
         public bool DownloadAssetsMethod2(string baseUrl, string xmlFileData, List<Cookie> Cookies, string outputFolder)
         {
@@ -424,8 +428,8 @@ namespace AdobeConnectDownloader.UI
             if (xmlFileData == null)
                 return null;
 
-            endRoomTime = XmlReader.GetEndOfTime(xmlFileData);
-            var filesTime = XmlReader.GetTimesOfFiles(FileManager.GetZipFilesName(ZipFileAddress), xmlFileData, endRoomTime);
+            EndRoomTime = XmlReader.GetEndOfTime(xmlFileData);
+            var filesTime = XmlReader.GetTimesOfFiles(FileManager.GetZipFilesName(ZipFileAddress), xmlFileData, EndRoomTime);
             FileManager.CheckHealthyFiles(filesTime, ExtractFolder, FFMPEGAddress);
             return filesTime;
         }
@@ -452,7 +456,6 @@ namespace AdobeConnectDownloader.UI
             if (Directory.Exists(swfFolder))
                 Directory.Delete(swfFolder, true);
         }
-
 
     }
 }
