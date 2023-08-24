@@ -260,7 +260,7 @@ namespace AdobeConnectDownloader.UI
             MessageBox.Show("Open This Github Page : https://github.com/HosseinShams00");
         }
 
-        private async Task downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using var newFileData = new AddNewFileForDownloadForm();
             newFileData.IsNeedGetFolder = false;
