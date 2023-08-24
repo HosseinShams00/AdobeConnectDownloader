@@ -15,17 +15,17 @@ namespace AdobeConnectDownloader.UI
 {
     public partial class ProcessForm : Form
     {
-        public string Url { get; set; } = null;
+        public string? Url { get; set; } = null;
 
         public string WorkFolderPath { get; set; } = string.Empty;
-        public string ExtractFolder { get; set; } = String.Empty;
-        public string ZipFileAddress { get; set; } = String.Empty;
-        public string CustomVideoForGetResolotion { get; set; } = String.Empty;
-        public string FFMPEGAddress { get; set; } = String.Empty;
+        public string ExtractFolder { get; set; } = string.Empty;
+        public string ZipFileAddress { get; set; } = string.Empty;
+        public string CustomVideoForGetResolotion { get; set; } = string.Empty;
+        public string FFMPEGAddress { get; set; } = string.Empty;
         public string SwfFileAddress { get; set; } = string.Empty;
-        public string NotAvailableVideoImageAddress { get; set; } = String.Empty;
+        public string NotAvailableVideoImageAddress { get; set; } = string.Empty;
         public string Title { get; set; }
-        public string swfFolder { get; set; } = String.Empty;
+        public string swfFolder { get; set; } = string.Empty;
 
         public bool CancelProcess { get; set; } = false;
         public bool IsEverythingOk { get; set; } = true;
@@ -33,12 +33,12 @@ namespace AdobeConnectDownloader.UI
 
         public FFMPEGManager FFMPEGManager = new FFMPEGManager();
 
-        public FileManager FileManager = null;
+        public FileManager? FileManager = null;
         public WebManager WebManager = new WebManager();
         public SwfManager SwfManager;
 
-        public AudioManager AudioManager = null;
-        public VideoManager VideoManager = null;
+        public AudioManager? AudioManager = null;
+        public VideoManager? VideoManager = null;
 
         public DataGridView? QueueDataGridView { get; set; } = null;
         private List<Cookie> Cookies { get; set; } = new List<Cookie>();

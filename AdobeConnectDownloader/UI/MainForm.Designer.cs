@@ -191,7 +191,7 @@
             convertFlvvideoToMp4ToolStripMenuItem.Name = "convertFlvvideoToMp4ToolStripMenuItem";
             convertFlvvideoToMp4ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
             convertFlvvideoToMp4ToolStripMenuItem.Text = "Convert Flv (video) to mp4";
-            convertFlvvideoToMp4ToolStripMenuItem.Click += convertFlvvideoToMp4ToolStripMenuItem_Click;
+            convertFlvvideoToMp4ToolStripMenuItem.Click += convertFlvVideoToMp4ToolStripMenuItem_Click;
             // 
             // convertYourZipFileToVideoToolStripMenuItem
             // 
