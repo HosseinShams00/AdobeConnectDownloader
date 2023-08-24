@@ -30,29 +30,31 @@ namespace AdobeConnectDownloader.UI
 
         private void LinkProcessorButton_Click(object sender, EventArgs e)
         {
-            var folderBrowserDialog = new FolderBrowserDialog();
+            using var newFileData = new AddNewFileForDownloadForm();
+            var dialogResult = newFileData.ShowDialog();
 
-            if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
+            if (dialogResult != DialogResult.OK)
+            {
                 return;
+            }
 
-            using var processForm = ProcessFormMaker(String.Empty, UrlTextBox.Text.Trim(), folderBrowserDialog.SelectedPath, false, String.Empty);
+            using var processForm = ProcessFormMaker(string.Empty, newFileData.Url, newFileData.WorkFolderPath, false, string.Empty);
             this.Hide();
             processForm.ShowDialog();
             this.Show();
         }
 
-        private void ClearButton_Click(object sender, EventArgs e)
+        private void AddNewDownloadAddressButton_Click(object sender, EventArgs e)
         {
-            UrlTextBox.Text = string.Empty;
-        }
+            using var newFileData = new AddNewFileForDownloadForm();
+            var dialogResult = newFileData.ShowDialog();
 
-        private void AddToQueueButton_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(UrlTextBox.Text.Trim()))
+            if (dialogResult != DialogResult.OK)
+            {
                 return;
+            }
 
-            ProcessDataGridView.Rows.Add(UrlTextBox.Text, Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
-            UrlTextBox.Text = string.Empty;
+            ProcessDataGridView.Rows.Add(newFileData.Url, newFileData.WorkFolderPath);
         }
 
         private void editSaveFolderAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -258,27 +260,24 @@ namespace AdobeConnectDownloader.UI
             MessageBox.Show("Open This Github Page : https://github.com/HosseinShams00");
         }
 
-        private async void downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)
+        private async Task downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UrlTextBox.Enabled = false;
-            var url = UrlTextBox.Text.Trim();
-            UrlTextBox.Text = null;
+            using var newFileData = new AddNewFileForDownloadForm();
+            newFileData.IsNeedGetFolder = false;
+            var dialogResult = newFileData.ShowDialog();
+            if (dialogResult != DialogResult.OK)
+            {
+                return;
+            }
 
-            var assetsUrl = WebManager.GetAssetsDownloadUrl(url);
-            var cookies = WebManager.GetCookieForm(url, WebManager.GetSessionCookieFrom(url));
+            var assetsUrl = WebManager.GetAssetsDownloadUrl(newFileData.Url);
+            var cookies = WebManager.GetCookieForm(newFileData.Url, WebManager.GetSessionCookieFrom(newFileData.Url));
 
             if (cookies.Count == 0)
             {
                 MessageBox.Show("Have a problem try again and make sure you login adobe connect server.");
                 return;
             }
-
-            using var openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "choose indexstream.xml  | *.xml";
-            openFileDialog.Title = "select indexstream.xml from your downloaded zip file";
-            var ofdResult = openFileDialog.ShowDialog();
-            if (ofdResult == DialogResult.Cancel || ofdResult == DialogResult.No)
-                return;
 
             using var folderBrowserDialog = new FolderBrowserDialog();
             folderBrowserDialog.ShowNewFolderButton = true;
@@ -294,9 +293,9 @@ namespace AdobeConnectDownloader.UI
                 if (Directory.Exists(SwfAddress) == false)
                     Directory.CreateDirectory(SwfAddress);
 
-                var xmlData = File.ReadAllText(openFileDialog.FileName);
+                var xmlData = File.ReadAllText(newFileData.FileAddress);
 
-                var baseUrl = url.Substring(0, url.IndexOf("/", 9) + 1);
+                var baseUrl = newFileData.Url.Substring(0, newFileData.Url.IndexOf("/", 9) + 1);
 
 
                 WebManager.GetFiles(baseUrl, xmlData, cookies, folderBrowserDialog.SelectedPath);
@@ -306,9 +305,9 @@ namespace AdobeConnectDownloader.UI
 
                 if (checkAssetsMethod == false)
                 {
-                    var method2 = DownloadAssetsMethod2(xmlData, url, cookies, folderBrowserDialog.SelectedPath);
+                    var method2 = DownloadAssetsMethod2(xmlData, newFileData.Url, cookies, folderBrowserDialog.SelectedPath);
 
-                    MessageBox.Show(method2 == true ? "Completed" : "Faild");
+                    MessageBox.Show(method2 == true ? "Completed" : "Failed");
                 }
                 else
                     MessageBox.Show("Completed");
@@ -318,16 +317,8 @@ namespace AdobeConnectDownloader.UI
 
             });
 
-            UrlTextBox.Enabled = true;
 
 
-        }
-        private void UrlTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (UrlTextBox.Text.Trim().StartsWith("http://") || UrlTextBox.Text.Trim().StartsWith("https://"))
-                downloadPdfToolStripMenuItem.Enabled = true;
-            else
-                downloadPdfToolStripMenuItem.Enabled = false;
         }
 
         private bool DownloadAssetsMethod2(string xmlFileData, string url, List<Cookie> cookies, string outputFolder)

@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            UrlTextBox = new System.Windows.Forms.TextBox();
-            ClearButton = new System.Windows.Forms.Button();
             DataGridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(components);
             editSaveFolderAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,32 +52,6 @@
             ((System.ComponentModel.ISupportInitialize)ProcessDataGridView).BeginInit();
             menuStrip1.SuspendLayout();
             SuspendLayout();
-            // 
-            // UrlTextBox
-            // 
-            UrlTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            UrlTextBox.BackColor = System.Drawing.SystemColors.Window;
-            UrlTextBox.Location = new System.Drawing.Point(12, 35);
-            UrlTextBox.Name = "UrlTextBox";
-            UrlTextBox.PlaceholderText = "Url : ";
-            UrlTextBox.Size = new System.Drawing.Size(601, 23);
-            UrlTextBox.TabIndex = 3;
-            UrlTextBox.TextChanged += UrlTextBox_TextChanged;
-            // 
-            // ClearButton
-            // 
-            ClearButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            ClearButton.BackColor = System.Drawing.Color.FromArgb(23, 165, 137);
-            ClearButton.FlatAppearance.BorderSize = 0;
-            ClearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            ClearButton.ForeColor = System.Drawing.Color.FromArgb(28, 40, 51);
-            ClearButton.Location = new System.Drawing.Point(619, 31);
-            ClearButton.Name = "ClearButton";
-            ClearButton.Size = new System.Drawing.Size(65, 29);
-            ClearButton.TabIndex = 7;
-            ClearButton.Text = "Clear";
-            ClearButton.UseVisualStyleBackColor = false;
-            ClearButton.Click += ClearButton_Click;
             // 
             // DataGridContextMenuStrip
             // 
@@ -107,13 +79,13 @@
             AddToQueueButton.FlatAppearance.BorderSize = 0;
             AddToQueueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             AddToQueueButton.ForeColor = System.Drawing.Color.White;
-            AddToQueueButton.Location = new System.Drawing.Point(143, 64);
+            AddToQueueButton.Location = new System.Drawing.Point(603, 27);
             AddToQueueButton.Name = "AddToQueueButton";
-            AddToQueueButton.Size = new System.Drawing.Size(108, 36);
+            AddToQueueButton.Size = new System.Drawing.Size(81, 36);
             AddToQueueButton.TabIndex = 10;
-            AddToQueueButton.Text = "Add To Queue";
+            AddToQueueButton.Text = "Add +";
             AddToQueueButton.UseVisualStyleBackColor = false;
-            AddToQueueButton.Click += AddToQueueButton_Click;
+            AddToQueueButton.Click += AddNewDownloadAddressButton_Click;
             // 
             // DownloadQueueButton
             // 
@@ -121,7 +93,7 @@
             DownloadQueueButton.FlatAppearance.BorderSize = 0;
             DownloadQueueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             DownloadQueueButton.ForeColor = System.Drawing.Color.White;
-            DownloadQueueButton.Location = new System.Drawing.Point(12, 64);
+            DownloadQueueButton.Location = new System.Drawing.Point(12, 27);
             DownloadQueueButton.Name = "DownloadQueueButton";
             DownloadQueueButton.Size = new System.Drawing.Size(113, 36);
             DownloadQueueButton.TabIndex = 12;
@@ -150,12 +122,12 @@
             ProcessDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             ProcessDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { UrlColumn, FileFolderAddressColumn });
             ProcessDataGridView.ContextMenuStrip = DataGridContextMenuStrip;
-            ProcessDataGridView.Location = new System.Drawing.Point(12, 106);
+            ProcessDataGridView.Location = new System.Drawing.Point(12, 69);
             ProcessDataGridView.Name = "ProcessDataGridView";
             ProcessDataGridView.ReadOnly = true;
             ProcessDataGridView.RowTemplate.Height = 25;
             ProcessDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            ProcessDataGridView.Size = new System.Drawing.Size(672, 362);
+            ProcessDataGridView.Size = new System.Drawing.Size(672, 399);
             ProcessDataGridView.TabIndex = 9;
             // 
             // AddToQueueButtonDesignComponent
@@ -225,7 +197,7 @@
             // mergeZipFileToolStripMenuItem
             // 
             mergeZipFileToolStripMenuItem.Name = "mergeZipFileToolStripMenuItem";
-            mergeZipFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            mergeZipFileToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             mergeZipFileToolStripMenuItem.Text = "About Creator";
             mergeZipFileToolStripMenuItem.Click += mergeZipFileToolStripMenuItem_Click;
             // 
@@ -243,7 +215,6 @@
             // 
             // ClearButtonDesignComponent
             // 
-            ClearButtonDesignComponent._SetButton = ClearButton;
             ClearButtonDesignComponent.BackGroundHtmlColorCode = "#17A589";
             ClearButtonDesignComponent.ForeGroundHtmlColorCode = "#1C2833";
             ClearButtonDesignComponent.LowLeft = true;
@@ -262,8 +233,6 @@
             Controls.Add(ProcessDataGridView);
             Controls.Add(DownloadQueueButton);
             Controls.Add(AddToQueueButton);
-            Controls.Add(ClearButton);
-            Controls.Add(UrlTextBox);
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -278,8 +247,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.TextBox UrlTextBox;
-        private System.Windows.Forms.Button ClearButton;
         private System.Windows.Forms.Button AddToQueueButton;
         private System.Windows.Forms.ContextMenuStrip DataGridContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem editSaveFolderAddressToolStripMenuItem;
