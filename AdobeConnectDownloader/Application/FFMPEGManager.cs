@@ -64,7 +64,7 @@ namespace AdobeConnectDownloader.Application
         public static string GetCommandForCreateEmptyVideo(uint milieSecond, string imageAddress, string outputAddress)
         {
             string duration = Helper.Time.ConvertUintToDuration(milieSecond);
-            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAddress}\" -y -t {duration} -shortest \"{outputAddress}\" ";
+            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAddress}\" -y -t {duration} \"{outputAddress}\" ";
 
             return command;
         }
@@ -80,7 +80,7 @@ namespace AdobeConnectDownloader.Application
                 filter_Complex += $"[{i}:v] ";
             }
 
-            filter_Complex += $"concat=n={listOfFilePath.Count}:v=1[v]\" -map \"[v]\" -y -shortest \"{outputAddress}\"";
+            filter_Complex += $"concat=n={listOfFilePath.Count}:v=1[v]\" -map \"[v]\" -y \"{outputAddress}\"";
             command += filter_Complex;
 
             return command;
@@ -98,13 +98,13 @@ namespace AdobeConnectDownloader.Application
                 filter_Complex += $"[{i + 1}:v] ";
             }
 
-            filter_Complex += $"concat=n={listOfFilePath.Count}:v=1[v]\" -map \"[v]\" -map 0:a -c:a aac -y -shortest \"{outputAddress}\"";
+            filter_Complex += $"concat=n={listOfFilePath.Count}:v=1[v]\" -map \"[v]\" -map 0:a -c:a aac -y \"{outputAddress}\"";
             command += filter_Complex;
 
             return command;
         }
 
-        public static string GetVideosResolotion(string videoAddress, string ffmpegAddress)
+        public static string GetVideosResolution(string videoAddress, string ffmpegAddress)
         {
 
             var command = $"-hide_banner -i \"{videoAddress}\"";

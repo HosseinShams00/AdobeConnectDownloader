@@ -28,7 +28,7 @@ namespace AdobeConnectDownloader.Application
                             filesAddress.Add(ExtractedFileAddress);
                         }
                     }
-                    else if (item.FullName == "indexstream.xml")
+                    else if (item.FullName == "indexstream.xml" || item.FullName == "mainstream.xml")
                     {
                         string ExtractedFileAddress = Path.Combine(extractFolder, item.FullName);
                         item.ExtractToFile(ExtractedFileAddress, true);
@@ -36,7 +36,7 @@ namespace AdobeConnectDownloader.Application
                     }
                 }
             }
-            
+
             return filesAddress;
         }
 
@@ -63,13 +63,13 @@ namespace AdobeConnectDownloader.Application
 
         public static void CheckHealthyFiles(ListOfStreamData listOfStreamData, string extractedDataFolder, string ffmpegAddress)
         {
-            List<StreamData> namesOfCorrectFiles = new List<StreamData>();
+            var namesOfCorrectFiles = new List<StreamData>();
 
-            for (int i = 0; i < listOfStreamData.AudioStreamData.Count; i++)
+            foreach (var data in listOfStreamData.AudioStreamData)
             {
-                bool healthy = IsFileHealthy(Path.Combine(extractedDataFolder, listOfStreamData.AudioStreamData[i].FileNames + ".flv"), ffmpegAddress);
+                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + ".flv"), ffmpegAddress);
                 if (healthy == false)
-                    namesOfCorrectFiles.Add(listOfStreamData.AudioStreamData[i]);
+                    namesOfCorrectFiles.Add(data);
             }
 
             if (namesOfCorrectFiles.Count != 0)
@@ -83,19 +83,19 @@ namespace AdobeConnectDownloader.Application
             namesOfCorrectFiles = new List<StreamData>();
 
 
-            for (int i = 0; i < listOfStreamData.ScreenStreamData.Count; i++)
+            foreach (var data in listOfStreamData.ScreenStreamData)
             {
-                bool healthy = IsFileHealthy(Path.Combine(extractedDataFolder, listOfStreamData.ScreenStreamData[i].FileNames + ".flv"), ffmpegAddress);
+                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + ".flv"), ffmpegAddress);
                 if (healthy == false)
-                    namesOfCorrectFiles.Add(listOfStreamData.ScreenStreamData[i]);
+                    namesOfCorrectFiles.Add(data);
             }
 
-            if (namesOfCorrectFiles.Count != 0)
+            if (namesOfCorrectFiles.Count == 0) 
+                return;
+
+            foreach (var item in namesOfCorrectFiles)
             {
-                foreach (var item in namesOfCorrectFiles)
-                {
-                    listOfStreamData.ScreenStreamData.Remove(item);
-                }
+                listOfStreamData.ScreenStreamData.Remove(item);
             }
 
 
@@ -103,23 +103,23 @@ namespace AdobeConnectDownloader.Application
 
         private static bool IsFileHealthy(string fileAddress, string ffmpegAddress)
         {
-            bool res = false;
+            var res = false;
             var command = $"-hide_banner -i \"{fileAddress}\"";
 
-            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            var processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = ffmpegAddress;
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.RedirectStandardError = true;
             processStartInfo.Arguments = command;
             processStartInfo.CreateNoWindow = true;
-            Process process = new Process();
+            var process = new Process();
             process.StartInfo = processStartInfo;
             process.Start();
-            string data = process.StandardError.ReadToEnd();
+            var data = process.StandardError.ReadToEnd();
             var index1 = data.IndexOf("Duration:");
-            int audioIndex = data.IndexOf("Audio", index1);
-            int videoIndex = data.IndexOf("Video", index1);
+            var audioIndex = data.IndexOf("Audio", index1);
+            var videoIndex = data.IndexOf("Video", index1);
 
             if (audioIndex == -1 && videoIndex == -1)
                 res = false;

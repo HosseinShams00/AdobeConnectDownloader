@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using AdobeConnectDownloader.Model;
 
 
@@ -7,7 +10,7 @@ namespace AdobeConnectDownloader.Application
 {
     public class XmlReader
     {
-        public static ListOfStreamData GetTimesOfFiles(List<string> fileNames, string xmlFileData, uint endTimeOfRoom)
+        public static ListOfStreamData FindTimesOfFiles(List<string> fileNames, string xmlFileData, uint endTimeOfRoom)
         {
             List<StreamData> AudioStreamData = new List<StreamData>();
             List<StreamData> ScreenStreamData = new List<StreamData>();
@@ -17,14 +20,14 @@ namespace AdobeConnectDownloader.Application
                 if (item.StartsWith("cameraVoip_"))
                 {
                     string filename = item.Substring(0, item.Length - 4);
-                    var x = GetStreamTimes(xmlFileData, filename, endTimeOfRoom);
+                    var x = FindStreamTimes(xmlFileData, filename, endTimeOfRoom);
                     AudioStreamData.Add(x);
 
                 }
                 else if (item.StartsWith("screenshare_"))
                 {
                     string filename = item.Substring(0, item.Length - 4);
-                    var x = GetStreamTimes(xmlFileData, filename, endTimeOfRoom);
+                    var x = FindStreamTimes(xmlFileData, filename, endTimeOfRoom);
                     ScreenStreamData.Add(x);
                 }
             }
@@ -42,7 +45,38 @@ namespace AdobeConnectDownloader.Application
 
         }
 
-        private static StreamData GetStreamTimes(string xmlFileData, string searchData, uint endTimeOfRoom)
+        public static ListOfStreamData FindTimesOfFilesV2(string xmlFileData)
+        {
+            var audioStreamData = new List<StreamData>();
+            var screenStreamData = new List<StreamData>();
+
+            var streamDatas = FindStreamsFileTime_V2(xmlFileData);
+            foreach (var streamData in streamDatas)
+            {
+                if (streamData.FileNames.StartsWith("cameraVoip_"))
+                {
+                    audioStreamData.Add(streamData);
+                }
+                else if (streamData.FileNames.StartsWith("screenshare_"))
+                {
+                    screenStreamData.Add(streamData);
+                }
+            }
+
+            audioStreamData = audioStreamData.OrderBy(i => i.StartFilesTime).ToList();
+
+            if (screenStreamData.Count != 0 || screenStreamData.Count != 1)
+                screenStreamData = screenStreamData.OrderBy(i => i.StartFilesTime).ToList();
+
+            return new ListOfStreamData()
+            {
+                AudioStreamData = audioStreamData,
+                ScreenStreamData = screenStreamData
+            };
+
+        }
+
+        private static StreamData FindStreamTimes(string xmlFileData, string searchData, uint endTimeOfRoom)
         {
             string streamNameXml = $"<streamName><![CDATA[/{searchData}]]></streamName>";
             string startTimeString = "<time><![CDATA[";
@@ -74,7 +108,37 @@ namespace AdobeConnectDownloader.Application
             };
         }
 
-        public static uint GetEndOfTime(string xmlFileData)
+        private static List<StreamData> FindStreamsFileTime_V2(string xmlFileData)
+        {
+            var str = XElement.Parse(xmlFileData);
+            var streamDatas = str.Elements("Message").Where(x =>
+                {
+                    var isRemoveStream = x.Element("String")?.Value.Equals("streamRemoved") ?? false;
+                    var xElementsArray = x.Elements("Array") ?? new List<XElement>(1);
+                    var xElements = xElementsArray.Elements("Object") ?? new List<XElement>(1);
+                    return isRemoveStream && xElementsArray.Any() && xElements.Any() && xElements.Elements("startTime").Any();
+                })
+                .Select(x =>
+                {
+                    var objectElement = x.Element("Array")?.Element("Object");
+                    var startTime = uint.Parse(objectElement?.Element("startTime")?.Value ?? "0");
+                    var streamName = objectElement?.Element("streamName")?.Value.Trim('/');
+                    var endTime = uint.Parse(x.Attribute("time")?.Value ?? "0");
+                    return new StreamData
+                    {
+                        StartFilesTime = startTime,
+                        FileNames = streamName ?? string.Empty,
+                        EndFilesTime = endTime,
+                        Length = endTime - startTime,
+                    };
+                })
+                .ToList();
+
+
+            return streamDatas;
+        }
+
+        public static uint FindEndOfTime(string xmlFileData)
         {
             string endTimeString = "<String><![CDATA[__stop__]]></String>";
             string numberStr = "<Number><![CDATA[";
@@ -101,6 +165,14 @@ namespace AdobeConnectDownloader.Application
             uint data = uint.Parse(timeValue);
 
             return data;
+        }
+
+        public static uint FindEndOfTimeV2(string xmlFileData)
+        {
+            var str = XElement.Parse(xmlFileData);
+            var timeValue = str.XPathSelectElements("Message//String").FirstOrDefault(x => x.Value.Equals("__stop__"))
+                ?.Parent?.Attribute("time").Value ?? "0";
+            return uint.Parse(timeValue);
         }
 
         public static List<string> GetDefaultPdfPathForDownload(string xmlFileData, string hotst)
@@ -133,7 +205,7 @@ namespace AdobeConnectDownloader.Application
             for (int i = 0; i < resultWitoutDuplicateValue.Count; i++)
             {
                 string value1 = resultWitoutDuplicateValue[i].Substring(5);
-                resultWitoutDuplicateValue[i] = $"{hotst}{ value1}data/";
+                resultWitoutDuplicateValue[i] = $"{hotst}{value1}data/";
             }
 
 

@@ -230,7 +230,7 @@ namespace AdobeConnectDownloader.UI
             using var process = new Process();
             process.StartInfo = processStartInfo;
 
-            MessageBox.Show("Please Dont Click On Opened Page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Please don't click on opened page", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             process.Start();
         }
@@ -282,7 +282,7 @@ namespace AdobeConnectDownloader.UI
             using var folderBrowserDialog = new FolderBrowserDialog();
             folderBrowserDialog.ShowNewFolderButton = true;
             folderBrowserDialog.UseDescriptionForTitle = true;
-            folderBrowserDialog.Description = "Select for for save yout data";
+            folderBrowserDialog.Description = "Select folder for save your data";
             var fbdResult = folderBrowserDialog.ShowDialog();
             if (fbdResult is DialogResult.Cancel or DialogResult.No)
                 return;

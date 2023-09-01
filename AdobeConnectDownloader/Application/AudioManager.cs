@@ -18,45 +18,46 @@ namespace AdobeConnectDownloader.Application
 
         public string MatchAllAudio(List<StreamData> audioStreamDatas, string dataFolderPath, string outputFileFolder, string ffmpegAddress)
         {
-            string finalAudionPath = string.Empty;
-            var copy = audioStreamDatas;
-            var x = AudioLine(copy);
-            List<string> ffmpegCommands = new List<string>();
+            var finalAudionPath = Path.Combine(outputFileFolder, "FinalAudio.flv");
+            var copyOfAudioStreamDatas = audioStreamDatas;
+            var audioLineData = AudioLine(copyOfAudioStreamDatas);
+            var ffmpegCommands = new List<string>();
 
             int counter = 0;
-            List<StreamData> streamDatas = new List<StreamData>();
+            var streamDatas = new List<StreamData>();
 
-            string firstAudioPath = Path.Combine(dataFolderPath, $"FixedAudio{counter}.flv");
-            string firstCommand = FFMPEGManager.GetMergeAudioCommand(x.Result, dataFolderPath, firstAudioPath);
+            var firstAudioPath = Path.Combine(dataFolderPath, $"FixedAudio{counter}.flv");
+            var firstCommand = FFMPEGManager.GetMergeAudioCommand(audioLineData.Result, dataFolderPath, firstAudioPath);
             ffmpegCommands.Add(firstCommand);
-            StreamData streamData = new StreamData();
+            var streamData = new StreamData();
             streamData.FileNames = firstAudioPath;
             streamData.StartFilesTime = 0;
-            streamData.EndFilesTime = GetMaxFromStartTime(x.Result);
-            finalAudionPath = Path.Combine(outputFileFolder, "FinalAudio.flv");
+            streamData.EndFilesTime = FindMaxEndTime(audioLineData.Result);
 
 
-            if (x.NewInput.Count != 0)
+            if (audioLineData.NewInput.Count != 0)
             {
                 streamData.FileNames = streamData.FileNames.Substring(0, streamData.FileNames.Length - 4);
                 streamDatas.Add(streamData);
                 while (true)
                 {
                     counter++;
-                    var y = AudioLine(x.NewInput);
-                    ffmpegCommands.Add(FFMPEGManager.GetMergeAudioCommand(y.Result, dataFolderPath, Path.Combine(dataFolderPath, $"FixedAudio{counter}.flv")));
-                    StreamData streamData1 = new StreamData();
-                    streamData1.FileNames = Path.Combine(dataFolderPath, $"FixedAudio{counter}");
-                    streamData1.StartFilesTime = 0;
-                    streamData1.EndFilesTime = GetMaxFromStartTime(y.Result);
+                    var audioLine = AudioLine(audioLineData.NewInput);
+                    ffmpegCommands.Add(FFMPEGManager.GetMergeAudioCommand(audioLine.Result, dataFolderPath, Path.Combine(dataFolderPath, $"FixedAudio{counter}.flv")));
+                    var streamData1 = new StreamData
+                    {
+                        FileNames = Path.Combine(dataFolderPath, $"FixedAudio{counter}"),
+                        StartFilesTime = 0,
+                        EndFilesTime = FindMaxEndTime(audioLine.Result)
+                    };
                     streamDatas.Add(streamData1);
 
-                    if (y.NewInput.Count == 0)
+                    if (audioLine.NewInput.Count == 0)
                         break;
-                    x = y;
+                    audioLineData = audioLine;
                 }
 
-                string finalAudio = FFMPEGManager.GetMergeAudioCommand(streamDatas, dataFolderPath, finalAudionPath);
+                var finalAudio = FFMPEGManager.GetMergeAudioCommand(streamDatas, dataFolderPath, finalAudionPath);
                 ffmpegCommands.Add(finalAudio);
             }
             else
@@ -65,13 +66,13 @@ namespace AdobeConnectDownloader.Application
             }
 
 
-            ProcessStartInfo processStartInfo = new ProcessStartInfo(ffmpegAddress);
+            var processStartInfo = new ProcessStartInfo(ffmpegAddress);
             FFMPEGManager.RunMultiProcess(processStartInfo, ffmpegCommands);
 
             return finalAudionPath;
         }
 
-        public uint GetMinFromStartTime(List<StreamData> streamDatas)
+        public uint FindMinStartTime(List<StreamData> streamDatas)
         {
             uint res = streamDatas[0].StartFilesTime;
 
@@ -84,7 +85,7 @@ namespace AdobeConnectDownloader.Application
             return res;
         }
 
-        public uint GetMaxFromStartTime(List<StreamData> streamDatas)
+        public uint FindMaxEndTime(List<StreamData> streamDatas)
         {
             uint res = streamDatas[0].EndFilesTime;
 
@@ -103,8 +104,8 @@ namespace AdobeConnectDownloader.Application
         {
 
             StreamData lastData = audioStreamDatas[0];
-            List<StreamData> streams = new List<StreamData>();
-            List<StreamData> copyData = new List<StreamData>(audioStreamDatas);
+            var streams = new List<StreamData>();
+            var copyData = new List<StreamData>(audioStreamDatas);
 
             streams.Add(lastData);
             copyData.Remove(lastData);
