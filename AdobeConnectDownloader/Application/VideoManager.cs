@@ -43,29 +43,85 @@ namespace AdobeConnectDownloader.Application
 
             if (firstTime != 0)
             {
-                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}.flv");
+                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}{streamDatas[0].Extension}");
                 string command = FFMPEGManager.GetCommandForCreateEmptyVideo(firstTime, imageAddressCopy, fileAddress);
                 processStartInfo.Arguments = command;
                 FFMPEGManager.RunProcess(processStartInfo);
                 res.Add(fileAddress);
-                res.Add(Path.Combine(extractedDataFolder, streamDatas[0].FileNames + ".flv"));
+                res.Add(Path.Combine(extractedDataFolder, streamDatas[0].FileNames + streamDatas[0].Extension));
                 counter++;
             }
 
             for (int i = 1; i < streamDatas.Count; i++)
             {
                 uint offset = streamDatas[i].StartFilesTime - streamDatas[i - 1].EndFilesTime;
-                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}.flv");
+                string fileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}{streamDatas[i].Extension}");
                 string command = FFMPEGManager.GetCommandForCreateEmptyVideo(offset, imageAddressCopy, fileAddress);
                 processStartInfo.Arguments = command;
                 FFMPEGManager.RunProcess(processStartInfo);
                 res.Add(fileAddress);
-                res.Add(Path.Combine(extractedDataFolder, streamDatas[i].FileNames + ".flv"));
+                res.Add(Path.Combine(extractedDataFolder, streamDatas[i].FileNames + streamDatas[i].Extension));
                 counter++;
             }
 
-            uint Finaloffset = EndTime - streamDatas[streamDatas.Count - 1].EndFilesTime;
-            string FinalfileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}.flv");
+            uint Finaloffset = EndTime - streamDatas[^1].EndFilesTime;
+            string FinalfileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}{streamDatas[^1].Extension}");
+            string Finalcommand = FFMPEGManager.GetCommandForCreateEmptyVideo(Finaloffset, imageAddressCopy, FinalfileAddress);
+            processStartInfo.Arguments = Finalcommand;
+            FFMPEGManager.RunProcess(processStartInfo);
+            res.Add(FinalfileAddress);
+
+            return res;
+        }
+
+        public List<string> GetVideoLineV2(List<StreamData> streamDatas, uint EndTime, string extractedDataFolder, string videoSize, string imageAddress, string outputFolderForSyncVideo)
+        {
+            int counter = 0;
+            List<string> res = new List<string>();
+            uint firstTime = streamDatas[0].StartFilesTime;
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.FileName = ffmpegAddress;
+
+            int width = int.Parse(videoSize.Split('x')[0]);
+            int height = int.Parse(videoSize.Split('x')[1]);
+            Image imageCopy = Image.FromFile(imageAddress);
+            Bitmap image = new Bitmap(imageCopy, new Size(width, height));
+            string imageAddressCopy = Path.Combine(extractedDataFolder, "No Available Video.png");
+
+            if (File.Exists(imageAddressCopy))
+                File.Delete(imageAddressCopy);
+
+            image.Save(imageAddressCopy);
+            image.Dispose();
+            imageCopy.Dispose();
+
+            if (firstTime != 0)
+            {
+                var outputFileAddress = Path.Combine(outputFolderForSyncVideo, $"FixedVideo{counter}{streamDatas[0].Extension}");
+                var videoAddress = Path.Combine(extractedDataFolder, streamDatas[0].FileNames + streamDatas[0].Extension);
+                var command = FFMPEGManager.GetCommandForCreateEmptyVideoV2(videoAddress, firstTime, outputFileAddress);
+                processStartInfo.Arguments = command;
+                FFMPEGManager.RunProcess(processStartInfo);
+                res.Add(outputFileAddress);
+                //res.Add(Path.Combine(extractedDataFolder, streamDatas[0].FileNames + ".flv"));
+                counter++;
+            }
+
+            for (int i = 1; i < streamDatas.Count; i++)
+            {
+                uint offset = streamDatas[i].StartFilesTime - streamDatas[i - 1].EndFilesTime;
+                var outputFileAddress = Path.Combine(outputFolderForSyncVideo, $"FixedVideo{counter}{streamDatas[i].Extension}");
+                var videoAddress = Path.Combine(extractedDataFolder, streamDatas[i].FileNames + streamDatas[i].Extension);
+                var command = FFMPEGManager.GetCommandForCreateEmptyVideoV2(videoAddress, offset, outputFileAddress);
+                processStartInfo.Arguments = command;
+                FFMPEGManager.RunProcess(processStartInfo);
+                res.Add(outputFileAddress);
+                //res.Add(Path.Combine(extractedDataFolder, streamDatas[i].FileNames + ".flv"));
+                counter++;
+            }
+
+            uint Finaloffset = EndTime - streamDatas[^1].EndFilesTime;
+            string FinalfileAddress = Path.Combine(outputFolderForSyncVideo, $"FixedVideo{counter}{streamDatas[^1].Extension}");
             string Finalcommand = FFMPEGManager.GetCommandForCreateEmptyVideo(Finaloffset, imageAddressCopy, FinalfileAddress);
             processStartInfo.Arguments = Finalcommand;
             FFMPEGManager.RunProcess(processStartInfo);
@@ -80,7 +136,7 @@ namespace AdobeConnectDownloader.Application
 
             foreach (var audioData in audioStreamDatas)
             {
-                string fileAddress = Path.Combine(extractedFolder, audioData.FileNames + ".flv");
+                string fileAddress = Path.Combine(extractedFolder, audioData.FileNames + audioData.Extension);
                 string ffmpegCommand = $"-hide_banner -i \"{fileAddress}\"";
                 ProcessStartInfo processStartInfo = new ProcessStartInfo();
                 processStartInfo.FileName = ffmpegAddress;
@@ -91,7 +147,7 @@ namespace AdobeConnectDownloader.Application
                 int videoIndex = data.IndexOf("Video", index1);
                 if (videoIndex != -1)
                 {
-                    string newFileAddress = Path.Combine(extractedFolder, audioData.FileNames + "_WitoutSound.flv");
+                    string newFileAddress = Path.Combine(extractedFolder, audioData.FileNames + $"_WitoutSound{audioData.Extension}");
                     string originalWebcamVideoCommand = FFMPEGManager.RemoveAudioFromVideoCommand(fileAddress, newFileAddress);
                     processStartInfo.Arguments = originalWebcamVideoCommand;
                     FFMPEGManager.RunProcess(processStartInfo);

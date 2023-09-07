@@ -11,11 +11,11 @@ namespace AdobeConnectDownloader.Helper
 {
     public class Time
     {
-        public static string ConvertUintToDuration(uint milisecond)
+        public static string ConvertUintToDuration(uint milliseconds)
         {
-            int MiliSecond = (int)(milisecond % 1000);
-            int second = (int)((milisecond / 1000) % 60);
-            int min = (int)((milisecond / 1000) / 60);
+            int MiliSecond = (int)(milliseconds % 1000);
+            int second = (int)((milliseconds / 1000) % 60);
+            int min = (int)((milliseconds / 1000) / 60);
             int houre = (int)(min / 60);
             min = min >= 60 ? min % 60 : min;
             string result = "";
@@ -29,6 +29,12 @@ namespace AdobeConnectDownloader.Helper
             result += MiliSecond;
 
             return result;
+        }
+
+        public static string ConvertUintToDurationV2(uint milliseconds)
+        {
+            var time = TimeSpan.FromMilliseconds(milliseconds);
+            return time.ToString();
         }
 
         public static uint ConvertTimeToMilisecond(string time)

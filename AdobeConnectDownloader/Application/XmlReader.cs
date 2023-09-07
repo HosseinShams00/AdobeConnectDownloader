@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using AdobeConnectDownloader.Model;
@@ -123,13 +125,14 @@ namespace AdobeConnectDownloader.Application
                     var objectElement = x.Element("Array")?.Element("Object");
                     var startTime = uint.Parse(objectElement?.Element("startTime")?.Value ?? "0");
                     var streamName = objectElement?.Element("streamName")?.Value.Trim('/');
-                    var endTime = uint.Parse(x.Attribute("time")?.Value ?? "0");
+                    var endTime = uint.Parse(x.Element("Object")?.Element("time")?.Value ?? "0");
                     return new StreamData
                     {
                         StartFilesTime = startTime,
                         FileNames = streamName ?? string.Empty,
                         EndFilesTime = endTime,
                         Length = endTime - startTime,
+                        Extension = ".flv"
                     };
                 })
                 .ToList();
@@ -277,5 +280,65 @@ namespace AdobeConnectDownloader.Application
 
         }
 
+
+        public class Test
+        {
+            public static Dictionary<string, object> ExtractDataStreamTimeStamps(string xmlFile)
+            {
+                Dictionary<string, object> tempSession = new Dictionary<string, object>();
+                List<Dictionary<string, object>> dataStreamList = new List<Dictionary<string, object>>();
+
+                try
+                {
+                    XmlDocument indexStream = new XmlDocument();
+                    indexStream.LoadXml(xmlFile);
+
+                    XmlNodeList messages = indexStream.GetElementsByTagName("Message");
+
+                    foreach (XmlNode messageNode in messages)
+                    {
+                        XmlElement messageEl = (XmlElement)messageNode;
+                        string name = GetFirstElementByTagName(messageEl, "name")?.InnerText ?? "";
+                        string status = GetFirstElementByTagName(messageEl, "String")?.InnerText ?? "";
+
+                        if (name == "StreamManagerId_Mainstream" && status == "streamRemoved")
+                        {
+                            Dictionary<string, object> tds = new Dictionary<string, object>();
+
+                            tds["endTimeStamp"] = GetFirstElementByTagName(messageEl, "time")?.InnerText;
+                            tds["startTimeStamp"] = GetFirstElementByTagName(messageEl, "startTime")?.InnerText;
+                            tds["name"] = GetFirstElementByTagName(messageEl, "streamName")?.InnerText;
+                            tds["senderId"] = GetFirstElementByTagName(messageEl, "streamPublisherID")?.InnerText;
+                            tds["type"] = GetFirstElementByTagName(messageEl, "streamType")?.InnerText;
+
+                            dataStreamList.Add(tds);
+                        }
+                        else if (status == "__stop__")
+                        {
+                            tempSession["duration"] = GetFirstElementByTagName(messageEl, "Number")?.InnerText;
+                        }
+                    }
+
+                    tempSession["dataStreamList"] = dataStreamList;
+                    // Assuming mSessions is a class-level variable, you can modify this accordingly
+                    mSessions.Add(tempSession);
+                    
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+
+                return tempSession;
+            }
+
+            private static XmlNode GetFirstElementByTagName(XmlElement parentElement, string tagName)
+            {
+                XmlNodeList elements = parentElement.GetElementsByTagName(tagName);
+                return elements.Count > 0 ? elements[0] : null;
+            }
+
+            private static List<Dictionary<string, object>> mSessions = new List<Dictionary<string, object>>();
+        }
     }
 }

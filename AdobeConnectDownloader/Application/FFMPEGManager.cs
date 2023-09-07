@@ -63,9 +63,16 @@ namespace AdobeConnectDownloader.Application
 
         public static string GetCommandForCreateEmptyVideo(uint milieSecond, string imageAddress, string outputAddress)
         {
-            string duration = Helper.Time.ConvertUintToDuration(milieSecond);
-            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAddress}\" -y -t {duration} \"{outputAddress}\" ";
+            //string duration = Helper.Time.ConvertUintToDuration(milieSecond); // old Code
+            //string duration = Helper.Time.ConvertUintToDurationV2(milieSecond);
+            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAddress}\" -y -t {milieSecond}ms -c:v libx264 \"{outputAddress}\" ";
 
+            return command;
+        }
+
+        public static string GetCommandForCreateEmptyVideoV2(string videoAddress, uint timeInMilieSecond, string outputAddress)
+        {
+            string command = $"-hide_banner -i \"{videoAddress}\" -vf \"tpad=start_duration={timeInMilieSecond}ms\" -strict experimental -y \"{outputAddress}\"";
             return command;
         }
 
@@ -129,6 +136,47 @@ namespace AdobeConnectDownloader.Application
             process.WaitForExit();
 
             return Size;
+        }
+
+        public static void FixVideoTime(string videoAddress, string videoOutput, string ffmpegAddress)
+        {
+
+            var command = $"-hide_banner -i \"{videoAddress}\" -ss \"00:00:00\" -c:v copy -y \"{videoOutput}\"";
+
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.FileName = ffmpegAddress;
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            processStartInfo.Arguments = command;
+            processStartInfo.CreateNoWindow = true;
+            Process process = new Process();
+            process.StartInfo = processStartInfo;
+            process.Start();
+            process.WaitForExit();
+
+        }
+
+        public static string GetVideoTime(string videoAddress, string ffmpegAddress)
+        {
+            var command = $"-hide_banner -i \"{videoAddress}\"";
+
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.FileName = ffmpegAddress;
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            processStartInfo.Arguments = command;
+            processStartInfo.CreateNoWindow = true;
+            Process process = new Process();
+            process.StartInfo = processStartInfo;
+            process.Start();
+            string data = process.StandardError.ReadToEnd();
+            var durationStart = data.IndexOf("Duration: ") + "Duration: ".Length;
+            var durationEnd = data.IndexOf(',', durationStart);
+            var res = data[durationStart..durationEnd];
+            process.WaitForExit();
+            return res;
         }
 
         public static string ConvertFlvVideoToMp4(string videoAddress, string outputAddress)

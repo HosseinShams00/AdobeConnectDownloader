@@ -67,7 +67,7 @@ namespace AdobeConnectDownloader.Application
 
             foreach (var data in listOfStreamData.AudioStreamData)
             {
-                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + ".flv"), ffmpegAddress);
+                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + data.Extension), ffmpegAddress);
                 if (healthy == false)
                     namesOfCorrectFiles.Add(data);
             }
@@ -85,12 +85,12 @@ namespace AdobeConnectDownloader.Application
 
             foreach (var data in listOfStreamData.ScreenStreamData)
             {
-                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + ".flv"), ffmpegAddress);
+                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + data.Extension), ffmpegAddress);
                 if (healthy == false)
                     namesOfCorrectFiles.Add(data);
             }
 
-            if (namesOfCorrectFiles.Count == 0) 
+            if (namesOfCorrectFiles.Count == 0)
                 return;
 
             foreach (var item in namesOfCorrectFiles)

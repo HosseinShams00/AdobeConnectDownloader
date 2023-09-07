@@ -256,6 +256,7 @@ namespace AdobeConnectDownloader.UI
                 if (filesTime.ScreenStreamData.Count != 0)
                 {
                     finalVideoAddress = Path.Combine(WorkFolderPath, "Final Meeting Video.flv");
+                    FixVideoTime(filesTime, ExtractFolder);
                     GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
                 }
                 else
@@ -274,6 +275,23 @@ namespace AdobeConnectDownloader.UI
                 SyncAllDataLabel.ForeColor = Color.Green;
 
             });
+        }
+
+        private void FixVideoTime(ListOfStreamData filesTime, string extractFolder)
+        {
+            int counter = 0;
+            foreach (var videoStream in filesTime.ScreenStreamData)
+            {
+                var fileAddress = Path.Combine(extractFolder, videoStream.FileNames + videoStream.Extension);
+                var outputFileAddress = Path.Combine(extractFolder, videoStream.FileNames + $"_{counter}_" + videoStream.Extension);
+
+                Application.FFMPEGManager.FixVideoTime(fileAddress, outputFileAddress, FFMPEGAddress);
+                var time = FFMPEGManager.GetVideoTime(outputFileAddress, FFMPEGAddress);
+
+                videoStream.StartFilesTime += (videoStream.EndFilesTime - videoStream.StartFilesTime) - Helper.Time.ConvertTimeToMilisecond(time);
+                videoStream.FileNames += $"_{counter}_";
+                counter++;
+            }
         }
 
         private bool CheckWebcam(List<StreamData> webcamStreams, string finalAudioAddress, string finalVideoAddress)
@@ -410,14 +428,15 @@ namespace AdobeConnectDownloader.UI
 
         private void GetFinalVideo(ListOfStreamData filesTime, uint endTime, string finalVideoAddress, string finalAudioAddress)
         {
-            CustomVideoForGetResolotion = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
+            //CustomVideoForGetResolotion = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
 
-            string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + ".flv"), FFMPEGAddress);
+            string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + filesTime.ScreenStreamData[0].Extension), FFMPEGAddress);
 
             VideoManager.FFMPEGManager = FFMPEGManager;
-            var y = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
+            var videoLine = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
+            //var videoLine = VideoManager.GetVideoLineV2(filesTime.ScreenStreamData, endTime, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
 
-            string ffmpegCommand = FFMPEGManager.CreateConcatFile(y, finalAudioAddress, finalVideoAddress);
+            string ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLine, finalAudioAddress, finalVideoAddress);
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = FFMPEGAddress;
             processStartInfo.Arguments = ffmpegCommand;
