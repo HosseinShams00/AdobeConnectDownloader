@@ -5,8 +5,8 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
-    <FileVersion>1.2.1</FileVersion>
-    <AssemblyVersion>1.2.1</AssemblyVersion>
+    <FileVersion>1.2.2</FileVersion>
+    <AssemblyVersion>1.2.2</AssemblyVersion>
     <Description>This program made for download adobe connect files</Description>
     <PackageLicenseFile>C:\Users\Anonymous\Desktop\LICENSE.txt</PackageLicenseFile>
     <Copyright>Copyright (c) AdobeConnectDownloader . All rights reserved.</Copyright>
