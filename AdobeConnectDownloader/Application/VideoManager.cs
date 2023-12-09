@@ -64,12 +64,16 @@ namespace AdobeConnectDownloader.Application
                 counter++;
             }
 
-            uint Finaloffset = EndTime - streamDatas[^1].EndFilesTime;
-            string FinalfileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}{streamDatas[^1].Extension}");
-            string Finalcommand = FFMPEGManager.GetCommandForCreateEmptyVideo(Finaloffset, imageAddressCopy, FinalfileAddress);
-            processStartInfo.Arguments = Finalcommand;
-            FFMPEGManager.RunProcess(processStartInfo);
-            res.Add(FinalfileAddress);
+            if (streamDatas[^1].EndFilesTime < EndTime)
+            {
+                uint finalOffset = EndTime - streamDatas[^1].EndFilesTime;
+                var finalFileAddress = Path.Combine(outputFolderForSyncVideo, $"{customNameForEmptyVideos}{counter}{streamDatas[^1].Extension}");
+                var finalCommand = FFMPEGManager.GetCommandForCreateEmptyVideo(finalOffset, imageAddressCopy, finalFileAddress);
+                processStartInfo.Arguments = finalCommand;
+                FFMPEGManager.RunProcess(processStartInfo);
+                res.Add(finalFileAddress);
+            }
+            
 
             return res;
         }

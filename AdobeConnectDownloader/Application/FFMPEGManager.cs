@@ -65,7 +65,7 @@ namespace AdobeConnectDownloader.Application
         {
             //string duration = Helper.Time.ConvertUintToDuration(milieSecond); // old Code
             //string duration = Helper.Time.ConvertUintToDurationV2(milieSecond);
-            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAddress}\" -y -t {milieSecond}ms -c:v libx264 \"{outputAddress}\" ";
+            string command = $"-hide_banner -loop 1 -framerate 2 -i \"{imageAddress}\" -y -t {milieSecond}ms -ss \"00:00:00\" -y \"{outputAddress}\" ";
 
             return command;
         }

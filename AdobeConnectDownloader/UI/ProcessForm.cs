@@ -436,7 +436,7 @@ namespace AdobeConnectDownloader.UI
             var videoLine = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
             //var videoLine = VideoManager.GetVideoLineV2(filesTime.ScreenStreamData, endTime, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
 
-            string ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLine, finalAudioAddress, finalVideoAddress);
+            var ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLine, finalAudioAddress, finalVideoAddress);
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = FFMPEGAddress;
             processStartInfo.Arguments = ffmpegCommand;
