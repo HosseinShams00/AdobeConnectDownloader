@@ -337,13 +337,3 @@ Of course, do not forget that this program is only:
 
 <br>
 
-![image](https://user-images.githubusercontent.com/72279011/165969468-52da8824-7d54-427f-bc7c-e0e2f5666e50.png)
-
-![image](https://user-images.githubusercontent.com/72279011/167263478-64ca99a3-18c7-44b3-a556-07f596f905e9.png)
-
-![image](https://user-images.githubusercontent.com/72279011/166633754-ef787a4b-3f48-490c-8d9c-811ee395af92.png)
-
-![image](https://user-images.githubusercontent.com/72279011/166633826-990cae4d-b0b6-4529-83fc-5c82b749092f.png)
-
-![image](https://user-images.githubusercontent.com/72279011/166633943-bdd8cd41-f2c3-4db5-bbc3-ec9972ff7178.png)
-
