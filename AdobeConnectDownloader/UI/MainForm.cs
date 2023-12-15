@@ -5,8 +5,13 @@ using System.Diagnostics;
 using AdobeConnectDownloader.Model;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
 using AdobeConnectDownloader.Application;
 using System.Threading.Tasks;
+using Octokit;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace AdobeConnectDownloader.UI
 {
@@ -26,8 +31,38 @@ namespace AdobeConnectDownloader.UI
         private void MainForm_Load(object sender, EventArgs e)
         {
             _swfManager = new SwfManager(SwfFileAddress);
+
+            // check for update
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var client = new GitHubClient(new Octokit.ProductHeaderValue("AdobeConnectDownloader")); ;
+                    var releases = await client.Repository.Release.GetAll("HosseinShams00", "AdobeConnectDownloader");
+                    Assembly assembly = Assembly.GetExecutingAssembly();
+                    Version assemblyVersion = assembly.GetName().Version;
+                    var version = int.Parse($"{assemblyVersion.Major}{assemblyVersion.Minor}{assemblyVersion.Build}");
+                    var gitVersion = int.Parse(releases[0].TagName.Replace(".", "").Replace("v", ""));
+
+                    if (gitVersion > version)
+                    {
+                        var openPage = MessageBox.Show("Update available\ndo you want to open download page ?", "Update available", MessageBoxButtons.YesNo);
+                        if (openPage == DialogResult.Yes)
+                        {
+                            WebManager.OpenUrl(releases[0].HtmlUrl);
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+
+                }
+            });
+
+
         }
 
+        
         private void LinkProcessorButton_Click(object sender, EventArgs e)
         {
             using var newFileData = new AddNewFileForDownloadForm();
@@ -285,7 +320,7 @@ namespace AdobeConnectDownloader.UI
 
         private void mergeZipFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Open This Github Page : https://github.com/HosseinShams00");
+            WebManager.OpenUrl("https://github.com/HosseinShams00");
         }
 
         private async void downloadPdfToolStripMenuItem_Click(object sender, EventArgs e)

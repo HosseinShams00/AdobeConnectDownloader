@@ -15,6 +15,8 @@
 
   <ItemGroup>
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.14" />
+    <PackageReference Include="Octokit" Version="9.0.0" />
+    <PackageReference Include="Octokit.Reactive" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
