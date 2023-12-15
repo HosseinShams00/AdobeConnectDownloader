@@ -35,21 +35,20 @@
             AddToQueueButton = new System.Windows.Forms.Button();
             DownloadQueueButton = new System.Windows.Forms.Button();
             ProcessDataGridView = new System.Windows.Forms.DataGridView();
-            AddToQueueButtonDesignComponent = new DesignComponent(components);
-            menuStrip1 = new System.Windows.Forms.MenuStrip();
-            ToolsStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            convertFlvvideoToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            convertYourZipFileToVideoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            convertFlvAudioToMP3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            downloadPdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            zipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            mergeZipFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            DownloadQueueDesignComponent = new DesignComponent(components);
             FileNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ZipFileColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             UrlColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             FileFolderAddressColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             FileTypeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            AddToQueueButtonDesignComponent = new DesignComponent(components);
+            menuStrip1 = new System.Windows.Forms.MenuStrip();
+            ToolsStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            convertFlvvideoToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            convertFlvAudioToMP3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            downloadPdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            zipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            mergeZipFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            DownloadQueueDesignComponent = new DesignComponent(components);
             DataGridContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ProcessDataGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -119,88 +118,6 @@
             ProcessDataGridView.Size = new System.Drawing.Size(672, 399);
             ProcessDataGridView.TabIndex = 9;
             // 
-            // AddToQueueButtonDesignComponent
-            // 
-            AddToQueueButtonDesignComponent._SetButton = AddToQueueButton;
-            AddToQueueButtonDesignComponent.BackGroundHtmlColorCode = "#212F3C";
-            AddToQueueButtonDesignComponent.ForeGroundHtmlColorCode = "White";
-            AddToQueueButtonDesignComponent.LowLeft = true;
-            AddToQueueButtonDesignComponent.LowRight = true;
-            AddToQueueButtonDesignComponent.UpLeft = true;
-            AddToQueueButtonDesignComponent.UpRight = true;
-            AddToQueueButtonDesignComponent.XRadius = 6F;
-            AddToQueueButtonDesignComponent.YRadius = 8F;
-            // 
-            // menuStrip1
-            // 
-            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolsStripMenuItem, zipToolStripMenuItem });
-            menuStrip1.Location = new System.Drawing.Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new System.Drawing.Size(696, 24);
-            menuStrip1.TabIndex = 13;
-            menuStrip1.Text = "menuStrip1";
-            // 
-            // ToolsStripMenuItem
-            // 
-            ToolsStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { convertFlvvideoToMp4ToolStripMenuItem, convertYourZipFileToVideoToolStripMenuItem, convertFlvAudioToMP3ToolStripMenuItem, downloadPdfToolStripMenuItem });
-            ToolsStripMenuItem.Name = "ToolsStripMenuItem";
-            ToolsStripMenuItem.Size = new System.Drawing.Size(47, 20);
-            ToolsStripMenuItem.Text = "Tools";
-            // 
-            // convertFlvvideoToMp4ToolStripMenuItem
-            // 
-            convertFlvvideoToMp4ToolStripMenuItem.Name = "convertFlvvideoToMp4ToolStripMenuItem";
-            convertFlvvideoToMp4ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            convertFlvvideoToMp4ToolStripMenuItem.Text = "Convert Flv (video) to mp4";
-            convertFlvvideoToMp4ToolStripMenuItem.Click += convertFlvVideoToMp4ToolStripMenuItem_Click;
-            // 
-            // convertYourZipFileToVideoToolStripMenuItem
-            // 
-            convertYourZipFileToVideoToolStripMenuItem.Name = "convertYourZipFileToVideoToolStripMenuItem";
-            convertYourZipFileToVideoToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            convertYourZipFileToVideoToolStripMenuItem.Text = "Convert your zip file to video";
-            convertYourZipFileToVideoToolStripMenuItem.Click += convertYourZipFileToVideoToolStripMenuItem_Click;
-            // 
-            // convertFlvAudioToMP3ToolStripMenuItem
-            // 
-            convertFlvAudioToMP3ToolStripMenuItem.Name = "convertFlvAudioToMP3ToolStripMenuItem";
-            convertFlvAudioToMP3ToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            convertFlvAudioToMP3ToolStripMenuItem.Text = "Convert Flv audio to MP3";
-            convertFlvAudioToMP3ToolStripMenuItem.Click += convertFlvAudioToMP3ToolStripMenuItem_Click;
-            // 
-            // downloadPdfToolStripMenuItem
-            // 
-            downloadPdfToolStripMenuItem.Name = "downloadPdfToolStripMenuItem";
-            downloadPdfToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            downloadPdfToolStripMenuItem.Text = "Download Pdf";
-            downloadPdfToolStripMenuItem.Click += downloadPdfToolStripMenuItem_Click;
-            // 
-            // zipToolStripMenuItem
-            // 
-            zipToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mergeZipFileToolStripMenuItem });
-            zipToolStripMenuItem.Name = "zipToolStripMenuItem";
-            zipToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            zipToolStripMenuItem.Text = "Help";
-            // 
-            // mergeZipFileToolStripMenuItem
-            // 
-            mergeZipFileToolStripMenuItem.Name = "mergeZipFileToolStripMenuItem";
-            mergeZipFileToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-            mergeZipFileToolStripMenuItem.Text = "About Creator";
-            mergeZipFileToolStripMenuItem.Click += mergeZipFileToolStripMenuItem_Click;
-            // 
-            // DownloadQueueDesignComponent
-            // 
-            DownloadQueueDesignComponent._SetButton = DownloadQueueButton;
-            DownloadQueueDesignComponent.BackGroundHtmlColorCode = "#212F3C";
-            DownloadQueueDesignComponent.ForeGroundHtmlColorCode = "White";
-            DownloadQueueDesignComponent.LowLeft = true;
-            DownloadQueueDesignComponent.LowRight = true;
-            DownloadQueueDesignComponent.UpLeft = true;
-            DownloadQueueDesignComponent.UpRight = true;
-            DownloadQueueDesignComponent.XRadius = 7F;
-            DownloadQueueDesignComponent.YRadius = 8F;
-            // 
             // FileNameColumn
             // 
             FileNameColumn.HeaderText = "File Name";
@@ -231,6 +148,81 @@
             FileTypeColumn.Name = "FileTypeColumn";
             FileTypeColumn.ReadOnly = true;
             FileTypeColumn.Visible = false;
+            // 
+            // AddToQueueButtonDesignComponent
+            // 
+            AddToQueueButtonDesignComponent._SetButton = AddToQueueButton;
+            AddToQueueButtonDesignComponent.BackGroundHtmlColorCode = "#212F3C";
+            AddToQueueButtonDesignComponent.ForeGroundHtmlColorCode = "White";
+            AddToQueueButtonDesignComponent.LowLeft = true;
+            AddToQueueButtonDesignComponent.LowRight = true;
+            AddToQueueButtonDesignComponent.UpLeft = true;
+            AddToQueueButtonDesignComponent.UpRight = true;
+            AddToQueueButtonDesignComponent.XRadius = 6F;
+            AddToQueueButtonDesignComponent.YRadius = 8F;
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ToolsStripMenuItem, zipToolStripMenuItem });
+            menuStrip1.Location = new System.Drawing.Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new System.Drawing.Size(696, 24);
+            menuStrip1.TabIndex = 13;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // ToolsStripMenuItem
+            // 
+            ToolsStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { convertFlvvideoToMp4ToolStripMenuItem, convertFlvAudioToMP3ToolStripMenuItem, downloadPdfToolStripMenuItem });
+            ToolsStripMenuItem.Name = "ToolsStripMenuItem";
+            ToolsStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            ToolsStripMenuItem.Text = "Tools";
+            // 
+            // convertFlvvideoToMp4ToolStripMenuItem
+            // 
+            convertFlvvideoToMp4ToolStripMenuItem.Name = "convertFlvvideoToMp4ToolStripMenuItem";
+            convertFlvvideoToMp4ToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            convertFlvvideoToMp4ToolStripMenuItem.Text = "Convert Flv (video) to mp4";
+            convertFlvvideoToMp4ToolStripMenuItem.Click += convertFlvVideoToMp4ToolStripMenuItem_Click;
+            // 
+            // convertFlvAudioToMP3ToolStripMenuItem
+            // 
+            convertFlvAudioToMP3ToolStripMenuItem.Name = "convertFlvAudioToMP3ToolStripMenuItem";
+            convertFlvAudioToMP3ToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            convertFlvAudioToMP3ToolStripMenuItem.Text = "Convert Flv audio to MP3";
+            convertFlvAudioToMP3ToolStripMenuItem.Click += convertFlvAudioToMP3ToolStripMenuItem_Click;
+            // 
+            // downloadPdfToolStripMenuItem
+            // 
+            downloadPdfToolStripMenuItem.Name = "downloadPdfToolStripMenuItem";
+            downloadPdfToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            downloadPdfToolStripMenuItem.Text = "Download Pdf";
+            downloadPdfToolStripMenuItem.Click += downloadPdfToolStripMenuItem_Click;
+            // 
+            // zipToolStripMenuItem
+            // 
+            zipToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mergeZipFileToolStripMenuItem });
+            zipToolStripMenuItem.Name = "zipToolStripMenuItem";
+            zipToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            zipToolStripMenuItem.Text = "Help";
+            // 
+            // mergeZipFileToolStripMenuItem
+            // 
+            mergeZipFileToolStripMenuItem.Name = "mergeZipFileToolStripMenuItem";
+            mergeZipFileToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            mergeZipFileToolStripMenuItem.Text = "About Creator";
+            mergeZipFileToolStripMenuItem.Click += mergeZipFileToolStripMenuItem_Click;
+            // 
+            // DownloadQueueDesignComponent
+            // 
+            DownloadQueueDesignComponent._SetButton = DownloadQueueButton;
+            DownloadQueueDesignComponent.BackGroundHtmlColorCode = "#212F3C";
+            DownloadQueueDesignComponent.ForeGroundHtmlColorCode = "White";
+            DownloadQueueDesignComponent.LowLeft = true;
+            DownloadQueueDesignComponent.LowRight = true;
+            DownloadQueueDesignComponent.UpLeft = true;
+            DownloadQueueDesignComponent.UpRight = true;
+            DownloadQueueDesignComponent.XRadius = 7F;
+            DownloadQueueDesignComponent.YRadius = 8F;
             // 
             // MainForm
             // 
@@ -268,7 +260,6 @@
         private System.Windows.Forms.ToolStripMenuItem zipToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mergeZipFileToolStripMenuItem;
         private DesignComponent DownloadQueueDesignComponent;
-        private System.Windows.Forms.ToolStripMenuItem convertYourZipFileToVideoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertFlvAudioToMP3ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadPdfToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn FileNameColumn;

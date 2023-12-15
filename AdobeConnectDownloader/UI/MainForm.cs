@@ -220,28 +220,28 @@ namespace AdobeConnectDownloader.UI
             return processForm;
         }
 
-        private void convertYourZipFileToVideoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Choose Zip File | *.zip";
-            openFileDialog.Title = "Select Zip File";
+        //private void convertYourZipFileToVideoToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    var openFileDialog = new OpenFileDialog();
+        //    openFileDialog.Filter = "Choose Zip File | *.zip";
+        //    openFileDialog.Title = "Select Zip File";
 
-            if (openFileDialog.ShowDialog() != DialogResult.OK)
-                return;
+        //    if (openFileDialog.ShowDialog() != DialogResult.OK)
+        //        return;
 
-            using var folderBrowserDialog = new FolderBrowserDialog();
-            folderBrowserDialog.ShowNewFolderButton = true;
+        //    using var folderBrowserDialog = new FolderBrowserDialog();
+        //    folderBrowserDialog.ShowNewFolderButton = true;
 
-            if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
-                return;
+        //    if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
+        //        return;
 
-            using var processForm = ProcessFormMaker(string.Empty, string.Empty, null, folderBrowserDialog.SelectedPath, false,
-                openFileDialog.FileName);
+        //    using var processForm = ProcessFormMaker(string.Empty, string.Empty, null, folderBrowserDialog.SelectedPath, false,
+        //        openFileDialog.FileName);
 
-            this.Hide();
-            processForm.ShowDialog();
-            this.Show();
-        }
+        //    this.Hide();
+        //    processForm.ShowDialog();
+        //    this.Show();
+        //}
 
         private void convertFlvVideoToMp4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
