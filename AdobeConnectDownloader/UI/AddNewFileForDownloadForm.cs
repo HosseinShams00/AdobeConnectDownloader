@@ -13,9 +13,12 @@ namespace AdobeConnectDownloader.UI
     public partial class AddNewFileForDownloadForm : Form
     {
         public bool IsNeedGetFolder { get; set; } = true;
-        public string Url { get; set; }
+        public string? Url { get; set; } = null;
+        public string? LocalZipFile { get; set; }
         public string WorkFolderPath { get; set; }
         public string FileAddress { get; set; }
+        public string FileName { get; set; }
+        public FileTypeEnum UserFileType { get; set; }
         public AddNewFileForDownloadForm()
         {
             InitializeComponent();
@@ -23,18 +26,20 @@ namespace AdobeConnectDownloader.UI
 
         private void UrlTextBox_TextChanged(object sender, EventArgs e)
         {
-            if ((UrlTextBox.Text.Trim().StartsWith("http://") || UrlTextBox.Text.Trim().StartsWith("https://")) == false)
+            if ((UrlOrPathFileTextBox.Text.Trim().StartsWith("http://") || UrlOrPathFileTextBox.Text.Trim().StartsWith("https://")) == false)
+            {
+                UserFileType = FileTypeEnum.LocalZipFile;
                 return;
+            }
 
-            SubmitButton.Enabled = string.IsNullOrEmpty(UrlTextBox.Text.Trim()) == false && string.IsNullOrEmpty(SaveInTextBox.Text.Trim()) == false;
-            Url = UrlTextBox.Text.Trim();
+            SubmitButton.Enabled = string.IsNullOrEmpty(UrlOrPathFileTextBox.Text.Trim()) == false && string.IsNullOrEmpty(SaveInTextBox.Text.Trim()) == false;
+            Url = UrlOrPathFileTextBox.Text.Trim();
         }
 
         private void SaveInTextBox_TextChanged(object sender, EventArgs e)
         {
-            SubmitButton.Enabled = ((UrlTextBox.Text.Trim().StartsWith("http://") || UrlTextBox.Text.Trim().StartsWith("https://")) 
-                                    && string.IsNullOrEmpty(UrlTextBox.Text.Trim()) == false )
-                                    && string.IsNullOrEmpty(SaveInTextBox.Text.Trim()) == false;
+            SubmitButton.Enabled = string.IsNullOrEmpty(UrlOrPathFileTextBox.Text.Trim()) == false &&
+                                   string.IsNullOrEmpty(SaveInTextBox.Text.Trim()) == false;
         }
 
         private void SaveDialogButton_Click(object sender, EventArgs e)
@@ -60,14 +65,41 @@ namespace AdobeConnectDownloader.UI
                     return;
                 SaveInTextBox.Text = openFileDialog.FileName;
                 FileAddress = openFileDialog.FileName;
+                UserFileType = FileTypeEnum.Xml;
             }
 
         }
 
         private void SubmitButton_Click(object sender, EventArgs e)
         {
+            FileName = FileNameTextBox.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
+        private void UrlOrPathFileButton_Click(object sender, EventArgs e)
+        {
+
+            using var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "choose your meeting file  | *.zip";
+            openFileDialog.Title = "select meeting zip file";
+            var ofdResult = openFileDialog.ShowDialog();
+
+            if (ofdResult != DialogResult.OK)
+                return;
+
+            UrlOrPathFileTextBox.Text = openFileDialog.FileName;
+            FileAddress = openFileDialog.FileName;
+            UserFileType = FileTypeEnum.LocalZipFile;
+            LocalZipFile = FileAddress;
+
+        }
+    }
+
+    public enum FileTypeEnum
+    {
+        LocalZipFile,
+        Xml,
+        Url
     }
 }

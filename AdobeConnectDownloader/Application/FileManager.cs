@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -11,29 +12,27 @@ namespace AdobeConnectDownloader.Application
     {
         public FFMPEGManager FFMPEGManager = new FFMPEGManager();
 
-        public List<string> ExtractZipFile(string zipFileAddress, string extractFolder)
+        public List<string> ExtractZipFile(string? zipFileAddress, string extractFolder)
         {
-            List<string> filesAddress = new List<string>();
+            var filesAddress = new List<string>();
 
-            using (ZipArchive zip = ZipFile.OpenRead(zipFileAddress))
+            using ZipArchive zip = ZipFile.OpenRead(zipFileAddress);
+            foreach (var item in zip.Entries)
             {
-                foreach (var item in zip.Entries)
+                if (item.FullName.EndsWith(".flv"))
                 {
-                    if (item.FullName.EndsWith(".flv"))
-                    {
-                        if (item.FullName.StartsWith("cameraVoip_") || item.FullName.StartsWith("screenshare_"))
-                        {
-                            string ExtractedFileAddress = Path.Combine(extractFolder, item.FullName);
-                            item.ExtractToFile(ExtractedFileAddress, true);
-                            filesAddress.Add(ExtractedFileAddress);
-                        }
-                    }
-                    else if (item.FullName == "indexstream.xml" || item.FullName == "mainstream.xml")
+                    if (item.FullName.StartsWith("cameraVoip_") || item.FullName.StartsWith("screenshare_"))
                     {
                         string ExtractedFileAddress = Path.Combine(extractFolder, item.FullName);
                         item.ExtractToFile(ExtractedFileAddress, true);
                         filesAddress.Add(ExtractedFileAddress);
                     }
+                }
+                else if (item.FullName == "indexstream.xml" || item.FullName == "mainstream.xml")
+                {
+                    string ExtractedFileAddress = Path.Combine(extractFolder, item.FullName);
+                    item.ExtractToFile(ExtractedFileAddress, true);
+                    filesAddress.Add(ExtractedFileAddress);
                 }
             }
 

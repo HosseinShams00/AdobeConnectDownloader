@@ -38,7 +38,7 @@ namespace AdobeConnectDownloader.UI
                 return;
             }
 
-            using var processForm = ProcessFormMaker(string.Empty, newFileData.Url, newFileData.WorkFolderPath, false, string.Empty);
+            using var processForm = ProcessFormMaker(string.Empty, string.Empty, newFileData.Url, newFileData.WorkFolderPath, false, string.Empty);
             this.Hide();
             processForm.ShowDialog();
             this.Show();
@@ -54,7 +54,7 @@ namespace AdobeConnectDownloader.UI
                 return;
             }
 
-            ProcessDataGridView.Rows.Add(newFileData.Url, newFileData.WorkFolderPath);
+            ProcessDataGridView.Rows.Add(newFileData.FileName, newFileData.LocalZipFile, newFileData.Url, newFileData.WorkFolderPath, newFileData.UserFileType);
         }
 
         private void editSaveFolderAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -103,13 +103,17 @@ namespace AdobeConnectDownloader.UI
                     {
                         for (var i = 0; i < ProcessDataGridView.Rows.Count; i++)
                         {
-                            var url = (string)ProcessDataGridView.Rows[i].Cells[0].Value;
-                            workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[1].Value;
+                            var fileName = (string)ProcessDataGridView.Rows[i].Cells[0].Value;
+                            var zipFileAddress = (string?)ProcessDataGridView.Rows[i].Cells[1].Value ?? string.Empty;
+                            var url = (string?)ProcessDataGridView.Rows[i].Cells[2].Value;
+                            workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[3].Value;
+                            var fileType = (FileTypeEnum)ProcessDataGridView.Rows[i].Cells[4].Value;
+
                             var formTitle = $"{i + 1} / {ProcessDataGridView.Rows.Count}";
-                            using var processForm = ProcessFormMaker(formTitle, url, workFolderPath, false, string.Empty);
+                            using var processForm = ProcessFormMaker(formTitle, fileName, url, workFolderPath, false, zipFileAddress);
 
                             this.Hide();
-                            processForm.ShowDialog();
+                            processForm?.ShowDialog();
 
                             if (processForm.IsEverythingOk == true)
                             {
@@ -123,21 +127,44 @@ namespace AdobeConnectDownloader.UI
                     }
                 case DialogResult.No:
                     {
-                        List<string> completedDownloadFiles = new(dataGridViewRows.Count);
+                        List<InputFileDetail> completedDownloadFiles = new(dataGridViewRows.Count);
 
                         for (var i = 0; i < ProcessDataGridView.Rows.Count; i++)
                         {
-                            var url = (string)ProcessDataGridView.Rows[i].Cells[0].Value;
-                            workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[1].Value;
+                            var fileName = (string)ProcessDataGridView.Rows[i].Cells[0].Value;
+                            var zipFileAddress = (string?)ProcessDataGridView.Rows[i].Cells[1].Value ?? string.Empty;
+                            var url = (string?)ProcessDataGridView.Rows[i].Cells[2].Value;
+                            workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[3].Value;
+                            var fileType = (FileTypeEnum)ProcessDataGridView.Rows[i].Cells[4].Value;
+
+                            if (fileType == FileTypeEnum.LocalZipFile)
+                            {
+                                completedDownloadFiles.Add(new()
+                                {
+                                    FileName = fileName,
+                                    Url = url,
+                                    WorkFolderPath = workFolderPath,
+                                    ZipFileAddress = zipFileAddress
+                                });
+                                continue;
+                            }
+
                             var formTitle = $"Download {i + 1} / {ProcessDataGridView.Rows.Count}";
-                            using var processForm = ProcessFormMaker(formTitle, url, workFolderPath, true, string.Empty);
+                            using var processForm = ProcessFormMaker(formTitle, fileName, url, workFolderPath, true, zipFileAddress);
+
 
                             this.Hide();
                             processForm.ShowDialog();
 
                             if (processForm.IsEverythingOk)
                             {
-                                completedDownloadFiles.Add(processForm.ZipFileAddress);
+                                completedDownloadFiles.Add(new()
+                                {
+                                    FileName = fileName,
+                                    Url = null,
+                                    WorkFolderPath = workFolderPath,
+                                    ZipFileAddress = zipFileAddress
+                                });
                             }
                             else
                                 break;
@@ -151,10 +178,10 @@ namespace AdobeConnectDownloader.UI
 
                         for (var i = 0; i < completedDownloadFiles.Count; i++)
                         {
-                            workFolderPath = (string)ProcessDataGridView.Rows[i].Cells[1].Value;
+                            var fileDetail = completedDownloadFiles[i];
                             var formTitle = $"Append {i + 1} / {ProcessDataGridView.Rows.Count}";
 
-                            using var processForm = ProcessFormMaker(formTitle, null, workFolderPath, false, completedDownloadFiles[i]);
+                            using var processForm = ProcessFormMaker(formTitle, fileDetail.FileName, null, fileDetail.WorkFolderPath, false, fileDetail.ZipFileAddress);
 
                             this.Hide();
                             processForm.ShowDialog();
@@ -177,13 +204,14 @@ namespace AdobeConnectDownloader.UI
             this.Show();
         }
 
-        private ProcessForm ProcessFormMaker(string title, string? url, string workFolderPath, bool justDownloadFiles, string zipFileAddress)
+        private ProcessForm ProcessFormMaker(string title, string fileName, string? url, string workFolderPath, bool justDownloadFiles, string? zipFileAddress)
         {
             var processForm = new ProcessForm();
             processForm.Title = title;
+            processForm.FileName = fileName;
             processForm.FFMPEGAddress = FFMPEGAddress;
             processForm.SwfFileAddress = SwfFileAddress;
-            processForm.swfFolder = SwfAddress;
+            processForm.SwfFolder = SwfAddress;
             processForm.NotAvailableVideoImageAddress = NotAvailableVideoAddress;
             processForm.Url = url;
             processForm.WorkFolderPath = workFolderPath;
@@ -207,7 +235,7 @@ namespace AdobeConnectDownloader.UI
             if (folderBrowserDialog.ShowDialog() != DialogResult.OK)
                 return;
 
-            using var processForm = ProcessFormMaker(string.Empty, null, folderBrowserDialog.SelectedPath, false,
+            using var processForm = ProcessFormMaker(string.Empty, string.Empty, null, folderBrowserDialog.SelectedPath, false,
                 openFileDialog.FileName);
 
             this.Hide();

@@ -17,15 +17,32 @@ namespace AdobeConnectDownloader.UI
     {
         public string? Url { get; set; } = null;
 
+        private string _fileName;
+        public string FileName
+        {
+            get => _fileName;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _fileName = "AdobeConnectMeetingFile";
+                }
+                else
+                {
+                    _fileName = value;
+                }
+            }
+        }
+
         public string WorkFolderPath { get; set; } = string.Empty;
         public string ExtractFolder { get; set; } = string.Empty;
-        public string ZipFileAddress { get; set; } = string.Empty;
-        public string CustomVideoForGetResolotion { get; set; } = string.Empty;
+        public string? ZipFileAddress { get; set; } = null;
+        public string CustomVideoForGetResolution { get; set; } = string.Empty;
         public string FFMPEGAddress { get; set; } = string.Empty;
         public string SwfFileAddress { get; set; } = string.Empty;
         public string NotAvailableVideoImageAddress { get; set; } = string.Empty;
         public string Title { get; set; }
-        public string swfFolder { get; set; } = string.Empty;
+        public string SwfFolder { get; set; } = string.Empty;
 
         public bool CancelProcess { get; set; } = false;
         public bool IsEverythingOk { get; set; } = true;
@@ -64,10 +81,10 @@ namespace AdobeConnectDownloader.UI
                 Directory.CreateDirectory(Path.Combine(WorkFolderPath, "Extracted Data"));
 
 
-            if (File.Exists(swfFolder) == false)
-                Directory.CreateDirectory(swfFolder);
+            if (File.Exists(SwfFolder) == false)
+                Directory.CreateDirectory(SwfFolder);
 
-            if (ZipFileAddress == string.Empty)
+            if (string.IsNullOrWhiteSpace(ZipFileAddress))
             {
                 await DownloadZipFile(Url);
             }
@@ -82,15 +99,15 @@ namespace AdobeConnectDownloader.UI
         {
             var downloadUrl = WebManager.GetDownloadUrl(url);
             WebManager.PercentageChange += WebManager_PercentageChange;
-            WebManager.DownloadFileComplited += WebManager_DownloadFileComplited;
+            WebManager.DownloadFileComplited += WebManager_DownloadFileCompleted;
             try
             {
                 ZipFileAddress = Path.Combine(WorkFolderPath, downloadUrl.FileId + ".zip");
                 var sessionCookie = WebManager.GetSessionCookieFrom(url);
                 Cookies = WebManager.GetCookieForm(url, sessionCookie);
 
-                bool wrongUrl = WebManager.IsUrlWrong(downloadUrl.Url, Cookies);
-                if (wrongUrl == true)
+                var isUrlWrong = WebManager.IsUrlWrong(downloadUrl.Url, Cookies);
+                if (isUrlWrong == true)
                 {
                     MessageBox.Show("Your url is worng maybe your not login please login and try again");
                     IsEverythingOk = false;
@@ -109,11 +126,11 @@ namespace AdobeConnectDownloader.UI
             }
         }
 
-        public void WebManager_PercentageChange(int percent, double byteRecive, double TotalByte)
+        public void WebManager_PercentageChange(int percent, double byteReceive, double totalByte)
         {
             if (CancelProcess == false)
             {
-                string downloadRes = $"{byteRecive.ToString("F2")} MB / {TotalByte.ToString("F2")} MB";
+                string downloadRes = $"{byteReceive.ToString("F2")} MB / {totalByte.ToString("F2")} MB";
                 if (DownloadProcessLabel.InvokeRequired)
                 {
                     DownloadProcessLabel.Invoke(new Action<int, double, double>(WebManager_PercentageChange), downloadRes);
@@ -133,7 +150,7 @@ namespace AdobeConnectDownloader.UI
 
         }
 
-        private async void WebManager_DownloadFileComplited(object? sender, AsyncCompletedEventArgs e)
+        private async void WebManager_DownloadFileCompleted(object? sender, AsyncCompletedEventArgs e)
         {
             if (e.Error == null && e.Cancelled == false)
             {
@@ -242,7 +259,7 @@ namespace AdobeConnectDownloader.UI
                 }
 
                 AudioManager.FFMPEGManager = FFMPEGManager;
-                string finalAudioAddress = AudioManager.MatchAllAudio(filesTime.AudioStreamData, ExtractFolder, WorkFolderPath, FFMPEGAddress);
+                string finalAudioAddress = AudioManager.MatchAllAudio(filesTime.AudioStreamData, FileName, ExtractFolder, WorkFolderPath, FFMPEGAddress);
 
                 FixAudiosLabel.ForeColor = Color.Green;
 
@@ -255,7 +272,7 @@ namespace AdobeConnectDownloader.UI
                 string finalVideoAddress = null;
                 if (filesTime.ScreenStreamData.Count != 0)
                 {
-                    finalVideoAddress = Path.Combine(WorkFolderPath, "Final Meeting Video.flv");
+                    finalVideoAddress = Path.Combine(WorkFolderPath, $"{FileName}.Video.flv");
                     FixVideoTime(filesTime, ExtractFolder);
                     GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
                 }
@@ -264,12 +281,9 @@ namespace AdobeConnectDownloader.UI
 
                 var result = VideoManager.ChekHaveWebcamVideo(filesTime.AudioStreamData, ExtractFolder);
 
-                if (result.Count == 0)
-                    CheckWebcamLabel.ForeColor = Color.Red;
-                else
-                    CheckWebcamLabel.ForeColor = Color.Green;
+                CheckWebcamLabel.ForeColor = result.Count == 0 ? Color.Red : Color.Green;
 
-                bool isWebcamFixed = CheckWebcam(result, finalAudioAddress, finalVideoAddress);
+                var checkWebcam = CheckWebcam(result, finalAudioAddress, finalVideoAddress);
 
 
                 SyncAllDataLabel.ForeColor = Color.Green;
@@ -298,7 +312,7 @@ namespace AdobeConnectDownloader.UI
         {
             if (webcamStreams.Count != 0)
             {
-                CustomVideoForGetResolotion = Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv");
+                CustomVideoForGetResolution = Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv");
 
                 string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv"), FFMPEGAddress);
 
@@ -335,11 +349,11 @@ namespace AdobeConnectDownloader.UI
                 return false;
         }
 
-        public bool DownloadAssetsMethod2(string baseUrl, string xmlFileData, List<Cookie> Cookies, string outputFolder)
+        public bool DownloadAssetsMethod2(string baseUrl, string xmlFileData, List<Cookie> cookies, string outputFolder)
         {
             var baseDownloadAssetUrls = XmlReader.GetDefaultPdfPathForDownload(xmlFileData, baseUrl);
 
-            if (baseDownloadAssetUrls.Count != 0 && Cookies.Count != 0)
+            if (baseDownloadAssetUrls.Count != 0 && cookies.Count != 0)
             {
                 int counter = 1;
                 foreach (var baseDownloadAddress in baseDownloadAssetUrls)
@@ -358,7 +372,7 @@ namespace AdobeConnectDownloader.UI
                         return false;
                     }
 
-                    DownloadSlides(pdfDetail, baseDownloadAddress, Cookies);
+                    DownloadSlides(pdfDetail, baseDownloadAddress, cookies);
 
                     if (CancelProcess == true)
                     {
@@ -366,10 +380,10 @@ namespace AdobeConnectDownloader.UI
                         return false;
                     }
 
-                    SwfManager.ConvertSwfToPdf(pdfDetail, swfFolder);
+                    SwfManager.ConvertSwfToPdf(pdfDetail, SwfFolder);
                     counter++;
-                    Directory.Delete(swfFolder, true);
-                    Directory.CreateDirectory(swfFolder);
+                    Directory.Delete(SwfFolder, true);
+                    Directory.CreateDirectory(SwfFolder);
                 }
                 return true;
             }
@@ -377,15 +391,17 @@ namespace AdobeConnectDownloader.UI
                 return false;
         }
 
-        private string GetDataForPdf(string defaultAddress)
+        private string? GetDataForPdf(string defaultAddress)
         {
 
-            string xmlPdfFilesname = defaultAddress + "layout.xml";
-            Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, Cookies, WebManager.HttpContentType.Xml);
-            string response = string.Empty;
+            var xmlPdfFileNames = defaultAddress + "layout.xml";
+            var layoutStreamData = WebManager.GetStreamData(xmlPdfFileNames, Cookies, WebManager.HttpContentType.Xml);
+            var response = string.Empty;
 
-            if (layoutStreamData == null)
+            if (layoutStreamData is null)
+            {
                 return null;
+            }
 
             using (var reader = new StreamReader(layoutStreamData))
             {
@@ -407,7 +423,7 @@ namespace AdobeConnectDownloader.UI
                 for (int j = 0; j < pdfDetail.PageNumber.ToString().Length - i.ToString().Length; j++)
                     counter += "0";
 
-                string filePath = Path.Combine(swfFolder, counter + i + ".swf");
+                string filePath = Path.Combine(SwfFolder, counter + i + ".swf");
 
                 try
                 {
@@ -428,7 +444,7 @@ namespace AdobeConnectDownloader.UI
 
         private void GetFinalVideo(ListOfStreamData filesTime, uint endTime, string finalVideoAddress, string finalAudioAddress)
         {
-            //CustomVideoForGetResolotion = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
+            //CustomVideoForGetResolution = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
 
             string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + filesTime.ScreenStreamData[0].Extension), FFMPEGAddress);
 
@@ -476,8 +492,8 @@ namespace AdobeConnectDownloader.UI
                 Directory.Delete(ExtractFolder, true);
 
 
-            if (Directory.Exists(swfFolder))
-                Directory.Delete(swfFolder, true);
+            if (Directory.Exists(SwfFolder))
+                Directory.Delete(SwfFolder, true);
         }
 
     }

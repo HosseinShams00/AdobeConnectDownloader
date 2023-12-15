@@ -16,9 +16,9 @@ namespace AdobeConnectDownloader.Application
         }
 
 
-        public string MatchAllAudio(List<StreamData> audioStreamDatas, string dataFolderPath, string outputFileFolder, string ffmpegAddress)
+        public string MatchAllAudio(List<StreamData> audioStreamDatas, string fileName, string dataFolderPath, string outputFileFolder, string ffmpegAddress)
         {
-            var finalAudionPath = Path.Combine(outputFileFolder, "FinalAudio.flv");
+            var finalAudionPath = Path.Combine(outputFileFolder, $"{fileName}.Audio.flv");
             var copyOfAudioStreamDatas = audioStreamDatas;
             var audioLineData = AudioLine(copyOfAudioStreamDatas);
             var ffmpegCommands = new List<string>();

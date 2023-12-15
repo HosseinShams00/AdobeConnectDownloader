@@ -34,8 +34,6 @@
             removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             AddToQueueButton = new System.Windows.Forms.Button();
             DownloadQueueButton = new System.Windows.Forms.Button();
-            FileFolderAddressColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            UrlColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ProcessDataGridView = new System.Windows.Forms.DataGridView();
             AddToQueueButtonDesignComponent = new DesignComponent(components);
             menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -47,6 +45,11 @@
             zipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             mergeZipFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DownloadQueueDesignComponent = new DesignComponent(components);
+            FileNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ZipFileColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            UrlColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            FileFolderAddressColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            FileTypeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             DataGridContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ProcessDataGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -100,18 +103,6 @@
             DownloadQueueButton.UseVisualStyleBackColor = false;
             DownloadQueueButton.Click += DownloadQueueButton_Click;
             // 
-            // FileFolderAddressColumn
-            // 
-            FileFolderAddressColumn.HeaderText = "Save Folder";
-            FileFolderAddressColumn.Name = "FileFolderAddressColumn";
-            FileFolderAddressColumn.ReadOnly = true;
-            // 
-            // UrlColumn
-            // 
-            UrlColumn.HeaderText = "Url";
-            UrlColumn.Name = "UrlColumn";
-            UrlColumn.ReadOnly = true;
-            // 
             // ProcessDataGridView
             // 
             ProcessDataGridView.AllowUserToAddRows = false;
@@ -119,12 +110,11 @@
             ProcessDataGridView.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             ProcessDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             ProcessDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            ProcessDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { UrlColumn, FileFolderAddressColumn });
+            ProcessDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { FileNameColumn, ZipFileColumn, UrlColumn, FileFolderAddressColumn, FileTypeColumn });
             ProcessDataGridView.ContextMenuStrip = DataGridContextMenuStrip;
             ProcessDataGridView.Location = new System.Drawing.Point(12, 69);
             ProcessDataGridView.Name = "ProcessDataGridView";
             ProcessDataGridView.ReadOnly = true;
-            ProcessDataGridView.RowTemplate.Height = 25;
             ProcessDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             ProcessDataGridView.Size = new System.Drawing.Size(672, 399);
             ProcessDataGridView.TabIndex = 9;
@@ -211,6 +201,37 @@
             DownloadQueueDesignComponent.XRadius = 7F;
             DownloadQueueDesignComponent.YRadius = 8F;
             // 
+            // FileNameColumn
+            // 
+            FileNameColumn.HeaderText = "File Name";
+            FileNameColumn.Name = "FileNameColumn";
+            FileNameColumn.ReadOnly = true;
+            // 
+            // ZipFileColumn
+            // 
+            ZipFileColumn.HeaderText = "Zip File";
+            ZipFileColumn.Name = "ZipFileColumn";
+            ZipFileColumn.ReadOnly = true;
+            // 
+            // UrlColumn
+            // 
+            UrlColumn.HeaderText = "Url";
+            UrlColumn.Name = "UrlColumn";
+            UrlColumn.ReadOnly = true;
+            // 
+            // FileFolderAddressColumn
+            // 
+            FileFolderAddressColumn.HeaderText = "Save Folder";
+            FileFolderAddressColumn.Name = "FileFolderAddressColumn";
+            FileFolderAddressColumn.ReadOnly = true;
+            // 
+            // FileTypeColumn
+            // 
+            FileTypeColumn.HeaderText = "FileTypeColumn";
+            FileTypeColumn.Name = "FileTypeColumn";
+            FileTypeColumn.ReadOnly = true;
+            FileTypeColumn.Visible = false;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -239,8 +260,6 @@
         private System.Windows.Forms.ToolStripMenuItem editSaveFolderAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
         private System.Windows.Forms.Button DownloadQueueButton;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FileFolderAddressColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn UrlColumn;
         private System.Windows.Forms.DataGridView ProcessDataGridView;
         private DesignComponent AddToQueueButtonDesignComponent;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -252,5 +271,10 @@
         private System.Windows.Forms.ToolStripMenuItem convertYourZipFileToVideoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertFlvAudioToMP3ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadPdfToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FileNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ZipFileColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn UrlColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FileFolderAddressColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FileTypeColumn;
     }
 }
