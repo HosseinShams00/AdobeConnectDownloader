@@ -58,9 +58,9 @@
             UrlOrPathFileLabel.AutoSize = true;
             UrlOrPathFileLabel.Location = new System.Drawing.Point(12, 44);
             UrlOrPathFileLabel.Name = "UrlOrPathFileLabel";
-            UrlOrPathFileLabel.Size = new System.Drawing.Size(91, 15);
+            UrlOrPathFileLabel.Size = new System.Drawing.Size(88, 15);
             UrlOrPathFileLabel.TabIndex = 1;
-            UrlOrPathFileLabel.Text = "Url  or path file :";
+            UrlOrPathFileLabel.Text = "Url or path file :";
             // 
             // UrlOrPathFileTextBox
             // 
@@ -90,7 +90,7 @@
             // 
             // SaveDialogButton
             // 
-            SaveDialogButton.Location = new System.Drawing.Point(632, 68);
+            SaveDialogButton.Location = new System.Drawing.Point(630, 68);
             SaveDialogButton.Name = "SaveDialogButton";
             SaveDialogButton.Size = new System.Drawing.Size(43, 25);
             SaveDialogButton.TabIndex = 4;
@@ -116,7 +116,7 @@
             // 
             // UrlOrPathFileButton
             // 
-            UrlOrPathFileButton.Location = new System.Drawing.Point(631, 41);
+            UrlOrPathFileButton.Location = new System.Drawing.Point(630, 41);
             UrlOrPathFileButton.Name = "UrlOrPathFileButton";
             UrlOrPathFileButton.Size = new System.Drawing.Size(43, 25);
             UrlOrPathFileButton.TabIndex = 6;
@@ -142,6 +142,7 @@
             Name = "AddNewFileForDownloadForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Download File Detail";
+            Load += AddNewFileForDownloadForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }

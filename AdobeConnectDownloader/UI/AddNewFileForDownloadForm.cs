@@ -94,6 +94,16 @@ namespace AdobeConnectDownloader.UI
             LocalZipFile = FileAddress;
 
         }
+
+        private void AddNewFileForDownloadForm_Load(object sender, EventArgs e)
+        {
+            if (IsNeedGetFolder == false)
+            {
+                FileNameTextBox.Enabled = false;
+                UrlOrPathFileLabel.Text = "Url : ";
+                UrlOrPathFileButton.Visible = false;
+            }
+        }
     }
 
     public enum FileTypeEnum
