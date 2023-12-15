@@ -177,19 +177,19 @@ namespace AdobeConnectDownloader.UI
                                 completedDownloadFiles.Add(new()
                                 {
                                     FileName = fileName,
-                                    Url = url,
+                                    Url = null,
                                     WorkFolderPath = workFolderPath,
                                     ZipFileAddress = zipFileAddress
                                 });
                                 continue;
                             }
 
-                            var formTitle = $"Download {i + 1} / {ProcessDataGridView.Rows.Count}";
+                            var formTitle = $"Download {i + 1} / {ProcessDataGridView.Rows.Count} : {fileName}";
                             using var processForm = ProcessFormMaker(formTitle, fileName, url, workFolderPath, true, zipFileAddress);
-
 
                             this.Hide();
                             processForm.ShowDialog();
+                            zipFileAddress = processForm.ZipFileAddress;
 
                             if (processForm.IsEverythingOk)
                             {
@@ -214,7 +214,7 @@ namespace AdobeConnectDownloader.UI
                         for (var i = 0; i < completedDownloadFiles.Count; i++)
                         {
                             var fileDetail = completedDownloadFiles[i];
-                            var formTitle = $"Append {i + 1} / {ProcessDataGridView.Rows.Count}";
+                            var formTitle = $"Append {i + 1} / {ProcessDataGridView.Rows.Count} : {fileDetail.FileName}";
 
                             using var processForm = ProcessFormMaker(formTitle, fileDetail.FileName, null, fileDetail.WorkFolderPath, false, fileDetail.ZipFileAddress);
 

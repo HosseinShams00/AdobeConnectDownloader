@@ -29,11 +29,15 @@ namespace AdobeConnectDownloader.UI
             if ((UrlOrPathFileTextBox.Text.Trim().StartsWith("http://") || UrlOrPathFileTextBox.Text.Trim().StartsWith("https://")) == false)
             {
                 UserFileType = FileTypeEnum.LocalZipFile;
+                LocalZipFile = UrlOrPathFileTextBox.Text.Trim();
+                Url = null;
                 return;
             }
 
             SubmitButton.Enabled = string.IsNullOrEmpty(UrlOrPathFileTextBox.Text.Trim()) == false && string.IsNullOrEmpty(SaveInTextBox.Text.Trim()) == false;
             Url = UrlOrPathFileTextBox.Text.Trim();
+            UserFileType = FileTypeEnum.Url;
+            LocalZipFile = null;
         }
 
         private void SaveInTextBox_TextChanged(object sender, EventArgs e)
