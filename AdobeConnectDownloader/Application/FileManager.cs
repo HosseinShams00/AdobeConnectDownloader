@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text.RegularExpressions;
 using AdobeConnectDownloader.Enums;
 using AdobeConnectDownloader.Model;
 
@@ -45,16 +47,14 @@ namespace AdobeConnectDownloader.Application
         {
             List<string> filesAddress = new List<string>();
 
-            using (ZipArchive zip = ZipFile.OpenRead(zipAddress))
+            using ZipArchive zip = ZipFile.OpenRead(zipAddress);
+            foreach (var item in zip.Entries)
             {
-                foreach (var item in zip.Entries)
+                if (item.FullName.EndsWith(".flv"))
                 {
-                    if (item.FullName.EndsWith(".flv"))
+                    if (item.FullName.StartsWith("cameraVoip_") || item.FullName.StartsWith("screenshare_"))
                     {
-                        if (item.FullName.StartsWith("cameraVoip_") || item.FullName.StartsWith("screenshare_"))
-                        {
-                            filesAddress.Add(item.FullName);
-                        }
+                        filesAddress.Add(item.FullName);
                     }
                 }
             }
@@ -68,9 +68,9 @@ namespace AdobeConnectDownloader.Application
 
             foreach (var data in streamDatas)
             {
-                var contentType = CheckFileContentType(Path.Combine(extractedDataFolder, data.FileNames + data.Extension), ffmpegAddress);
-                data.StreamContentTypeEnum = contentType;
-                switch (contentType)
+                GetFileDetail(data, extractedDataFolder, ffmpegAddress);
+
+                switch (data.StreamContentTypeEnum)
                 {
                     case StreamContentTypeEnum.Audio:
                         {
@@ -105,9 +105,10 @@ namespace AdobeConnectDownloader.Application
 
         }
 
-        private static StreamContentTypeEnum CheckFileContentType(string fileAddress, string ffmpegAddress)
+        private static void GetFileDetail(StreamData data, string extractedDataFolder, string ffmpegAddress)
         {
-            var res = StreamContentTypeEnum.Empty;
+            var fileAddress = Path.Combine(extractedDataFolder, data.FileNames + data.Extension);
+
             var command = $"-hide_banner -i \"{fileAddress}\"";
 
             var processStartInfo = new ProcessStartInfo();
@@ -120,31 +121,49 @@ namespace AdobeConnectDownloader.Application
             var process = new Process();
             process.StartInfo = processStartInfo;
             process.Start();
-            var data = process.StandardError.ReadToEnd();
-            var index1 = data.IndexOf("Duration:");
-            var audioIndex = data.IndexOf("Audio", index1);
-            var videoIndex = data.IndexOf("Video", index1);
-
-            if (audioIndex == -1 && videoIndex == -1)
-            {
-                res = StreamContentTypeEnum.Empty;
-            }
-            else if (audioIndex != -1 && videoIndex != -1)
-            {
-                res = StreamContentTypeEnum.VideoWithAudio;
-            }
-            else if (audioIndex == -1 && videoIndex != -1)
-            {
-                res = StreamContentTypeEnum.Video;
-            }
-            else if (audioIndex != -1 && videoIndex == -1)
-            {
-                res = StreamContentTypeEnum.Audio;
-            }
-
+            var ffmpegResult = process.StandardError.ReadToEnd();
             process.WaitForExit();
-            return res;
+
+
+            GetTypeOfStream(data, ffmpegResult);
+            SetVideoResolution(data, ffmpegResult);
         }
 
+        private static void SetVideoResolution(StreamData data, string ffmpegResult)
+        {
+            var getResolutionRegex = new Regex("([0-9]{3,}x[0-9]+)");
+            var resolution = getResolutionRegex.Match(ffmpegResult);
+            if (string.IsNullOrEmpty(resolution.Value) == false)
+            {
+                var sizeOfVideo = resolution.Value.Split("x");
+                data.Width = int.Parse(sizeOfVideo[0]);
+                data.Height = int.Parse(sizeOfVideo[1]);
+            }
+        }
+
+        private static void GetTypeOfStream(StreamData data, string ffmpegResult)
+        {
+            var getTypeOfContentRegex = new Regex("Stream #.*?(Video|Audio):");
+            var content = getTypeOfContentRegex.Matches(ffmpegResult);
+            bool isAudio = content.Any(x => x.Value.ToLower().Contains("audio"));
+            bool isVideo = content.Any(x => x.Value.ToLower().Contains("video"));
+
+            if (isAudio == false && isVideo == false)
+            {
+                data.StreamContentTypeEnum = StreamContentTypeEnum.Empty;
+            }
+            else if (isAudio && isVideo)
+            {
+                data.StreamContentTypeEnum = StreamContentTypeEnum.VideoWithAudio;
+            }
+            else if (isAudio == false && isVideo)
+            {
+                data.StreamContentTypeEnum = StreamContentTypeEnum.Video;
+            }
+            else if (isAudio && isVideo == false)
+            {
+                data.StreamContentTypeEnum = StreamContentTypeEnum.Audio;
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using AdobeConnectDownloader.Application;
 using System.Net;
 using System.Text;
@@ -200,6 +201,8 @@ public partial class ProcessForm : Form
 
                 ListOfStreamData? filesTime = GetStreamData(xmlFileData);
 
+                xmlFileData = string.Empty;
+
                 if (filesTime is null)
                 {
                     IsEverythingOk = false;
@@ -271,8 +274,7 @@ public partial class ProcessForm : Form
                 }
 
                 AudioManager.FFMPEGManager = FFMPEGManager;
-                //string finalAudioAddress = AudioManager.MatchAllAudio(filesTime.AudioStreamData, FileName, ExtractFolder, WorkFolderPath, FFMPEGAddress);
-                string finalAudioAddress = @"E:\test adob downloader\Bug Report\Error 2\bug report.Audio.flv";
+                string finalAudioAddress = AudioManager.MatchAllAudio(filesTime.AudioStreamData, FileName, ExtractFolder, WorkFolderPath, FFMPEGAddress);
 
                 FixAudiosLabel.ForeColor = Color.Green;
 
@@ -286,8 +288,8 @@ public partial class ProcessForm : Form
                 if (filesTime.ScreenStreamData.Count != 0)
                 {
                     finalVideoAddress = Path.Combine(WorkFolderPath, $"{FileName}.Video.flv");
-                    //FixVideoTime(filesTime, ExtractFolder);
-                    //GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
+                    FixVideoBugs(filesTime, ExtractFolder);
+                    GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
                 }
                 else
                 {
@@ -341,9 +343,9 @@ public partial class ProcessForm : Form
         {
             sb.AppendLine($" + {streamData.FileNames} {Helper.Time.ConvertUintToDurationV2(streamData.Length)}");
         }
-        
+
         sb.AppendLine("".PadLeft(10, '-'));
-        sb.AppendLine($"Count of video file : {filesTime.WebCamStreamData.Count}");
+        sb.AppendLine($"Count of webcam file : {filesTime.WebCamStreamData.Count}");
 
         foreach (var streamData in filesTime.WebCamStreamData)
         {
@@ -355,15 +357,17 @@ public partial class ProcessForm : Form
         await File.AppendAllTextAsync(logFileAddress, sb.ToString(), Encoding.UTF8);
     }
 
-    private void FixVideoTime(ListOfStreamData filesTime, string extractFolder)
+    private void FixVideoBugs(ListOfStreamData filesTime, string extractFolder)
     {
         int counter = 0;
+        int minWidth = filesTime.ScreenStreamData.Min(x => x.Width);
+        int minHeight = filesTime.ScreenStreamData.Min(x => x.Height);
+
         foreach (var videoStream in filesTime.ScreenStreamData)
         {
-            var fileAddress = Path.Combine(extractFolder, videoStream.FileNames + videoStream.Extension);
             var outputFileAddress = Path.Combine(extractFolder, videoStream.FileNames + $"_{counter}_" + videoStream.Extension);
 
-            Application.FFMPEGManager.FixVideoTime(fileAddress, outputFileAddress, FFMPEGAddress);
+            Application.FFMPEGManager.FixVideoBug(videoStream, ExtractFolder, minWidth, minHeight, outputFileAddress, FFMPEGAddress);
             var time = FFMPEGManager.GetVideoTime(outputFileAddress, FFMPEGAddress);
 
             videoStream.StartFilesTime += (videoStream.EndFilesTime - videoStream.StartFilesTime) - Helper.Time.ConvertTimeToMilisecond(time);
@@ -379,10 +383,8 @@ public partial class ProcessForm : Form
             var firstWebcamVideo = streamsData.WebCamStreamData[0];
             CustomVideoForGetResolution = Path.Combine(ExtractFolder, firstWebcamVideo.FileNames + ".flv");
 
-            string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, firstWebcamVideo.FileNames + ".flv"), FFMPEGAddress);
-
             VideoManager.FFMPEGManager = FFMPEGManager;
-            var videoLines = VideoManager.GetVideoLine(streamsData.WebCamStreamData, EndRoomTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, "WebCamVideo");
+            var videoLines = VideoManager.GetVideoLine(streamsData.WebCamStreamData, EndRoomTime, ExtractFolder, NotAvailableVideoImageAddress, ExtractFolder, "WebCamVideo");
             string webcamVideoFileAddress = Path.Combine(WorkFolderPath, FileName + ".webcam_WithoutAudio.flv");
             string ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLines, webcamVideoFileAddress);
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
@@ -507,15 +509,13 @@ public partial class ProcessForm : Form
 
     private void GetFinalVideo(ListOfStreamData filesTime, uint endTime, string finalVideoAddress, string finalAudioAddress)
     {
-        //CustomVideoForGetResolution = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
-
-        string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + filesTime.ScreenStreamData[0].Extension), FFMPEGAddress);
-
         VideoManager.FFMPEGManager = FFMPEGManager;
-        var videoLine = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
+        var videoExportedForConcat = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, NotAvailableVideoImageAddress, ExtractFolder);
+
+
         //var videoLine = VideoManager.GetVideoLineV2(filesTime.ScreenStreamData, endTime, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
 
-        var ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLine, finalAudioAddress, finalVideoAddress);
+        var ffmpegCommand = FFMPEGManager.CreateConcatFile(videoExportedForConcat, finalAudioAddress, finalVideoAddress);
         ProcessStartInfo processStartInfo = new ProcessStartInfo();
         processStartInfo.FileName = FFMPEGAddress;
         processStartInfo.Arguments = ffmpegCommand;

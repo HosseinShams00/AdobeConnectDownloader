@@ -19,7 +19,7 @@ namespace AdobeConnectDownloader.Application
         }
 
         public List<string> GetVideoLine(List<StreamData> streamDatas, uint EndTime, string folderPathForCreateFiles,
-            string extractedDataFolder, string videoSize, string imageAddress, string outputFolderForSyncVideo,
+            string extractedDataFolder, string imageAddress, string outputFolderForSyncVideo,
             string customNameForEmptyVideos = "EmptyVideo")
         {
             int counter = 0;
@@ -28,10 +28,8 @@ namespace AdobeConnectDownloader.Application
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = ffmpegAddress;
 
-            int width = int.Parse(videoSize.Split('x')[0]);
-            int height = int.Parse(videoSize.Split('x')[1]);
             Image imageCopy = Image.FromFile(imageAddress);
-            Bitmap image = new Bitmap(imageCopy, new Size(width, height));
+            Bitmap image = new Bitmap(imageCopy, new Size(streamDatas[0].Width, streamDatas[0].Height));
             string imageAddressCopy = Path.Combine(folderPathForCreateFiles, "No Available Video.png");
 
             if (File.Exists(imageAddressCopy))
@@ -73,7 +71,7 @@ namespace AdobeConnectDownloader.Application
                 FFMPEGManager.RunProcess(processStartInfo);
                 res.Add(finalFileAddress);
             }
-            
+
 
             return res;
         }

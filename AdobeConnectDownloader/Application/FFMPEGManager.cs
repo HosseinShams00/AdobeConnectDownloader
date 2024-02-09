@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace AdobeConnectDownloader.Application
 {
@@ -127,33 +128,43 @@ namespace AdobeConnectDownloader.Application
             process.StartInfo = processStartInfo;
             process.Start();
             string data = process.StandardError.ReadToEnd();
-            var index1 = data.IndexOf("Video:");
-            int index2 = data.IndexOf('x', index1);
-            int index3 = data.IndexOf(',', index2);
-            int index4 = data.IndexOf(',', index2 - 8);
-
-            string Size = data.Substring(index4, index3 - index4).Replace(',', ' ').Trim();
             process.WaitForExit();
+            var getResolutionRegex = new Regex("([0-9]{3,}x[0-9]+)");
+            var resolution = getResolutionRegex.Match(data);
+            var size = string.Empty;
+            if (string.IsNullOrEmpty(resolution.Value) == false)
+            {
+                size = resolution.Value;
+            }
 
-            return Size;
+            return size;
         }
 
-        public static void FixVideoTime(string videoAddress, string videoOutput, string ffmpegAddress)
+        public static void FixVideoBug(StreamData data, string extractFolder, int originalWidth, int originalHeight, string videoOutput, string ffmpegAddress)
         {
+            var videoAddress = Path.Combine(extractFolder, data.FileNames + data.Extension);
 
-            var command = $"-hide_banner -i \"{videoAddress}\" -ss \"00:00:00\" -c:v copy -y \"{videoOutput}\"";
+            var scaleCommand = string.Empty;
 
-            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            if ((data.Width == originalWidth && data.Height == originalHeight) == false)
+            {
+                scaleCommand = $"-vf \"scale={originalWidth}:{originalHeight}\"";
+                data.Width = originalWidth;
+                data.Height = originalHeight;
+            }
+            else
+            {
+                scaleCommand = " -c:v copy";
+            }
+
+            string command = $"-hide_banner -i \"{videoAddress}\" -ss \"00:00:00\" {scaleCommand} -preset ultrafast -y \"{videoOutput}\"";
+
+            var processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = ffmpegAddress;
-            processStartInfo.UseShellExecute = false;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true;
-            processStartInfo.Arguments = command;
             processStartInfo.CreateNoWindow = true;
-            Process process = new Process();
-            process.StartInfo = processStartInfo;
-            process.Start();
-            process.WaitForExit();
+            processStartInfo.Arguments = command;
+            var ffmpegProcess = Process.Start(processStartInfo);
+            ffmpegProcess?.WaitForExit();
 
         }
 

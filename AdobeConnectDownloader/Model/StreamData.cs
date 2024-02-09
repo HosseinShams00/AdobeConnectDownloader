@@ -11,6 +11,8 @@ namespace AdobeConnectDownloader.Model
         public uint EndFilesTime { get; set; }
         public uint Length { get; set; }
         public StreamContentTypeEnum StreamContentTypeEnum { get; set; } = StreamContentTypeEnum.Empty;
+        public int Width { get; set; }
+        public int Height { get; set; }
 
     }
 }
