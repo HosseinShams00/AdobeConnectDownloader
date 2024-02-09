@@ -181,6 +181,9 @@ public partial class ProcessForm : Form
                     DownloadProcessLabel.ForeColor = Color.Green;
                 }));
 
+                ChangeStatusInForm("Extract data", false);
+
+
                 var zipEntriesName = FileManager.ExtractZipFile(ZipFileAddress, ExtractFolder);
 
                 if (zipEntriesName.Count == 0)
@@ -189,7 +192,8 @@ public partial class ProcessForm : Form
                     return;
                 }
 
-                ExtractZipDataLabel.ForeColor = Color.Green;
+                ChangeStatusInForm("Analyze data", true);
+
                 //string xmlFileData = File.ReadAllText(zipEntriesName.Find(i => i.EndsWith("indexstream.xml") == true));
                 string xmlFileData = await File.ReadAllTextAsync(zipEntriesName.Find(i => i.EndsWith("mainstream.xml")));
 
@@ -212,7 +216,7 @@ public partial class ProcessForm : Form
 
                 await LogMeetingDetails(filesTime);
 
-                GetStreamsDataLabel.ForeColor = Color.Green;
+                ChangeStatusInForm("Download assets", true);
 
                 if (CancelProcess == true)
                 {
@@ -242,15 +246,8 @@ public partial class ProcessForm : Form
 
                     if (checkAssetsMethod == false)
                     {
-                        var method2 = DownloadAssetsMethod2(baseUrl, xmlFileData, Cookies, WorkFolderPath);
-
-                        if (method2 == true)
-                            DownloadAssetsLabel.ForeColor = Color.Green;
-                        else
-                            DownloadAssetsLabel.ForeColor = Color.Red;
+                        DownloadAssetsMethod2(baseUrl, xmlFileData, Cookies, WorkFolderPath);
                     }
-                    else
-                        DownloadAssetsLabel.ForeColor = Color.Green;
 
                     if (CancelProcess == true)
                     {
@@ -258,8 +255,8 @@ public partial class ProcessForm : Form
                         return;
                     }
                 }
-                else
-                    DownloadAssetsLabel.ForeColor = Color.Red;
+
+                ChangeStatusInForm("Make Audio", true);
 
                 if (JustDownloadFiles)
                 {
@@ -276,7 +273,7 @@ public partial class ProcessForm : Form
                 AudioManager.FFMPEGManager = FFMPEGManager;
                 string finalAudioAddress = AudioManager.MatchAllAudio(filesTime.AudioStreamData, FileName, ExtractFolder, WorkFolderPath, FFMPEGAddress);
 
-                FixAudiosLabel.ForeColor = Color.Green;
+                ChangeStatusInForm("Check Videos", true);
 
                 if (CancelProcess == true)
                 {
@@ -289,29 +286,29 @@ public partial class ProcessForm : Form
                 {
                     finalVideoAddress = Path.Combine(WorkFolderPath, $"{FileName}.Video.flv");
                     FixVideoBugs(filesTime, ExtractFolder);
+                    ChangeStatusInForm("Make video", true);
+
                     GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
                 }
-                else
-                {
-                    FixVideosLabel.ForeColor = Color.Red;
-                }
 
+                ChangeStatusInForm("Check webcam", true);
                 bool meetingHaveWebcamVideo = filesTime.WebCamStreamData.Count == 0;
+
+                if (CancelProcess == true)
+                {
+                    MessageBox.Show("Process Caneled");
+                    return;
+                }
 
                 if (meetingHaveWebcamVideo == false)
                 {
                     var confirmWebcam = MessageBox.Show("your meeting have webcam video do you need to process this ?", null, MessageBoxButtons.YesNo);
                     if (confirmWebcam == DialogResult.Yes)
                     {
+                        ChangeStatusInForm("Make video with webcam video", true);
                         CheckWebcam(filesTime, finalAudioAddress, finalVideoAddress);
                     }
                 }
-
-
-                CheckWebcamLabel.ForeColor = meetingHaveWebcamVideo ? Color.Red : Color.Green;
-
-
-                SyncAllDataLabel.ForeColor = Color.Green;
             }
             catch (Exception e)
             {
@@ -323,9 +320,26 @@ public partial class ProcessForm : Form
         });
     }
 
+    private void ChangeStatusInForm(string text, bool gotoNextStep)
+    {
+        StatusLabel.Invoke(() =>
+        {
+            StatusLabel.Text = text;
+            if (gotoNextStep)
+            {
+                StatusProgressBar.PerformStep();
+            }
+        });
+    }
+
     private async Task LogMeetingDetails(ListOfStreamData filesTime)
     {
         var logFileAddress = Path.Combine(WorkFolderPath, "Log.txt");
+        if (File.Exists(logFileAddress))
+        {
+            File.Delete(logFileAddress);
+        }
+
         StringBuilder sb = new();
         sb.AppendLine($"File Name : {FileName}");
         sb.AppendLine($"Meeting time : {Helper.Time.ConvertUintToDurationV2(EndRoomTime)}");
@@ -512,7 +526,6 @@ public partial class ProcessForm : Form
         VideoManager.FFMPEGManager = FFMPEGManager;
         var videoExportedForConcat = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, NotAvailableVideoImageAddress, ExtractFolder);
 
-
         //var videoLine = VideoManager.GetVideoLineV2(filesTime.ScreenStreamData, endTime, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
 
         var ffmpegCommand = FFMPEGManager.CreateConcatFile(videoExportedForConcat, finalAudioAddress, finalVideoAddress);
@@ -520,8 +533,6 @@ public partial class ProcessForm : Form
         processStartInfo.FileName = FFMPEGAddress;
         processStartInfo.Arguments = ffmpegCommand;
         FFMPEGManager.RunProcess(processStartInfo);
-
-        FixVideosLabel.ForeColor = Color.Green;
     }
 
     private ListOfStreamData? GetStreamData(string xmlFileData)
