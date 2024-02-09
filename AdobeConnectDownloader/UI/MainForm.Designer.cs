@@ -33,7 +33,7 @@
             editSaveFolderAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             AddToQueueButton = new System.Windows.Forms.Button();
-            DownloadQueueButton = new System.Windows.Forms.Button();
+            ProcessQueueButton = new System.Windows.Forms.Button();
             ProcessDataGridView = new System.Windows.Forms.DataGridView();
             FileNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ZipFileColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -88,19 +88,19 @@
             AddToQueueButton.UseVisualStyleBackColor = false;
             AddToQueueButton.Click += AddNewDownloadAddressButton_Click;
             // 
-            // DownloadQueueButton
+            // ProcessQueueButton
             // 
-            DownloadQueueButton.BackColor = System.Drawing.Color.FromArgb(33, 47, 60);
-            DownloadQueueButton.FlatAppearance.BorderSize = 0;
-            DownloadQueueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            DownloadQueueButton.ForeColor = System.Drawing.Color.White;
-            DownloadQueueButton.Location = new System.Drawing.Point(12, 27);
-            DownloadQueueButton.Name = "DownloadQueueButton";
-            DownloadQueueButton.Size = new System.Drawing.Size(113, 36);
-            DownloadQueueButton.TabIndex = 12;
-            DownloadQueueButton.Text = "Download Queue";
-            DownloadQueueButton.UseVisualStyleBackColor = false;
-            DownloadQueueButton.Click += DownloadQueueButton_Click;
+            ProcessQueueButton.BackColor = System.Drawing.Color.FromArgb(33, 47, 60);
+            ProcessQueueButton.FlatAppearance.BorderSize = 0;
+            ProcessQueueButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            ProcessQueueButton.ForeColor = System.Drawing.Color.White;
+            ProcessQueueButton.Location = new System.Drawing.Point(12, 27);
+            ProcessQueueButton.Name = "ProcessQueueButton";
+            ProcessQueueButton.Size = new System.Drawing.Size(113, 36);
+            ProcessQueueButton.TabIndex = 12;
+            ProcessQueueButton.Text = "Process Queue";
+            ProcessQueueButton.UseVisualStyleBackColor = false;
+            ProcessQueueButton.Click += ProcessQueueButtonClick;
             // 
             // ProcessDataGridView
             // 
@@ -214,7 +214,7 @@
             // 
             // DownloadQueueDesignComponent
             // 
-            DownloadQueueDesignComponent._SetButton = DownloadQueueButton;
+            DownloadQueueDesignComponent._SetButton = ProcessQueueButton;
             DownloadQueueDesignComponent.BackGroundHtmlColorCode = "#212F3C";
             DownloadQueueDesignComponent.ForeGroundHtmlColorCode = "White";
             DownloadQueueDesignComponent.LowLeft = true;
@@ -231,7 +231,7 @@
             ClientSize = new System.Drawing.Size(696, 476);
             Controls.Add(menuStrip1);
             Controls.Add(ProcessDataGridView);
-            Controls.Add(DownloadQueueButton);
+            Controls.Add(ProcessQueueButton);
             Controls.Add(AddToQueueButton);
             MainMenuStrip = menuStrip1;
             Name = "MainForm";
@@ -251,7 +251,7 @@
         private System.Windows.Forms.ContextMenuStrip DataGridContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem editSaveFolderAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
-        private System.Windows.Forms.Button DownloadQueueButton;
+        private System.Windows.Forms.Button ProcessQueueButton;
         private System.Windows.Forms.DataGridView ProcessDataGridView;
         private DesignComponent AddToQueueButtonDesignComponent;
         private System.Windows.Forms.MenuStrip menuStrip1;

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using AdobeConnectDownloader.Enums;
 using AdobeConnectDownloader.Model;
 
 
@@ -60,49 +62,52 @@ namespace AdobeConnectDownloader.Application
             return filesAddress;
         }
 
-        public static void CheckHealthyFiles(ListOfStreamData listOfStreamData, string extractedDataFolder, string ffmpegAddress)
+        public static ListOfStreamData CheckFiles(List<StreamData> streamDatas, string extractedDataFolder, string ffmpegAddress)
         {
-            var namesOfCorrectFiles = new List<StreamData>();
+            var result = new ListOfStreamData();
 
-            foreach (var data in listOfStreamData.AudioStreamData)
+            foreach (var data in streamDatas)
             {
-                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + data.Extension), ffmpegAddress);
-                if (healthy == false)
-                    namesOfCorrectFiles.Add(data);
-            }
-
-            if (namesOfCorrectFiles.Count != 0)
-            {
-                foreach (var item in namesOfCorrectFiles)
+                var contentType = CheckFileContentType(Path.Combine(extractedDataFolder, data.FileNames + data.Extension), ffmpegAddress);
+                data.StreamContentTypeEnum = contentType;
+                switch (contentType)
                 {
-                    listOfStreamData.AudioStreamData.Remove(item);
+                    case StreamContentTypeEnum.Audio:
+                        {
+                            result.AudioStreamData.Add(data);
+                            break;
+                        }
+                    case StreamContentTypeEnum.Video:
+                        {
+                            if (data.FileNames.ToLower().StartsWith("camera"))
+                            {
+                                result.WebCamStreamData.Add(data);
+                                break;
+                            }
+
+                            result.ScreenStreamData.Add(data);
+                            break;
+                        }
+                    case StreamContentTypeEnum.VideoWithAudio:
+                        {
+                            result.AudioStreamData.Add(data);
+                            result.ScreenStreamData.Add(data);
+                            break;
+                        }
                 }
             }
 
-            namesOfCorrectFiles = new List<StreamData>();
+            result.AudioStreamData = result.AudioStreamData.OrderBy(x => x.StartFilesTime).ToList();
+            result.ScreenStreamData = result.ScreenStreamData.OrderBy(x => x.StartFilesTime).ToList();
+            result.WebCamStreamData = result.WebCamStreamData.OrderBy(x => x.StartFilesTime).ToList();
 
-
-            foreach (var data in listOfStreamData.ScreenStreamData)
-            {
-                var healthy = IsFileHealthy(Path.Combine(extractedDataFolder, data.FileNames + data.Extension), ffmpegAddress);
-                if (healthy == false)
-                    namesOfCorrectFiles.Add(data);
-            }
-
-            if (namesOfCorrectFiles.Count == 0)
-                return;
-
-            foreach (var item in namesOfCorrectFiles)
-            {
-                listOfStreamData.ScreenStreamData.Remove(item);
-            }
-
+            return result;
 
         }
 
-        private static bool IsFileHealthy(string fileAddress, string ffmpegAddress)
+        private static StreamContentTypeEnum CheckFileContentType(string fileAddress, string ffmpegAddress)
         {
-            var res = false;
+            var res = StreamContentTypeEnum.Empty;
             var command = $"-hide_banner -i \"{fileAddress}\"";
 
             var processStartInfo = new ProcessStartInfo();
@@ -121,9 +126,21 @@ namespace AdobeConnectDownloader.Application
             var videoIndex = data.IndexOf("Video", index1);
 
             if (audioIndex == -1 && videoIndex == -1)
-                res = false;
-            else
-                res = true;
+            {
+                res = StreamContentTypeEnum.Empty;
+            }
+            else if (audioIndex != -1 && videoIndex != -1)
+            {
+                res = StreamContentTypeEnum.VideoWithAudio;
+            }
+            else if (audioIndex == -1 && videoIndex != -1)
+            {
+                res = StreamContentTypeEnum.Video;
+            }
+            else if (audioIndex != -1 && videoIndex == -1)
+            {
+                res = StreamContentTypeEnum.Audio;
+            }
 
             process.WaitForExit();
             return res;

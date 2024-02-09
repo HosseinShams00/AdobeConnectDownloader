@@ -6,6 +6,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web;
+using AdobeConnectDownloader.Enums;
 using AdobeConnectDownloader.Model;
 
 namespace AdobeConnectDownloader.Application
@@ -178,7 +179,7 @@ namespace AdobeConnectDownloader.Application
                 return false;
         }
 
-        public static Stream GetStreamData(string url, List<Cookie> cookies, HttpContentType httpContentType)
+        public static Stream GetStreamData(string url, List<Cookie> cookies, HttpContentTypeEnum httpContentType)
         {
             HttpWebRequest httpWebRequest = WebRequest.CreateHttp(url);
             httpWebRequest.CookieContainer = new CookieContainer();
@@ -193,7 +194,7 @@ namespace AdobeConnectDownloader.Application
             try
             {
                 var response = (HttpWebResponse)httpWebRequest.GetResponse();
-                if (httpContentType == HttpContentType.All)
+                if (httpContentType == HttpContentTypeEnum.All)
                 {
                     return response.GetResponseStream();
                 }
@@ -209,7 +210,7 @@ namespace AdobeConnectDownloader.Application
 
         }
 
-        public static bool GetStreamData(string url, List<Cookie> cookies, HttpContentType httpContentType, string fileAddress, bool overwrite)
+        public static bool GetStreamData(string url, List<Cookie> cookies, HttpContentTypeEnum httpContentType, string fileAddress, bool overwrite)
         {
             Stream result = GetStreamData(url, cookies, httpContentType);
 
@@ -249,7 +250,7 @@ namespace AdobeConnectDownloader.Application
                     string[] filename = urls[i].Split('/');
                     string fileNameDecoded = HttpUtility.UrlDecode(filename[filename.Length - 1]);
                     string fileAddres = Path.Combine(filesFolder, i + fileNameDecoded);
-                    WebManager.GetStreamData(urls[i], cookies, WebManager.HttpContentType.All, fileAddres, true);
+                    WebManager.GetStreamData(urls[i], cookies, HttpContentTypeEnum.All, fileAddres, true);
                 }
             }
         }
@@ -259,7 +260,7 @@ namespace AdobeConnectDownloader.Application
             string assetUrl = WebManager.GetAssetsDownloadUrl(url);
             string fileAddress = Path.Combine(workFolderPath, "Assets.zip");
 
-            var downloadResult = WebManager.GetStreamData(assetUrl, cookies, WebManager.HttpContentType.Zip, fileAddress, true);
+            var downloadResult = WebManager.GetStreamData(assetUrl, cookies, HttpContentTypeEnum.Zip, fileAddress, true);
 
             return downloadResult;
         }
@@ -269,7 +270,7 @@ namespace AdobeConnectDownloader.Application
             try
             {
                 string xmlPdfFilesname = defaultAddress + "layout.xml";
-                Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, cookies, WebManager.HttpContentType.Xml);
+                Stream layoutStreamData = WebManager.GetStreamData(xmlPdfFilesname, cookies, HttpContentTypeEnum.Xml);
                 string response = string.Empty;
 
                 using (var reader = new StreamReader(layoutStreamData))
@@ -287,23 +288,14 @@ namespace AdobeConnectDownloader.Application
             }
         }
 
-        private static string ConvertContentToString(HttpContentType httpContentType) => httpContentType switch
+        private static string ConvertContentToString(HttpContentTypeEnum httpContentType) => httpContentType switch
         {
-            HttpContentType.Flash => "application/x-shockwave-flash",
-            HttpContentType.Text => "text/plain",
-            HttpContentType.Xml => "application/xml",
-            HttpContentType.Zip => "application/zip",
-            HttpContentType.All => "*/*"
+            HttpContentTypeEnum.Flash => "application/x-shockwave-flash",
+            HttpContentTypeEnum.Text => "text/plain",
+            HttpContentTypeEnum.Xml => "application/xml",
+            HttpContentTypeEnum.Zip => "application/zip",
+            HttpContentTypeEnum.All => "*/*"
         };
-
-        public enum HttpContentType
-        {
-            Xml,
-            Text,
-            Zip,
-            Flash,
-            All
-        }
-
+        
     }
 }

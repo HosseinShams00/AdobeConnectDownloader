@@ -47,34 +47,24 @@ namespace AdobeConnectDownloader.Application
 
         }
 
-        public static ListOfStreamData FindTimesOfFilesV2(string xmlFileData)
+        public static List<StreamData> FindTimesOfFilesV2(string xmlFileData)
         {
-            var audioStreamData = new List<StreamData>();
-            var screenStreamData = new List<StreamData>();
-
+            var result = new List<StreamData>();
             var streamDatas = FindStreamsFileTime_V2(xmlFileData);
+
             foreach (var streamData in streamDatas)
             {
                 if (streamData.FileNames.StartsWith("cameraVoip_"))
                 {
-                    audioStreamData.Add(streamData);
+                    result.Add(streamData);
                 }
                 else if (streamData.FileNames.StartsWith("screenshare_"))
                 {
-                    screenStreamData.Add(streamData);
+                    result.Add(streamData);
                 }
             }
 
-            audioStreamData = audioStreamData.OrderBy(i => i.StartFilesTime).ToList();
-
-            if (screenStreamData.Count != 0 || screenStreamData.Count != 1)
-                screenStreamData = screenStreamData.OrderBy(i => i.StartFilesTime).ToList();
-
-            return new ListOfStreamData()
-            {
-                AudioStreamData = audioStreamData,
-                ScreenStreamData = screenStreamData
-            };
+            return result;
 
         }
 
@@ -178,7 +168,7 @@ namespace AdobeConnectDownloader.Application
             return uint.Parse(timeValue);
         }
 
-        public static List<string> GetDefaultPdfPathForDownload(string xmlFileData, string hotst)
+        public static List<string> GetDefaultPdfPathForDownload(string xmlFileData, string host)
         {
             string playbackContentOutputPathStart = "<playbackContentOutputPath><![CDATA[";
             string playbackContentOutputPathEnd = "]]></playbackContentOutputPath>";
@@ -208,7 +198,7 @@ namespace AdobeConnectDownloader.Application
             for (int i = 0; i < resultWitoutDuplicateValue.Count; i++)
             {
                 string value1 = resultWitoutDuplicateValue[i].Substring(5);
-                resultWitoutDuplicateValue[i] = $"{hotst}{value1}data/";
+                resultWitoutDuplicateValue[i] = $"{host}{value1}data/";
             }
 
 
@@ -280,65 +270,5 @@ namespace AdobeConnectDownloader.Application
 
         }
 
-
-        public class Test
-        {
-            public static Dictionary<string, object> ExtractDataStreamTimeStamps(string xmlFile)
-            {
-                Dictionary<string, object> tempSession = new Dictionary<string, object>();
-                List<Dictionary<string, object>> dataStreamList = new List<Dictionary<string, object>>();
-
-                try
-                {
-                    XmlDocument indexStream = new XmlDocument();
-                    indexStream.LoadXml(xmlFile);
-
-                    XmlNodeList messages = indexStream.GetElementsByTagName("Message");
-
-                    foreach (XmlNode messageNode in messages)
-                    {
-                        XmlElement messageEl = (XmlElement)messageNode;
-                        string name = GetFirstElementByTagName(messageEl, "name")?.InnerText ?? "";
-                        string status = GetFirstElementByTagName(messageEl, "String")?.InnerText ?? "";
-
-                        if (name == "StreamManagerId_Mainstream" && status == "streamRemoved")
-                        {
-                            Dictionary<string, object> tds = new Dictionary<string, object>();
-
-                            tds["endTimeStamp"] = GetFirstElementByTagName(messageEl, "time")?.InnerText;
-                            tds["startTimeStamp"] = GetFirstElementByTagName(messageEl, "startTime")?.InnerText;
-                            tds["name"] = GetFirstElementByTagName(messageEl, "streamName")?.InnerText;
-                            tds["senderId"] = GetFirstElementByTagName(messageEl, "streamPublisherID")?.InnerText;
-                            tds["type"] = GetFirstElementByTagName(messageEl, "streamType")?.InnerText;
-
-                            dataStreamList.Add(tds);
-                        }
-                        else if (status == "__stop__")
-                        {
-                            tempSession["duration"] = GetFirstElementByTagName(messageEl, "Number")?.InnerText;
-                        }
-                    }
-
-                    tempSession["dataStreamList"] = dataStreamList;
-                    // Assuming mSessions is a class-level variable, you can modify this accordingly
-                    mSessions.Add(tempSession);
-                    
-                }
-                catch (IOException ex)
-                {
-                    Console.WriteLine("Error: " + ex.Message);
-                }
-
-                return tempSession;
-            }
-
-            private static XmlNode GetFirstElementByTagName(XmlElement parentElement, string tagName)
-            {
-                XmlNodeList elements = parentElement.GetElementsByTagName(tagName);
-                return elements.Count > 0 ? elements[0] : null;
-            }
-
-            private static List<Dictionary<string, object>> mSessions = new List<Dictionary<string, object>>();
-        }
     }
 }

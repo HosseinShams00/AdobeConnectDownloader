@@ -8,8 +8,9 @@ namespace AdobeConnectDownloader.Model
 {
     public class ListOfStreamData
     {
-        public List<StreamData> AudioStreamData { get; set; } = new List<StreamData>();
-        public List<StreamData> ScreenStreamData { get; set; } = new List<StreamData>();
+        public List<StreamData> AudioStreamData { get; set; } = new();
+        public List<StreamData> ScreenStreamData { get; set; } = new();
+        public List<StreamData> WebCamStreamData { get; set; } = new();
 
     }
 }

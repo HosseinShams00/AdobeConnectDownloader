@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Octokit;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using AdobeConnectDownloader.Enums;
 
 namespace AdobeConnectDownloader.UI
 {
@@ -115,7 +116,7 @@ namespace AdobeConnectDownloader.UI
                 ProcessDataGridView.Rows.Remove(ProcessDataGridView.SelectedRows[0]);
         }
 
-        private void DownloadQueueButton_Click(object sender, EventArgs e)
+        private void ProcessQueueButtonClick(object sender, EventArgs e)
         {
             if (ProcessDataGridView.Rows.Count == 0)
                 return;
@@ -426,7 +427,7 @@ namespace AdobeConnectDownloader.UI
 
                 try
                 {
-                    var checkProblemWithFile = WebManager.GetStreamData(fileUrl, Cookies, WebManager.HttpContentType.Flash, filePath, true);
+                    var checkProblemWithFile = WebManager.GetStreamData(fileUrl, Cookies, HttpContentTypeEnum.Flash, filePath, true);
                     if (checkProblemWithFile)
                         continue;
                     MessageBox.Show("We Have Problem Try Again");

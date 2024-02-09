@@ -8,166 +8,170 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using AdobeConnectDownloader.Application;
 using System.Net;
+using System.Text;
 using AdobeConnectDownloader.Model;
 using System.Threading;
+using AdobeConnectDownloader.Enums;
 
-namespace AdobeConnectDownloader.UI
+namespace AdobeConnectDownloader.UI;
+
+public partial class ProcessForm : Form
 {
-    public partial class ProcessForm : Form
+    public string? Url { get; set; } = null;
+
+    private string _fileName;
+    public string FileName
     {
-        public string? Url { get; set; } = null;
-
-        private string _fileName;
-        public string FileName
+        get => _fileName;
+        set
         {
-            get => _fileName;
-            set
+            if (string.IsNullOrWhiteSpace(value))
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    _fileName = "AdobeConnectMeetingFile";
-                }
-                else
-                {
-                    _fileName = value;
-                }
-            }
-        }
-
-        public string WorkFolderPath { get; set; } = string.Empty;
-        public string ExtractFolder { get; set; } = string.Empty;
-        public string? ZipFileAddress { get; set; } = null;
-        public string CustomVideoForGetResolution { get; set; } = string.Empty;
-        public string FFMPEGAddress { get; set; } = string.Empty;
-        public string SwfFileAddress { get; set; } = string.Empty;
-        public string NotAvailableVideoImageAddress { get; set; } = string.Empty;
-        public string Title { get; set; }
-        public string SwfFolder { get; set; } = string.Empty;
-
-        public bool CancelProcess { get; set; } = false;
-        public bool IsEverythingOk { get; set; } = true;
-        public bool JustDownloadFiles { get; set; }
-
-        public FFMPEGManager FFMPEGManager = new FFMPEGManager();
-
-        public FileManager? FileManager = null;
-        public WebManager WebManager = new WebManager();
-        public SwfManager SwfManager;
-
-        public AudioManager? AudioManager = null;
-        public VideoManager? VideoManager = null;
-
-        public DataGridView? QueueDataGridView { get; set; } = null;
-        private List<Cookie> Cookies { get; set; } = new List<Cookie>();
-        public uint EndRoomTime { get; private set; }
-
-        public ProcessForm()
-        {
-            InitializeComponent();
-        }
-
-        private async void ProcessForm_Load(object sender, EventArgs e)
-        {
-            AudioManager = new AudioManager(FFMPEGManager);
-            VideoManager = new VideoManager(FFMPEGManager, FFMPEGAddress);
-            SwfManager = new SwfManager(SwfFileAddress);
-
-
-            this.Text += " " + Title;
-            ExtractFolder = Path.Combine(WorkFolderPath, "Extracted Data");
-            FileManager = new FileManager();
-
-            if (Directory.Exists(Path.Combine(WorkFolderPath, "Extracted Data")) == false)
-                Directory.CreateDirectory(Path.Combine(WorkFolderPath, "Extracted Data"));
-
-
-            if (File.Exists(SwfFolder) == false)
-                Directory.CreateDirectory(SwfFolder);
-
-            if (string.IsNullOrWhiteSpace(ZipFileAddress))
-            {
-                await DownloadZipFile(Url);
+                _fileName = "AdobeConnectMeetingFile";
             }
             else
             {
-                await MergeAllFiles();
-                this.Close();
+                _fileName = value;
             }
         }
+    }
 
-        public async Task DownloadZipFile(string url)
+    public string WorkFolderPath { get; set; } = string.Empty;
+    public string ExtractFolder { get; set; } = string.Empty;
+    public string? ZipFileAddress { get; set; } = null;
+    public string CustomVideoForGetResolution { get; set; } = string.Empty;
+    public string FFMPEGAddress { get; set; } = string.Empty;
+    public string SwfFileAddress { get; set; } = string.Empty;
+    public string NotAvailableVideoImageAddress { get; set; } = string.Empty;
+    public string Title { get; set; }
+    public string SwfFolder { get; set; } = string.Empty;
+
+    public bool CancelProcess { get; set; } = false;
+    public bool IsEverythingOk { get; set; } = true;
+    public bool JustDownloadFiles { get; set; }
+
+    public FFMPEGManager FFMPEGManager = new FFMPEGManager();
+
+    public FileManager FileManager = new();
+    public WebManager WebManager = new();
+    public SwfManager SwfManager;
+
+    public AudioManager? AudioManager = null;
+    public VideoManager? VideoManager = null;
+
+    public DataGridView? QueueDataGridView { get; set; } = null;
+    private List<Cookie> Cookies { get; set; } = new List<Cookie>();
+    public uint EndRoomTime { get; private set; }
+
+    public ProcessForm()
+    {
+        InitializeComponent();
+    }
+
+    private async void ProcessForm_Load(object sender, EventArgs e)
+    {
+        AudioManager = new AudioManager(FFMPEGManager);
+        VideoManager = new VideoManager(FFMPEGManager, FFMPEGAddress);
+        SwfManager = new SwfManager(SwfFileAddress);
+
+
+        this.Text += " " + Title;
+        ExtractFolder = Path.Combine(WorkFolderPath, "Extracted Data");
+        FileManager = new FileManager();
+
+        if (Directory.Exists(Path.Combine(WorkFolderPath, "Extracted Data")) == false)
+            Directory.CreateDirectory(Path.Combine(WorkFolderPath, "Extracted Data"));
+
+
+        if (File.Exists(SwfFolder) == false)
+            Directory.CreateDirectory(SwfFolder);
+
+        if (string.IsNullOrWhiteSpace(ZipFileAddress))
         {
-            var downloadUrl = WebManager.GetDownloadUrl(url);
-            WebManager.PercentageChange += WebManager_PercentageChange;
-            WebManager.DownloadFileComplited += WebManager_DownloadFileCompleted;
-            try
-            {
-                ZipFileAddress = Path.Combine(WorkFolderPath, downloadUrl.FileId + ".zip");
-                var sessionCookie = WebManager.GetSessionCookieFrom(url);
-                Cookies = WebManager.GetCookieForm(url, sessionCookie);
-
-                var isUrlWrong = WebManager.IsUrlWrong(downloadUrl.Url, Cookies);
-                if (isUrlWrong == true)
-                {
-                    MessageBox.Show("Your url is worng maybe your not login please login and try again");
-                    IsEverythingOk = false;
-                    return;
-                }
-
-                await WebManager.DownloadFile(downloadUrl.Url, ZipFileAddress, sessionCookie);
-                return;
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                IsEverythingOk = true;
-                return;
-            }
+            await DownloadZipFile(Url);
         }
-
-        public void WebManager_PercentageChange(int percent, double byteReceive, double totalByte)
+        else
         {
-            if (CancelProcess == false)
+            await MergeAllFiles();
+            this.Close();
+        }
+    }
+
+    public async Task DownloadZipFile(string url)
+    {
+        var downloadUrl = WebManager.GetDownloadUrl(url);
+        WebManager.PercentageChange += WebManager_PercentageChange;
+        WebManager.DownloadFileComplited += WebManager_DownloadFileCompleted;
+        try
+        {
+            ZipFileAddress = Path.Combine(WorkFolderPath, downloadUrl.FileId + ".zip");
+            var sessionCookie = WebManager.GetSessionCookieFrom(url);
+            Cookies = WebManager.GetCookieForm(url, sessionCookie);
+
+            var isUrlWrong = WebManager.IsUrlWrong(downloadUrl.Url, Cookies);
+            if (isUrlWrong == true)
             {
-                string downloadRes = $"{byteReceive.ToString("F2")} MB / {totalByte.ToString("F2")} MB";
-                if (DownloadProcessLabel.InvokeRequired)
-                {
-                    DownloadProcessLabel.Invoke(new Action<int, double, double>(WebManager_PercentageChange), downloadRes);
-                    DownloadProgressBar.Value = percent;
+                MessageBox.Show("Your url is worng maybe your not login please login and try again");
+                IsEverythingOk = false;
+                return;
+            }
 
-                    return;
-                }
+            await WebManager.DownloadFile(downloadUrl.Url, ZipFileAddress, sessionCookie);
+            return;
 
-                DownloadProcessLabel.Text = downloadRes;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+            IsEverythingOk = true;
+            return;
+        }
+    }
+
+    public void WebManager_PercentageChange(int percent, double byteReceive, double totalByte)
+    {
+        if (CancelProcess == false)
+        {
+            string downloadRes = $"{byteReceive.ToString("F2")} MB / {totalByte.ToString("F2")} MB";
+            if (DownloadProcessLabel.InvokeRequired)
+            {
+                DownloadProcessLabel.Invoke(new Action<int, double, double>(WebManager_PercentageChange), downloadRes);
                 DownloadProgressBar.Value = percent;
-            }
-            else
-            {
-                WebManager.CancelDownload();
-                this.Close();
+
+                return;
             }
 
+            DownloadProcessLabel.Text = downloadRes;
+            DownloadProgressBar.Value = percent;
         }
-
-        private async void WebManager_DownloadFileCompleted(object? sender, AsyncCompletedEventArgs e)
+        else
         {
-            if (e.Error == null && e.Cancelled == false)
-            {
-                await MergeAllFiles();
-            }
-            else
-            {
-                MessageBox.Show("Download Process Canceled");
-
-            }
-
+            WebManager.CancelDownload();
             this.Close();
         }
 
-        private async Task MergeAllFiles()
+    }
+
+    private async void WebManager_DownloadFileCompleted(object? sender, AsyncCompletedEventArgs e)
+    {
+        if (e.Error == null && e.Cancelled == false)
         {
-            await Task.Run(() =>
+            await MergeAllFiles();
+        }
+        else
+        {
+            MessageBox.Show("Download Process Canceled");
+
+        }
+
+        this.Close();
+    }
+
+    private async Task MergeAllFiles()
+    {
+        await Task.Run(async () =>
+        {
+            try
             {
                 DownloadProgressBar.Invoke(new Action(() =>
                 {
@@ -184,10 +188,9 @@ namespace AdobeConnectDownloader.UI
                     return;
                 }
 
-
                 ExtractZipDataLabel.ForeColor = Color.Green;
                 //string xmlFileData = File.ReadAllText(zipEntriesName.Find(i => i.EndsWith("indexstream.xml") == true));
-                string xmlFileData = File.ReadAllText(zipEntriesName.Find(i => i.EndsWith("mainstream.xml") == true));
+                string xmlFileData = await File.ReadAllTextAsync(zipEntriesName.Find(i => i.EndsWith("mainstream.xml")));
 
                 if (CancelProcess == true)
                 {
@@ -195,7 +198,16 @@ namespace AdobeConnectDownloader.UI
                     return;
                 }
 
-                ListOfStreamData filesTime = GetStreamData(xmlFileData);
+                ListOfStreamData? filesTime = GetStreamData(xmlFileData);
+
+                if (filesTime is null)
+                {
+                    IsEverythingOk = false;
+                    MessageBox.Show("Process have problem with mainstream.xml of meeting");
+                    return;
+                }
+
+                await LogMeetingDetails(filesTime);
 
                 GetStreamsDataLabel.ForeColor = Color.Green;
 
@@ -277,224 +289,274 @@ namespace AdobeConnectDownloader.UI
                     GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
                 }
                 else
+                {
                     FixVideosLabel.ForeColor = Color.Red;
+                }
 
-                var result = VideoManager.ChekHaveWebcamVideo(filesTime.AudioStreamData, ExtractFolder);
+                bool meetingHaveWebcamVideo = filesTime.WebCamStreamData.Count == 0;
 
-                CheckWebcamLabel.ForeColor = result.Count == 0 ? Color.Red : Color.Green;
+                if (meetingHaveWebcamVideo)
+                {
+                    var confirmWebcam = MessageBox.Show("your meeting have webcam video do you need to process this ?", null, MessageBoxButtons.YesNo);
+                    if (confirmWebcam == DialogResult.Yes)
+                    {
+                        CheckWebcam(filesTime, finalAudioAddress, finalVideoAddress);
+                    }
+                }
 
-                var checkWebcam = CheckWebcam(result, finalAudioAddress, finalVideoAddress);
+
+                CheckWebcamLabel.ForeColor = meetingHaveWebcamVideo ? Color.Red : Color.Green;
 
 
                 SyncAllDataLabel.ForeColor = Color.Green;
-
-            });
-        }
-
-        private void FixVideoTime(ListOfStreamData filesTime, string extractFolder)
-        {
-            int counter = 0;
-            foreach (var videoStream in filesTime.ScreenStreamData)
-            {
-                var fileAddress = Path.Combine(extractFolder, videoStream.FileNames + videoStream.Extension);
-                var outputFileAddress = Path.Combine(extractFolder, videoStream.FileNames + $"_{counter}_" + videoStream.Extension);
-
-                Application.FFMPEGManager.FixVideoTime(fileAddress, outputFileAddress, FFMPEGAddress);
-                var time = FFMPEGManager.GetVideoTime(outputFileAddress, FFMPEGAddress);
-
-                videoStream.StartFilesTime += (videoStream.EndFilesTime - videoStream.StartFilesTime) - Helper.Time.ConvertTimeToMilisecond(time);
-                videoStream.FileNames += $"_{counter}_";
-                counter++;
             }
-        }
-
-        private bool CheckWebcam(List<StreamData> webcamStreams, string finalAudioAddress, string finalVideoAddress)
-        {
-            if (webcamStreams.Count != 0)
+            catch (Exception e)
             {
-                CustomVideoForGetResolution = Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv");
-
-                string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, webcamStreams[0].FileNames + ".flv"), FFMPEGAddress);
-
-                VideoManager.FFMPEGManager = FFMPEGManager;
-                var videoLines = VideoManager.GetVideoLine(webcamStreams, EndRoomTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, "WebCamVideo");
-                string webcamVideoFileAddress = Path.Combine(WorkFolderPath, "Final WebCam Video Witout Sound.flv");
-                string ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLines, webcamVideoFileAddress);
-                ProcessStartInfo processStartInfo = new ProcessStartInfo();
-                processStartInfo.FileName = FFMPEGAddress;
-                processStartInfo.Arguments = ffmpegCommand;
-                FFMPEGManager.RunProcess(processStartInfo);
-                string finalVideoAddressForWebcam = Path.Combine(WorkFolderPath, "Final Video With Webcam.flv");
-                string command = string.Empty;
-
-                if (finalVideoAddress == null)
-                {
-                    command = $"-hide_banner -i \"{finalAudioAddress}\" -i \"{webcamVideoFileAddress}\" -map 0:a -map 1:v -c:v copy -c:a copy -shortest -y \"{finalVideoAddressForWebcam}\"";
-                }
-                else
-                {
-                    string screenShareRes = FFMPEGManager.GetVideosResolution(finalVideoAddress, FFMPEGAddress);
-                    string webcamRes = FFMPEGManager.GetVideosResolution(webcamVideoFileAddress, FFMPEGAddress);
-                    int fullWidthRes = int.Parse(screenShareRes.Split('x')[0]) - int.Parse(webcamRes.Split('x')[0]);
-
-                    command = $"-hide_banner -i {finalVideoAddress}  -i \"{webcamVideoFileAddress}\" " +
-                    $"-filter_complex \"color=s={fullWidthRes + "x" + int.Parse(screenShareRes.Split('x')[1])}:c=black[base]; [0:v] setpts=PTS-STARTPTS[upperleft];[1:v]setpts=PTS-STARTPTS[upperright]; [base][upperleft]overlay=shortest=1[tmp1]; [tmp1][upperright] overlay=shortest=1:x={screenShareRes.Split('x')[0]}\"  -map 0:a -c:a copy -y -shortest \"{finalVideoAddressForWebcam}\"";
-                }
-
-                processStartInfo.Arguments = command;
-                FFMPEGManager.RunProcess(processStartInfo);
-                return true;
-            }
-            else
-                return false;
-        }
-
-        public bool DownloadAssetsMethod2(string baseUrl, string xmlFileData, List<Cookie> cookies, string outputFolder)
-        {
-            var baseDownloadAssetUrls = XmlReader.GetDefaultPdfPathForDownload(xmlFileData, baseUrl);
-
-            if (baseDownloadAssetUrls.Count != 0 && cookies.Count != 0)
-            {
-                int counter = 1;
-                foreach (var baseDownloadAddress in baseDownloadAssetUrls)
-                {
-                    string response = GetDataForPdf(baseDownloadAddress);
-
-                    if (response == null)
-                        continue;
-
-                    var pdfDetail = XmlReader.GetPdfDetail(response);
-                    pdfDetail.FileName = Path.Combine(outputFolder, $"Pdf {counter}.pdf");
-
-                    if (CancelProcess == true)
-                    {
-                        MessageBox.Show("Process Caneled");
-                        return false;
-                    }
-
-                    DownloadSlides(pdfDetail, baseDownloadAddress, cookies);
-
-                    if (CancelProcess == true)
-                    {
-                        MessageBox.Show("Process Caneled");
-                        return false;
-                    }
-
-                    SwfManager.ConvertSwfToPdf(pdfDetail, SwfFolder);
-                    counter++;
-                    Directory.Delete(SwfFolder, true);
-                    Directory.CreateDirectory(SwfFolder);
-                }
-                return true;
-            }
-            else
-                return false;
-        }
-
-        private string? GetDataForPdf(string defaultAddress)
-        {
-
-            var xmlPdfFileNames = defaultAddress + "layout.xml";
-            var layoutStreamData = WebManager.GetStreamData(xmlPdfFileNames, Cookies, WebManager.HttpContentType.Xml);
-            var response = string.Empty;
-
-            if (layoutStreamData is null)
-            {
-                return null;
+                MessageBox.Show(e.Message);
+                IsEverythingOk = false;
+                return;
             }
 
-            using (var reader = new StreamReader(layoutStreamData))
-            {
-                response = reader.ReadToEnd();
-            }
+        });
+    }
 
-            layoutStreamData.Dispose();
-            return response;
+    private async Task LogMeetingDetails(ListOfStreamData filesTime)
+    {
+        var logFileAddress = Path.Combine(WorkFolderPath, "Log.txt");
+        StringBuilder sb = new();
+        sb.AppendLine($"File Name : {FileName}");
+        sb.AppendLine($"Meeting time : {Helper.Time.ConvertUintToDurationV2(EndRoomTime)}");
+        sb.AppendLine($"Count of audio file : {filesTime.AudioStreamData.Count}");
 
+        foreach (var streamData in filesTime.AudioStreamData)
+        {
+            sb.AppendLine($" + {streamData.FileNames} {Helper.Time.ConvertUintToDurationV2(streamData.Length)}");
         }
 
-        private void DownloadSlides(PdfDetail pdfDetail, string baseUrlAddressForDownload, List<Cookie> Cookies)
+        sb.AppendLine("".PadLeft(10, '-'));
+        sb.AppendLine($"Count of video file : {filesTime.ScreenStreamData.Count}");
+
+        foreach (var streamData in filesTime.ScreenStreamData)
         {
-            for (int i = 1; i <= pdfDetail.PageNumber; i++)
-            {
-                string fileUrl = baseUrlAddressForDownload + i + ".swf";
+            sb.AppendLine($" + {streamData.FileNames} {Helper.Time.ConvertUintToDurationV2(streamData.Length)}");
+        }
+        
+        sb.AppendLine("".PadLeft(10, '-'));
+        sb.AppendLine($"Count of video file : {filesTime.WebCamStreamData.Count}");
 
-                string counter = "";
-                for (int j = 0; j < pdfDetail.PageNumber.ToString().Length - i.ToString().Length; j++)
-                    counter += "0";
-
-                string filePath = Path.Combine(SwfFolder, counter + i + ".swf");
-
-                try
-                {
-                    bool checkProblemWithFile = WebManager.GetStreamData(fileUrl, Cookies, WebManager.HttpContentType.Flash, filePath, true);
-                    if (checkProblemWithFile == false)
-                    {
-                        MessageBox.Show("We Have Problem Try Again");
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-
-            }
+        foreach (var streamData in filesTime.WebCamStreamData)
+        {
+            sb.AppendLine($" + {streamData.FileNames} {Helper.Time.ConvertUintToDurationV2(streamData.Length)}");
         }
 
-        private void GetFinalVideo(ListOfStreamData filesTime, uint endTime, string finalVideoAddress, string finalAudioAddress)
-        {
-            //CustomVideoForGetResolution = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
+        sb.AppendLine("".PadLeft(10, '='));
 
-            string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + filesTime.ScreenStreamData[0].Extension), FFMPEGAddress);
+        await File.AppendAllTextAsync(logFileAddress, sb.ToString(), Encoding.UTF8);
+    }
+
+    private void FixVideoTime(ListOfStreamData filesTime, string extractFolder)
+    {
+        int counter = 0;
+        foreach (var videoStream in filesTime.ScreenStreamData)
+        {
+            var fileAddress = Path.Combine(extractFolder, videoStream.FileNames + videoStream.Extension);
+            var outputFileAddress = Path.Combine(extractFolder, videoStream.FileNames + $"_{counter}_" + videoStream.Extension);
+
+            Application.FFMPEGManager.FixVideoTime(fileAddress, outputFileAddress, FFMPEGAddress);
+            var time = FFMPEGManager.GetVideoTime(outputFileAddress, FFMPEGAddress);
+
+            videoStream.StartFilesTime += (videoStream.EndFilesTime - videoStream.StartFilesTime) - Helper.Time.ConvertTimeToMilisecond(time);
+            videoStream.FileNames += $"_{counter}_";
+            counter++;
+        }
+    }
+
+    private bool CheckWebcam(ListOfStreamData streamsData, string finalAudioAddress, string finalVideoAddress)
+    {
+        if (streamsData.WebCamStreamData.Count != 0)
+        {
+            var firstWebcamVideo = streamsData.WebCamStreamData[0];
+            CustomVideoForGetResolution = Path.Combine(ExtractFolder, firstWebcamVideo.FileNames + ".flv");
+
+            string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, firstWebcamVideo.FileNames + ".flv"), FFMPEGAddress);
 
             VideoManager.FFMPEGManager = FFMPEGManager;
-            var videoLine = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
-            //var videoLine = VideoManager.GetVideoLineV2(filesTime.ScreenStreamData, endTime, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
-
-            var ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLine, finalAudioAddress, finalVideoAddress);
+            var videoLines = VideoManager.GetVideoLine(streamsData.WebCamStreamData, EndRoomTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder, "WebCamVideo");
+            string webcamVideoFileAddress = Path.Combine(WorkFolderPath, FileName + ".webcam_WithoutAudio.flv");
+            string ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLines, webcamVideoFileAddress);
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName = FFMPEGAddress;
             processStartInfo.Arguments = ffmpegCommand;
             FFMPEGManager.RunProcess(processStartInfo);
+            string finalVideoAddressForWebcam = Path.Combine(WorkFolderPath, FileName + ".webcam_WithAudio.flv");
 
-            FixVideosLabel.ForeColor = Color.Green;
-        }
-
-        private ListOfStreamData GetStreamData(string xmlFileData)
-        {
-            if (xmlFileData == null)
-                return null;
-
-            EndRoomTime = XmlReader.FindEndOfTimeV2(xmlFileData);
-            //var filesTime = XmlReader.FindTimesOfFiles(FileManager.GetZipFilesName(ZipFileAddress), xmlFileData, EndRoomTime); // Old code
-            var filesTime = XmlReader.FindTimesOfFilesV2(xmlFileData);
-            FileManager.CheckHealthyFiles(filesTime, ExtractFolder, FFMPEGAddress);
-            return filesTime;
-        }
-
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure ? ", "Cancel", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (string.IsNullOrEmpty(finalVideoAddress))
             {
-                CancelProcess = true;
-                IsEverythingOk = false;
-                FFMPEGManager.CurrentProcess?.Kill();
-                SwfManager.CancelProcess = true;
-                SwfManager.CurrentProcess?.Kill();
+                processStartInfo.Arguments = $"-hide_banner -i \"{finalAudioAddress}\" -i \"{webcamVideoFileAddress}\" -map 0:a -map 1:v -c:v copy -c:a copy -shortest -y \"{finalVideoAddressForWebcam}\"";
+            }
+            else
+            {
+                string screenShareRes = FFMPEGManager.GetVideosResolution(finalVideoAddress, FFMPEGAddress);
+                string webcamRes = FFMPEGManager.GetVideosResolution(webcamVideoFileAddress, FFMPEGAddress);
+                int fullWidthRes = int.Parse(screenShareRes.Split('x')[0]) - int.Parse(webcamRes.Split('x')[0]);
+
+                processStartInfo.Arguments = $"-hide_banner -i \"{finalVideoAddress}\"  -i \"{webcamVideoFileAddress}\" " +
+                                             $"-filter_complex \"color=s={fullWidthRes + "x" + int.Parse(screenShareRes.Split('x')[1])}:c=black[base]; [0:v] setpts=PTS-STARTPTS[upperleft];[1:v]setpts=PTS-STARTPTS[upperright]; [base][upperleft]overlay=shortest=1[tmp1]; [tmp1][upperright] overlay=shortest=1:x={screenShareRes.Split('x')[0]}\"  -map 0:a -c:a copy -y -shortest \"{finalVideoAddressForWebcam}\"";
+            }
+
+            FFMPEGManager.RunProcess(processStartInfo);
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public bool DownloadAssetsMethod2(string baseUrl, string xmlFileData, List<Cookie> cookies, string outputFolder)
+    {
+        var baseDownloadAssetUrls = XmlReader.GetDefaultPdfPathForDownload(xmlFileData, baseUrl);
+
+        if (baseDownloadAssetUrls.Count != 0 && cookies.Count != 0)
+        {
+            int counter = 1;
+            foreach (var baseDownloadAddress in baseDownloadAssetUrls)
+            {
+                string response = GetDataForPdf(baseDownloadAddress);
+
+                if (response == null)
+                    continue;
+
+                var pdfDetail = XmlReader.GetPdfDetail(response);
+                pdfDetail.FileName = Path.Combine(outputFolder, $"Pdf {counter}.pdf");
+
+                if (CancelProcess == true)
+                {
+                    MessageBox.Show("Process Caneled");
+                    return false;
+                }
+
+                DownloadSlides(pdfDetail, baseDownloadAddress, cookies);
+
+                if (CancelProcess == true)
+                {
+                    MessageBox.Show("Process Caneled");
+                    return false;
+                }
+
+                SwfManager.ConvertSwfToPdf(pdfDetail, SwfFolder);
+                counter++;
+                Directory.Delete(SwfFolder, true);
+                Directory.CreateDirectory(SwfFolder);
+            }
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private string? GetDataForPdf(string defaultAddress)
+    {
+
+        var xmlPdfFileNames = defaultAddress + "layout.xml";
+        var layoutStreamData = WebManager.GetStreamData(xmlPdfFileNames, Cookies, HttpContentTypeEnum.Xml);
+        var response = string.Empty;
+
+        if (layoutStreamData is null)
+        {
+            return null;
+        }
+
+        using (var reader = new StreamReader(layoutStreamData))
+        {
+            response = reader.ReadToEnd();
+        }
+
+        layoutStreamData.Dispose();
+        return response;
+
+    }
+
+    private void DownloadSlides(PdfDetail pdfDetail, string baseUrlAddressForDownload, List<Cookie> Cookies)
+    {
+        for (int i = 1; i <= pdfDetail.PageNumber; i++)
+        {
+            string fileUrl = baseUrlAddressForDownload + i + ".swf";
+
+            string counter = "";
+            for (int j = 0; j < pdfDetail.PageNumber.ToString().Length - i.ToString().Length; j++)
+                counter += "0";
+
+            string filePath = Path.Combine(SwfFolder, counter + i + ".swf");
+
+            try
+            {
+                bool checkProblemWithFile = WebManager.GetStreamData(fileUrl, Cookies, HttpContentTypeEnum.Flash, filePath, true);
+                if (checkProblemWithFile == false)
+                {
+                    MessageBox.Show("We Have Problem Try Again");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
 
         }
+    }
 
-        private void ProcessForm_FormClosing(object sender, FormClosingEventArgs e)
+    private void GetFinalVideo(ListOfStreamData filesTime, uint endTime, string finalVideoAddress, string finalAudioAddress)
+    {
+        //CustomVideoForGetResolution = Path.Combine(WorkFolderPath, filesTime.ScreenStreamData[0].FileNames + ".flv");
+
+        string videoSize = FFMPEGManager.GetVideosResolution(Path.Combine(ExtractFolder, filesTime.ScreenStreamData[0].FileNames + filesTime.ScreenStreamData[0].Extension), FFMPEGAddress);
+
+        VideoManager.FFMPEGManager = FFMPEGManager;
+        var videoLine = VideoManager.GetVideoLine(filesTime.ScreenStreamData, endTime, ExtractFolder, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
+        //var videoLine = VideoManager.GetVideoLineV2(filesTime.ScreenStreamData, endTime, ExtractFolder, videoSize, NotAvailableVideoImageAddress, ExtractFolder);
+
+        var ffmpegCommand = FFMPEGManager.CreateConcatFile(videoLine, finalAudioAddress, finalVideoAddress);
+        ProcessStartInfo processStartInfo = new ProcessStartInfo();
+        processStartInfo.FileName = FFMPEGAddress;
+        processStartInfo.Arguments = ffmpegCommand;
+        FFMPEGManager.RunProcess(processStartInfo);
+
+        FixVideosLabel.ForeColor = Color.Green;
+    }
+
+    private ListOfStreamData? GetStreamData(string xmlFileData)
+    {
+        if (string.IsNullOrEmpty(xmlFileData))
         {
-            if (Directory.Exists(ExtractFolder))
-                Directory.Delete(ExtractFolder, true);
+            return null;
+        }
 
+        EndRoomTime = XmlReader.FindEndOfTimeV2(xmlFileData);
+        var filesTime = XmlReader.FindTimesOfFilesV2(xmlFileData);
+        var listOfStreamData = FileManager.CheckFiles(filesTime, ExtractFolder, FFMPEGAddress);
+        return listOfStreamData;
+    }
 
-            if (Directory.Exists(SwfFolder))
-                Directory.Delete(SwfFolder, true);
+    private void CancelButton_Click(object sender, EventArgs e)
+    {
+        if (MessageBox.Show("Are you sure ? ", "Cancel", MessageBoxButtons.YesNo) == DialogResult.Yes)
+        {
+            CancelProcess = true;
+            IsEverythingOk = false;
+            FFMPEGManager.CurrentProcess?.Kill();
+            SwfManager.CancelProcess = true;
+            SwfManager.CurrentProcess?.Kill();
         }
 
     }
+
+    private void ProcessForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (Directory.Exists(ExtractFolder))
+            Directory.Delete(ExtractFolder, true);
+
+
+        if (Directory.Exists(SwfFolder))
+            Directory.Delete(SwfFolder, true);
+    }
+
 }

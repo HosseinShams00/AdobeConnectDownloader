@@ -1,4 +1,5 @@
 ﻿using System;
+using AdobeConnectDownloader.Enums;
 
 namespace AdobeConnectDownloader.Model
 {
@@ -9,6 +10,7 @@ namespace AdobeConnectDownloader.Model
         public uint StartFilesTime { get; set; }
         public uint EndFilesTime { get; set; }
         public uint Length { get; set; }
+        public StreamContentTypeEnum StreamContentTypeEnum { get; set; } = StreamContentTypeEnum.Empty;
 
     }
 }
