@@ -271,7 +271,8 @@ public partial class ProcessForm : Form
                 }
 
                 AudioManager.FFMPEGManager = FFMPEGManager;
-                string finalAudioAddress = AudioManager.MatchAllAudio(filesTime.AudioStreamData, FileName, ExtractFolder, WorkFolderPath, FFMPEGAddress);
+                //string finalAudioAddress = AudioManager.MatchAllAudio(filesTime.AudioStreamData, FileName, ExtractFolder, WorkFolderPath, FFMPEGAddress);
+                string finalAudioAddress = @"E:\test adob downloader\Bug Report\Error 2\bug report.Audio.flv";
 
                 FixAudiosLabel.ForeColor = Color.Green;
 
@@ -285,8 +286,8 @@ public partial class ProcessForm : Form
                 if (filesTime.ScreenStreamData.Count != 0)
                 {
                     finalVideoAddress = Path.Combine(WorkFolderPath, $"{FileName}.Video.flv");
-                    FixVideoTime(filesTime, ExtractFolder);
-                    GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
+                    //FixVideoTime(filesTime, ExtractFolder);
+                    //GetFinalVideo(filesTime, EndRoomTime, finalVideoAddress, finalAudioAddress);
                 }
                 else
                 {
@@ -295,7 +296,7 @@ public partial class ProcessForm : Form
 
                 bool meetingHaveWebcamVideo = filesTime.WebCamStreamData.Count == 0;
 
-                if (meetingHaveWebcamVideo)
+                if (meetingHaveWebcamVideo == false)
                 {
                     var confirmWebcam = MessageBox.Show("your meeting have webcam video do you need to process this ?", null, MessageBoxButtons.YesNo);
                     if (confirmWebcam == DialogResult.Yes)
@@ -388,7 +389,7 @@ public partial class ProcessForm : Form
             processStartInfo.FileName = FFMPEGAddress;
             processStartInfo.Arguments = ffmpegCommand;
             FFMPEGManager.RunProcess(processStartInfo);
-            string finalVideoAddressForWebcam = Path.Combine(WorkFolderPath, FileName + ".webcam_WithAudio.flv");
+            string finalVideoAddressForWebcam = Path.Combine(WorkFolderPath, FileName + ".MeetingWithWebcam.flv");
 
             if (string.IsNullOrEmpty(finalVideoAddress))
             {
