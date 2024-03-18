@@ -542,9 +542,11 @@ public partial class ProcessForm : Form
             return null;
         }
 
-        EndRoomTime = XmlReader.FindEndOfTimeV2(xmlFileData);
+        //EndRoomTime = XmlReader.FindEndOfTimeV2(xmlFileData);
         var filesTime = XmlReader.FindTimesOfFilesV2(xmlFileData);
         var listOfStreamData = FileManager.CheckFiles(filesTime, ExtractFolder, FFMPEGAddress);
+        EndRoomTime = filesTime.Max(x => x.EndFilesTime);
+
         return listOfStreamData;
     }
 
