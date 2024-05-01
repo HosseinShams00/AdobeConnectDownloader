@@ -205,7 +205,6 @@ public partial class ProcessForm : Form
 
                 ListOfStreamData? filesTime = GetStreamData(xmlFileData);
 
-                xmlFileData = string.Empty;
 
                 if (filesTime is null)
                 {
@@ -257,6 +256,9 @@ public partial class ProcessForm : Form
                 }
 
                 ChangeStatusInForm("Make Audio", true);
+
+                xmlFileData = string.Empty;
+
 
                 if (JustDownloadFiles)
                 {
@@ -439,7 +441,7 @@ public partial class ProcessForm : Form
             {
                 string response = GetDataForPdf(baseDownloadAddress);
 
-                if (response == null)
+                if (string.IsNullOrEmpty(response))
                     continue;
 
                 var pdfDetail = XmlReader.GetPdfDetail(response);

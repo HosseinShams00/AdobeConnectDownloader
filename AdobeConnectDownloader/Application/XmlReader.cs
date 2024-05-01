@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -170,74 +171,130 @@ namespace AdobeConnectDownloader.Application
 
         public static List<string> GetDefaultPdfPathForDownload(string xmlFileData, string host)
         {
-            string playbackContentOutputPathStart = "<playbackContentOutputPath><![CDATA[";
-            string playbackContentOutputPathEnd = "]]></playbackContentOutputPath>";
-            int counter = 1;
+            string playbackContentOutputPathStart = "<playbackContentOutputPath><!\\[CDATA\\[";
+            string playbackContentOutputPathEnd = "\\]\\]></playbackContentOutputPath>";
+            string pattern = $"{playbackContentOutputPathStart}(.*?){playbackContentOutputPathEnd}";
+
 
             List<string> results = new List<string>();
 
-            while (true)
+            MatchCollection matches = Regex.Matches(xmlFileData, pattern, RegexOptions.Singleline);
+            foreach (Match match in matches)
             {
-                int indexData1 = xmlFileData.IndexOf(playbackContentOutputPathStart, counter);
-                if (indexData1 == -1)
-                    break;
-                indexData1 += playbackContentOutputPathStart.Length;
-
-                int indexData2 = xmlFileData.IndexOf(playbackContentOutputPathEnd, indexData1);
-                string result = xmlFileData.Substring(indexData1, (indexData2 - indexData1));
-                counter = indexData2 + playbackContentOutputPathEnd.Length;
-
-                if (result.Trim() != "")
+                string result = match.Groups[1].Value;
+                if (!string.IsNullOrWhiteSpace(result))
                 {
                     results.Add(result);
                 }
-
             }
 
-            List<string> resultWitoutDuplicateValue = results.Distinct().ToList();
-            for (int i = 0; i < resultWitoutDuplicateValue.Count; i++)
+            List<string> resultWithoutDuplicateValue = results.Distinct().ToList();
+            for (int i = 0; i < resultWithoutDuplicateValue.Count; i++)
             {
-                string value1 = resultWitoutDuplicateValue[i].Substring(5);
-                resultWitoutDuplicateValue[i] = $"{host}{value1}data/";
+                string value1 = resultWithoutDuplicateValue[i].Substring(5);
+                resultWithoutDuplicateValue[i] = $"{host}{value1}data/";
             }
 
-
-            return resultWitoutDuplicateValue;
-
+            return resultWithoutDuplicateValue;
         }
+
+        //public static List<string> GetDefaultPdfPathForDownload(string xmlFileData, string host)
+        //{
+        //    string playbackContentOutputPathStart = "<playbackContentOutputPath><![CDATA[";
+        //    string playbackContentOutputPathEnd = "]]></playbackContentOutputPath>";
+        //    int counter = 1;
+
+        //    List<string> results = new List<string>();
+
+        //    while (true)
+        //    {
+        //        int indexData1 = xmlFileData.IndexOf(playbackContentOutputPathStart, counter);
+        //        if (indexData1 == -1)
+        //            break;
+        //        indexData1 += playbackContentOutputPathStart.Length;
+
+        //        int indexData2 = xmlFileData.IndexOf(playbackContentOutputPathEnd, indexData1);
+        //        string result = xmlFileData.Substring(indexData1, (indexData2 - indexData1));
+        //        counter = indexData2 + playbackContentOutputPathEnd.Length;
+
+        //        if (result.Trim() != "")
+        //        {
+        //            results.Add(result);
+        //        }
+
+        //    }
+
+        //    List<string> resultWitoutDuplicateValue = results.Distinct().ToList();
+        //    for (int i = 0; i < resultWitoutDuplicateValue.Count; i++)
+        //    {
+        //        string value1 = resultWitoutDuplicateValue[i].Substring(5);
+        //        resultWitoutDuplicateValue[i] = $"{host}{value1}data/";
+        //    }
+
+
+        //    return resultWitoutDuplicateValue;
+
+        //}
 
         public static PdfDetail GetPdfDetail(string xmlData)
         {
+            #region old code
+
+            //PdfDetail pdfDetail = new PdfDetail();
+
+            //string pageNumberStr = "<Pages Number=\"";
+            //int indexPageNumber = xmlData.IndexOf(pageNumberStr) + pageNumberStr.Length;
+            //int index2 = xmlData.IndexOf("\"", indexPageNumber);
+            //string pageNumber = xmlData.Substring(indexPageNumber, index2 - indexPageNumber);
+
+            //pdfDetail.PageNumber = int.Parse(pageNumber);
+
+            //string xValueStr = "<Page xMax=\"";
+            //int indexXvalue = xmlData.IndexOf(xValueStr, index2) + xValueStr.Length;
+            //index2 = xmlData.IndexOf("\"", indexXvalue);
+            //string xMaxSize = xmlData.Substring(indexXvalue, index2 - indexXvalue);
+
+            //if (xMaxSize.IndexOf(".") != -1)
+            //    pdfDetail.XSize = int.Parse(xMaxSize.Split('.')[0]) + 1;
+            //else
+            //    pdfDetail.XSize = int.Parse(xMaxSize);
+
+
+            //string yValueStr = "yMax=\"";
+            //int indexYvalue = xmlData.IndexOf(yValueStr, index2) + yValueStr.Length;
+            //index2 = xmlData.IndexOf("\"", indexYvalue);
+            //string yMaxSize = xmlData.Substring(indexYvalue, index2 - indexYvalue);
+
+            //if (xMaxSize.IndexOf(".") != -1)
+            //    pdfDetail.YSize = int.Parse(yMaxSize.Split('.')[0]) + 1;
+            //else
+            //    pdfDetail.YSize = int.Parse(yMaxSize);
+
+
+            //return pdfDetail;
+
+            #endregion
+
+
             PdfDetail pdfDetail = new PdfDetail();
 
-            string pageNumberStr = "<Pages Number=\"";
-            int indexPageNumber = xmlData.IndexOf(pageNumberStr) + pageNumberStr.Length;
-            int index2 = xmlData.IndexOf("\"", indexPageNumber);
-            string pageNumber = xmlData.Substring(indexPageNumber, index2 - indexPageNumber);
+            Match pageNumberMatch = Regex.Match(xmlData, "<Pages Number=\"(\\d+)\"");
+            if (pageNumberMatch.Success)
+            {
+                pdfDetail.PageNumber = int.Parse(pageNumberMatch.Groups[1].Value);
+            }
 
-            pdfDetail.PageNumber = int.Parse(pageNumber);
+            Match xSizeMatch = Regex.Match(xmlData, "<Page xMax=\"(\\d+)\\.?\\d*\"");
+            if (xSizeMatch.Success)
+            {
+                pdfDetail.XSize = int.Parse(xSizeMatch.Groups[1].Value) + 1;
+            }
 
-            string xValueStr = "<Page xMax=\"";
-            int indexXvalue = xmlData.IndexOf(xValueStr, index2) + xValueStr.Length;
-            index2 = xmlData.IndexOf("\"", indexXvalue);
-            string xMaxSize = xmlData.Substring(indexXvalue, index2 - indexXvalue);
-
-            if (xMaxSize.IndexOf(".") != -1)
-                pdfDetail.XSize = int.Parse(xMaxSize.Split('.')[0]) + 1;
-            else
-                pdfDetail.XSize = int.Parse(xMaxSize);
-
-
-            string yValueStr = "yMax=\"";
-            int indexYvalue = xmlData.IndexOf(yValueStr, index2) + yValueStr.Length;
-            index2 = xmlData.IndexOf("\"", indexYvalue);
-            string yMaxSize = xmlData.Substring(indexYvalue, index2 - indexYvalue);
-
-            if (xMaxSize.IndexOf(".") != -1)
-                pdfDetail.YSize = int.Parse(yMaxSize.Split('.')[0]) + 1;
-            else
-                pdfDetail.YSize = int.Parse(yMaxSize);
-
+            Match ySizeMatch = Regex.Match(xmlData, "yMax=\"(\\d+)\\.?\\d*\"");
+            if (ySizeMatch.Success)
+            {
+                pdfDetail.YSize = int.Parse(ySizeMatch.Groups[1].Value) + 1;
+            }
 
             return pdfDetail;
         }
