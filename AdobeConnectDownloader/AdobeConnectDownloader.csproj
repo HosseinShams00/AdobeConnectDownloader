@@ -5,8 +5,8 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
-    <FileVersion>1.4</FileVersion>
-    <AssemblyVersion>1.4</AssemblyVersion>
+    <FileVersion>1.4.1</FileVersion>
+    <AssemblyVersion>1.4.1</AssemblyVersion>
     <Description>This program made for download adobe connect files</Description>
     <PackageLicenseFile>C:\Users\Anonymous\Desktop\LICENSE.txt</PackageLicenseFile>
     <Copyright>Copyright (c) AdobeConnectDownloader . All rights reserved.</Copyright>
@@ -14,9 +14,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.18" />
-    <PackageReference Include="Octokit" Version="10.0.0" />
-    <PackageReference Include="Octokit.Reactive" Version="10.0.0" />
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.19" />
+    <PackageReference Include="Octokit" Version="11.0.1" />
+    <PackageReference Include="Octokit.Reactive" Version="11.0.1" />
   </ItemGroup>
 
   <ItemGroup>
