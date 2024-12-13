@@ -74,7 +74,7 @@ namespace AdobeConnectDownloader.Application
 
         public static Cookie? GetSessionCookieFrom(string url)
         {
-            string sessionStr = "?session=";
+            string sessionStr = "?OWASP_CSRFTOKEN=";
             string sessionCookie = String.Empty;
 
             if (url.Contains(sessionStr))
