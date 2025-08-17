@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -75,7 +76,7 @@ namespace AdobeConnectDownloader.Application
         public static Cookie? GetSessionCookieFrom(string url)
         {
             string sessionStr = "?session=";
-            string sessionCookie = String.Empty;
+            string? sessionCookie = null;
 
             if (url.Contains(sessionStr))
             {
@@ -95,13 +96,12 @@ namespace AdobeConnectDownloader.Application
             }
         }
 
-        public async Task<bool> DownloadFile(string url, string fileAddress, Cookie cookie)
+        public async Task<bool> DownloadFile(string url, string fileAddress, List<Cookie> cookies)
         {
             WebClient client = new WebClient();
-            string CookiesStr = $"{cookie.Name}={cookie.Value}";
+            string cookie = string.Join(";", cookies.Select(q => $"{q.Name}={q.Value}").ToList());
 
-            client.Headers.Add(HttpRequestHeader.Cookie, CookiesStr);
-
+            client.Headers.Add(HttpRequestHeader.Cookie, cookie);
             client.DownloadProgressChanged += Client_DownloadProgressChanged;
             client.DownloadFileCompleted += Client_DownloadFileCompleted;
             webClient = client;
@@ -137,8 +137,12 @@ namespace AdobeConnectDownloader.Application
             PercentageChange?.Invoke(percentage, bytesIn, totalBytes);
         }
 
-        public static List<Cookie> GetCookieForm(string url, Cookie cookie)
+        public static List<Cookie> GetCookieForm(string url, Cookie? cookie)
         {
+            if (cookie is null)
+            {
+                return new List<Cookie>();
+            }
             HttpWebRequest webRequest = WebRequest.CreateHttp(url);
             webRequest.Method = "HEAD";
             webRequest.CookieContainer = new CookieContainer();
@@ -296,6 +300,6 @@ namespace AdobeConnectDownloader.Application
             HttpContentTypeEnum.Zip => "application/zip",
             HttpContentTypeEnum.All => "*/*"
         };
-        
+
     }
 }
