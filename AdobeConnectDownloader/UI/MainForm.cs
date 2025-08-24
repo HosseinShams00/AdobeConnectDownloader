@@ -13,6 +13,7 @@ using Octokit;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using AdobeConnectDownloader.Enums;
+using Microsoft.Web.WebView2.WinForms;
 
 namespace AdobeConnectDownloader.UI
 {
@@ -24,6 +25,8 @@ namespace AdobeConnectDownloader.UI
         public string SwfFileAddress = Path.Combine(System.Windows.Forms.Application.StartupPath, "Tools", "swfrender.exe");
         public string SwfAddress = Path.Combine(@"C:\\", "Swf Files");
         private SwfManager _swfManager;
+
+        public List<Cookie>? Cookies { get; set; } = new List<Cookie>();
 
         public MainForm()
         {
@@ -63,7 +66,7 @@ namespace AdobeConnectDownloader.UI
 
         }
 
-        
+
         private void LinkProcessorButton_Click(object sender, EventArgs e)
         {
             using var newFileData = new AddNewFileForDownloadForm();
@@ -253,6 +256,10 @@ namespace AdobeConnectDownloader.UI
             processForm.WorkFolderPath = workFolderPath;
             processForm.JustDownloadFiles = justDownloadFiles;
             processForm.ZipFileAddress = zipFileAddress;
+            if (Cookies is not null || Cookies.Count > 0)
+            {
+                processForm.Cookies = Cookies;
+            }
             return processForm;
         }
 
@@ -337,6 +344,8 @@ namespace AdobeConnectDownloader.UI
             var assetsUrl = WebManager.GetAssetsDownloadUrl(newFileData.Url);
             var cookies = WebManager.GetCookieForm(newFileData.Url, WebManager.GetSessionCookieFrom(newFileData.Url));
 
+            Cookies.AddRange(cookies);
+
             if (cookies.Count == 0)
             {
                 MessageBox.Show("Have a problem try again and make sure you login adobe connect server.");
@@ -362,14 +371,14 @@ namespace AdobeConnectDownloader.UI
                 var baseUrl = newFileData.Url.Substring(0, newFileData.Url.IndexOf("/", 9) + 1);
 
 
-                WebManager.GetFiles(baseUrl, xmlData, cookies, folderBrowserDialog.SelectedPath);
+                WebManager.GetFiles(baseUrl, xmlData, Cookies, folderBrowserDialog.SelectedPath);
 
-                var checkAssetsMethod = WebManager.DownloadAssetsMethod1(assetsUrl, cookies, folderBrowserDialog.SelectedPath);
+                var checkAssetsMethod = WebManager.DownloadAssetsMethod1(assetsUrl, Cookies, folderBrowserDialog.SelectedPath);
 
 
                 if (checkAssetsMethod == false)
                 {
-                    var method2 = DownloadAssetsMethod2(xmlData, newFileData.Url, cookies, folderBrowserDialog.SelectedPath);
+                    var method2 = DownloadAssetsMethod2(xmlData, newFileData.Url, Cookies, folderBrowserDialog.SelectedPath);
 
                     MessageBox.Show(method2 == true ? "Completed" : "Failed");
                 }
@@ -440,5 +449,18 @@ namespace AdobeConnectDownloader.UI
 
             }
         }
+
+        private void ExternalLoginWebBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            var webBrowserForm = new WebBrowser();
+            webBrowserForm.ShowDialog();
+            if (webBrowserForm.ExtractedCookies != null || webBrowserForm.ExtractedCookies.Count > 0)
+            {
+                Cookies.AddRange(webBrowserForm.ExtractedCookies);
+            }
+            this.Show();
+        }
+
     }
 }

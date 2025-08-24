@@ -61,7 +61,7 @@ public partial class ProcessForm : Form
     public VideoManager? VideoManager = null;
 
     public DataGridView? QueueDataGridView { get; set; } = null;
-    private List<Cookie> Cookies { get; set; } = new List<Cookie>();
+    public List<Cookie> Cookies { get; set; } = new List<Cookie>();
     public uint EndRoomTime { get; private set; }
 
     public ProcessForm()
@@ -107,7 +107,7 @@ public partial class ProcessForm : Form
         {
             ZipFileAddress = Path.Combine(WorkFolderPath, downloadUrl.FileId + ".zip");
             var sessionCookie = WebManager.GetSessionCookieFrom(url);
-            Cookies = WebManager.GetCookieForm(url, sessionCookie);
+            Cookies.AddRange(WebManager.GetCookieForm(url, sessionCookie));
 
             var isUrlWrong = WebManager.IsUrlWrong(downloadUrl.Url, Cookies);
             if (isUrlWrong == true)
@@ -117,7 +117,7 @@ public partial class ProcessForm : Form
                 return;
             }
 
-            await WebManager.DownloadFile(downloadUrl.Url, ZipFileAddress, sessionCookie);
+            await WebManager.DownloadFile(downloadUrl.Url, ZipFileAddress, Cookies);
             return;
 
         }
@@ -455,6 +455,7 @@ public partial class ProcessForm : Form
 
                 DownloadSlides(pdfDetail, baseDownloadAddress, cookies);
 
+                
                 if (CancelProcess == true)
                 {
                     MessageBox.Show("Process Caneled");
