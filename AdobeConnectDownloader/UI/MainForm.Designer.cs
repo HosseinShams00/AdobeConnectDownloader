@@ -46,10 +46,10 @@
             convertFlvvideoToMp4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             convertFlvAudioToMP3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             downloadPdfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            ExternalLoginWebBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             zipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             mergeZipFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DownloadQueueDesignComponent = new DesignComponent(components);
-            openWebBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             DataGridContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ProcessDataGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -185,7 +185,7 @@
             // 
             // ToolsStripMenuItem
             // 
-            ToolsStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { convertFlvvideoToMp4ToolStripMenuItem, convertFlvAudioToMP3ToolStripMenuItem, downloadPdfToolStripMenuItem, openWebBrowserToolStripMenuItem });
+            ToolsStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { convertFlvvideoToMp4ToolStripMenuItem, convertFlvAudioToMP3ToolStripMenuItem, downloadPdfToolStripMenuItem, ExternalLoginWebBrowserToolStripMenuItem });
             ToolsStripMenuItem.Name = "ToolsStripMenuItem";
             ToolsStripMenuItem.Size = new System.Drawing.Size(58, 24);
             ToolsStripMenuItem.Text = "Tools";
@@ -210,6 +210,13 @@
             downloadPdfToolStripMenuItem.Size = new System.Drawing.Size(268, 26);
             downloadPdfToolStripMenuItem.Text = "Download Pdf";
             downloadPdfToolStripMenuItem.Click += downloadPdfToolStripMenuItem_Click;
+            // 
+            // ExternalLoginWebBrowserToolStripMenuItem
+            // 
+            ExternalLoginWebBrowserToolStripMenuItem.Name = "ExternalLoginWebBrowserToolStripMenuItem";
+            ExternalLoginWebBrowserToolStripMenuItem.Size = new System.Drawing.Size(268, 26);
+            ExternalLoginWebBrowserToolStripMenuItem.Text = "External Login Browser";
+            ExternalLoginWebBrowserToolStripMenuItem.Click += ExternalLoginWebBrowserToolStripMenuItem_Click;
             // 
             // zipToolStripMenuItem
             // 
@@ -236,13 +243,6 @@
             DownloadQueueDesignComponent.UpRight = true;
             DownloadQueueDesignComponent.XRadius = 7F;
             DownloadQueueDesignComponent.YRadius = 8F;
-            // 
-            // openWebBrowserToolStripMenuItem
-            // 
-            openWebBrowserToolStripMenuItem.Name = "openWebBrowserToolStripMenuItem";
-            openWebBrowserToolStripMenuItem.Size = new System.Drawing.Size(268, 26);
-            openWebBrowserToolStripMenuItem.Text = "Open Web Browser";
-            openWebBrowserToolStripMenuItem.Click += openWebBrowserToolStripMenuItem_Click;
             // 
             // MainForm
             // 
@@ -288,6 +288,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn UrlColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn FileFolderAddressColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn FileTypeColumn;
-        private System.Windows.Forms.ToolStripMenuItem openWebBrowserToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExternalLoginWebBrowserToolStripMenuItem;
     }
 }

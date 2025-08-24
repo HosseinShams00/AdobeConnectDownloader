@@ -450,7 +450,7 @@ namespace AdobeConnectDownloader.UI
             }
         }
 
-        private void openWebBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExternalLoginWebBrowserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Hide();
             var webBrowserForm = new WebBrowser();
@@ -461,5 +461,6 @@ namespace AdobeConnectDownloader.UI
             }
             this.Show();
         }
+
     }
 }
