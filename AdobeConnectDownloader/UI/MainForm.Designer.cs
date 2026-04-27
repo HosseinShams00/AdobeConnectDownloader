@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             DataGridContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(components);
             editSaveFolderAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -253,6 +254,7 @@
             Controls.Add(ProcessDataGridView);
             Controls.Add(ProcessQueueButton);
             Controls.Add(AddToQueueButton);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             Name = "MainForm";

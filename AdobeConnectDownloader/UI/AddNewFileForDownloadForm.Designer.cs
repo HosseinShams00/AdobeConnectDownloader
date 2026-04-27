@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddNewFileForDownloadForm));
             SubmitButton = new System.Windows.Forms.Button();
             UrlOrPathFileLabel = new System.Windows.Forms.Label();
             UrlOrPathFileTextBox = new System.Windows.Forms.TextBox();
@@ -45,9 +46,10 @@
             SubmitButton.Enabled = false;
             SubmitButton.FlatAppearance.BorderSize = 0;
             SubmitButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            SubmitButton.Location = new System.Drawing.Point(292, 106);
+            SubmitButton.Location = new System.Drawing.Point(334, 141);
+            SubmitButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             SubmitButton.Name = "SubmitButton";
-            SubmitButton.Size = new System.Drawing.Size(92, 38);
+            SubmitButton.Size = new System.Drawing.Size(105, 51);
             SubmitButton.TabIndex = 5;
             SubmitButton.Text = "Submit";
             SubmitButton.UseVisualStyleBackColor = false;
@@ -56,43 +58,46 @@
             // UrlOrPathFileLabel
             // 
             UrlOrPathFileLabel.AutoSize = true;
-            UrlOrPathFileLabel.Location = new System.Drawing.Point(12, 44);
+            UrlOrPathFileLabel.Location = new System.Drawing.Point(14, 59);
             UrlOrPathFileLabel.Name = "UrlOrPathFileLabel";
-            UrlOrPathFileLabel.Size = new System.Drawing.Size(88, 15);
+            UrlOrPathFileLabel.Size = new System.Drawing.Size(112, 20);
             UrlOrPathFileLabel.TabIndex = 1;
             UrlOrPathFileLabel.Text = "Url or path file :";
             // 
             // UrlOrPathFileTextBox
             // 
-            UrlOrPathFileTextBox.Location = new System.Drawing.Point(106, 41);
+            UrlOrPathFileTextBox.Location = new System.Drawing.Point(121, 55);
+            UrlOrPathFileTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             UrlOrPathFileTextBox.Name = "UrlOrPathFileTextBox";
-            UrlOrPathFileTextBox.Size = new System.Drawing.Size(519, 23);
+            UrlOrPathFileTextBox.Size = new System.Drawing.Size(593, 27);
             UrlOrPathFileTextBox.TabIndex = 2;
             UrlOrPathFileTextBox.TextChanged += UrlTextBox_TextChanged;
             // 
             // SaveInTextBox
             // 
             SaveInTextBox.Enabled = false;
-            SaveInTextBox.Location = new System.Drawing.Point(106, 70);
+            SaveInTextBox.Location = new System.Drawing.Point(121, 93);
+            SaveInTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             SaveInTextBox.Name = "SaveInTextBox";
-            SaveInTextBox.Size = new System.Drawing.Size(518, 23);
+            SaveInTextBox.Size = new System.Drawing.Size(591, 27);
             SaveInTextBox.TabIndex = 3;
             SaveInTextBox.TextChanged += SaveInTextBox_TextChanged;
             // 
             // SaveFolderLabel
             // 
             SaveFolderLabel.AutoSize = true;
-            SaveFolderLabel.Location = new System.Drawing.Point(11, 73);
+            SaveFolderLabel.Location = new System.Drawing.Point(13, 97);
             SaveFolderLabel.Name = "SaveFolderLabel";
-            SaveFolderLabel.Size = new System.Drawing.Size(50, 15);
+            SaveFolderLabel.Size = new System.Drawing.Size(63, 20);
             SaveFolderLabel.TabIndex = 4;
             SaveFolderLabel.Text = "Save in :";
             // 
             // SaveDialogButton
             // 
-            SaveDialogButton.Location = new System.Drawing.Point(630, 68);
+            SaveDialogButton.Location = new System.Drawing.Point(720, 91);
+            SaveDialogButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             SaveDialogButton.Name = "SaveDialogButton";
-            SaveDialogButton.Size = new System.Drawing.Size(43, 25);
+            SaveDialogButton.Size = new System.Drawing.Size(49, 33);
             SaveDialogButton.TabIndex = 4;
             SaveDialogButton.Text = "...";
             SaveDialogButton.UseVisualStyleBackColor = true;
@@ -100,25 +105,27 @@
             // 
             // FileNameTextBox
             // 
-            FileNameTextBox.Location = new System.Drawing.Point(106, 12);
+            FileNameTextBox.Location = new System.Drawing.Point(121, 16);
+            FileNameTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             FileNameTextBox.Name = "FileNameTextBox";
-            FileNameTextBox.Size = new System.Drawing.Size(519, 23);
+            FileNameTextBox.Size = new System.Drawing.Size(593, 27);
             FileNameTextBox.TabIndex = 2;
             // 
             // FileNamelabel
             // 
             FileNamelabel.AutoSize = true;
-            FileNamelabel.Location = new System.Drawing.Point(11, 15);
+            FileNamelabel.Location = new System.Drawing.Point(13, 20);
             FileNamelabel.Name = "FileNamelabel";
-            FileNamelabel.Size = new System.Drawing.Size(69, 15);
+            FileNamelabel.Size = new System.Drawing.Size(87, 20);
             FileNamelabel.TabIndex = 1;
             FileNamelabel.Text = "File Name : ";
             // 
             // UrlOrPathFileButton
             // 
-            UrlOrPathFileButton.Location = new System.Drawing.Point(630, 41);
+            UrlOrPathFileButton.Location = new System.Drawing.Point(720, 55);
+            UrlOrPathFileButton.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             UrlOrPathFileButton.Name = "UrlOrPathFileButton";
-            UrlOrPathFileButton.Size = new System.Drawing.Size(43, 25);
+            UrlOrPathFileButton.Size = new System.Drawing.Size(49, 33);
             UrlOrPathFileButton.TabIndex = 6;
             UrlOrPathFileButton.Text = "...";
             UrlOrPathFileButton.UseVisualStyleBackColor = true;
@@ -126,9 +133,9 @@
             // 
             // AddNewFileForDownloadForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(687, 156);
+            ClientSize = new System.Drawing.Size(785, 208);
             Controls.Add(UrlOrPathFileButton);
             Controls.Add(FileNameTextBox);
             Controls.Add(FileNamelabel);
@@ -139,6 +146,8 @@
             Controls.Add(UrlOrPathFileLabel);
             Controls.Add(SubmitButton);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             Name = "AddNewFileForDownloadForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Text = "Download File Detail";

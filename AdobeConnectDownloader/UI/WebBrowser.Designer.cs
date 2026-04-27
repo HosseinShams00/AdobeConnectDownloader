@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WebBrowser));
             UrlTextBox = new System.Windows.Forms.TextBox();
             BrowsUrlButton = new System.Windows.Forms.Button();
             WebBrowserUrlLabel = new System.Windows.Forms.Label();
@@ -93,6 +94,7 @@
             Controls.Add(WebBrowserUrlLabel);
             Controls.Add(BrowsUrlButton);
             Controls.Add(UrlTextBox);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Name = "WebBrowser";
             Text = "WebBrowser";
             ResumeLayout(false);

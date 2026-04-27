@@ -11,7 +11,12 @@
     <PackageLicenseFile>C:\Users\Anonymous\Desktop\LICENSE.txt</PackageLicenseFile>
     <Copyright>Copyright (c) AdobeConnectDownloader . All rights reserved.</Copyright>
     <Version>1.1</Version>
+    <ApplicationIcon>db5898fd-a984-45e3-b8e4-2c826d4258ff.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="db5898fd-a984-45e3-b8e4-2c826d4258ff.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.19" />

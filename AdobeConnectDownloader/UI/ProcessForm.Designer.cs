@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProcessForm));
             DownloadProcessTitleLabel = new System.Windows.Forms.Label();
             DownloadProcessLabel = new System.Windows.Forms.Label();
             StatusLabel = new System.Windows.Forms.Label();
@@ -45,7 +46,7 @@
             DownloadProcessTitleLabel.Location = new System.Drawing.Point(12, 9);
             DownloadProcessTitleLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             DownloadProcessTitleLabel.Name = "DownloadProcessTitleLabel";
-            DownloadProcessTitleLabel.Size = new System.Drawing.Size(163, 23);
+            DownloadProcessTitleLabel.Size = new System.Drawing.Size(209, 29);
             DownloadProcessTitleLabel.TabIndex = 0;
             DownloadProcessTitleLabel.Text = "Download Process";
             // 
@@ -56,7 +57,7 @@
             DownloadProcessLabel.Location = new System.Drawing.Point(226, 14);
             DownloadProcessLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             DownloadProcessLabel.Name = "DownloadProcessLabel";
-            DownloadProcessLabel.Size = new System.Drawing.Size(38, 23);
+            DownloadProcessLabel.Size = new System.Drawing.Size(50, 29);
             DownloadProcessLabel.TabIndex = 1;
             DownloadProcessLabel.Text = "0%";
             // 
@@ -68,7 +69,7 @@
             StatusLabel.Location = new System.Drawing.Point(12, 107);
             StatusLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             StatusLabel.Name = "StatusLabel";
-            StatusLabel.Size = new System.Drawing.Size(0, 26);
+            StatusLabel.Size = new System.Drawing.Size(0, 35);
             StatusLabel.TabIndex = 2;
             // 
             // CancelButton
@@ -115,7 +116,7 @@
             // 
             // ProcessForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
+            AutoScaleDimensions = new System.Drawing.SizeF(20F, 37F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(278, 195);
             Controls.Add(StatusProgressBar);
@@ -126,6 +127,7 @@
             Controls.Add(DownloadProcessTitleLabel);
             Font = new System.Drawing.Font("Times New Roman", 20F, System.Drawing.FontStyle.Bold);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(5);
             Name = "ProcessForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
