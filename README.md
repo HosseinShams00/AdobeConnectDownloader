@@ -28,7 +28,7 @@
 
 ## 🇮🇷 معرفی
 
-این برنامه مخصوص دانلود فایل‌هایی است که توسط **Adobe Connect** ساخته می‌شود و برای دانشجویان، اساتید و کارمندانی طراحی شده که می‌خواهند جلسات ضبط‌شده را بدون نیاز به نام کاربری ذخیره کنند.
+این برنامه مخصوص دانلود فایل‌هایی است که توسط **Adobe Connect** ساخته می‌شود و برای دانشجویان، اساتید و کارمندانی طراحی شده که می‌خواهند جلسات ضبط‌شده را بدون نیاز به ضبط صفحه و با بالاترین کیفیت ذخیره کنند.
 
 ---
 
@@ -37,30 +37,86 @@
 | ویژگی | توضیح |
 |-------|-------|
 | 🔐 **بدون نیاز به رمز** | نیازی به نام کاربری و رمز عبور ندارید |
+| ⚡ **استخراج مستقیم** | ارتباط مستقیم با سرور Adobe Connect — بدون افت کیفیت |
+| 🧠 **تفکیک هوشمند محتوا** | صدا، ویدیو، اسکرین‌شیر و PDF را جداگانه استخراج می‌کند |
 | 🎬 **دانلود ویدیو و صدا** | دانلود جداگانه یا ترکیب‌شده |
 | 📦 **دانلود Asset** | خروجی به صورت فایل ZIP |
 | 📄 **ساخت PDF** | حتی اگر دسترسی دانلود PDF بسته باشد |
-| 🔄 **تبدیل فرمت** | FLV به MP4، MP3 و غیره |
+| 🔄 **تبدیل فرمت** | FLV به MP4، MP3 و غیره با یک کلیک |
+| 💾 **پردازش آفلاین** | اگر ZIP را از قبل دارید، بدون دانلود مجدد پردازش می‌شود |
 | 📥 **دانلود گروهی** | چندین فایل به صورت همزمان |
 
 ---
 
-## 🚀 راهنمای استفاده
+## 🏗️ معماری و نحوه عملکرد
 
-**۱.** در سایت دانشگاه یا شرکت خود لاگین کنید
+### ⚡ استخراج مستقیم (Direct Extraction)
 
-**۲.** لینک جلسه ضبط‌شده را کپی کنید — باید شبیه این باشد:
+برخلاف نرم‌افزارهای ضبط صفحه، این ابزار مستقیماً با سرورهای Adobe Connect ارتباط برقرار کرده و سورس فایل‌ها را درخواست می‌کند. چون استخراج بر پایه فرمت‌های بومی (Native) خود Adobe انجام می‌شود، **سرعت دانلود بسیار بالاست** و کیفیت اصلی حفظ می‌شود.
 
+### 🧠 تفکیک هوشمند محتوا
+
+در Adobe Connect، صدا، تصویر وب‌کم، اسکرین‌شیر و PDF به صورت استریم‌های جداگانه منتقل می‌شوند. برنامه این ساختار را تشخیص می‌دهد:
+
+> 📌 **نکته مهم:** اگر استاد فقط یک PDF آپلود کرده و روی آن تدریس کند، برنامه به اشتباه یک ویدیوی سنگین تولید **نمی‌کند!** بلکه هوشمندانه **PDF اورجینال + فایل صوتی** را جداگانه تحویل می‌دهد — بالاترین کیفیت با کمترین حجم.
+
+---
+
+## 🚀 راهنمای گام‌به‌گام استفاده
+
+### مرحله ۱ — افزودن لینک کلاس
+
+پس از اجرای برنامه، روی دکمه **`Add +`** کلیک کنید.
+
+![مرحله ۱](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image1.png)
+
+در پنجره باز شده:
+- **File Name:** نام دلخواه برای فایل خروجی
+- **Url or path file:** لینک جلسه ضبط‌شده یا مسیر فایل ZIP موجود
+- **Save in:** پوشه ذخیره‌سازی
+
+لینک باید شبیه این باشد:
 ```
 http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
 ```
 
-**۳.** لینک را به برنامه بدهید و دانلود را شروع کنید
+![مرحله ۱ - فرم](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image2.png)
 
-> ⚠️ **توجه:** این برنامه فقط موارد زیر را می‌تواند دانلود کند:
-> - 🎙️ صدای میزبان و شرکت‌کنندگان
-> - 🖥️ تصویر مانیتور و دوربین از *یک نفر*
-> - 📎 فایل‌ها و PDF‌هایی که میزبان به اشتراک گذاشته
+سپس روی **`Submit`** کلیک کنید.
+
+---
+
+### مرحله ۲ — لاگین خارجی (در صورت نیاز)
+
+اگر لینک کلاس بدون لاگین در دسترس نباشد، از این قابلیت استفاده کنید.
+
+**چطور بفهمیم نیاز داریم؟** لینک را در مرورگر Incognito باز کنید — اگر محتوا نمایش داده شد نیازی نیست؛ اگر خطای دسترسی داد، این مرحله را انجام دهید:
+
+از منوی **`Tools`** گزینه **`External Login Browser`** را انتخاب کنید.
+
+![مرحله ۲ - منو](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image3.png)
+
+در پنجره مرورگر باز شده:
+1. به سایت دانشگاه/سازمان خود بروید و **لاگین** کنید
+2. پس از ورود موفق روی **`Collect Data`** کلیک کنید
+
+![مرحله ۲ - مرورگر](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image4.png)
+
+---
+
+### مرحله ۳ — شروع پردازش (Process Queue)
+
+پس از افزودن همه لینک‌ها به صف، روی **`Process Queue`** کلیک کنید.
+
+برنامه می‌پرسد:
+
+![مرحله ۳](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image5.png)
+
+| گزینه | توضیح |
+|-------|-------|
+| **Yes** | هر فایل بلافاصله پس از دانلود پردازش و تبدیل می‌شود |
+| **No** | ابتدا همه فایل‌ها دانلود، سپس یکی یکی پردازش می‌شوند |
+| **Cancel** | لغو عملیات |
 
 ---
 
@@ -84,12 +140,21 @@ http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
 فایل‌های زیر در پوشه انتخابی شما ذخیره می‌شوند:
 
 - 📦 فایل ZIP خام دانلود‌شده از Adobe Connect
-- 🎵 فایل صوتی کامل جلسه — فرمت FLV
-- 🎬 ترکیب صدا + تصویر مانیتور — فرمت FLV
-- 🎥 ترکیب صدا + تصویر دوربین — فرمت FLV
-- 📷 تصویر خام دوربین — فرمت FLV
+- 🎵 فایل صوتی کامل جلسه — FLV/MP3
+- 🎬 ترکیب صدا + تصویر مانیتور — FLV/MP4
+- 🎥 ترکیب صدا + تصویر دوربین — FLV/MP4
+- 📷 تصویر خام دوربین — FLV
 - 📄 فایل‌های PDF (در صورت وجود)
 - 🖼️ فایل‌های PNG و JPG
+
+---
+
+## ⚠️ محدودیت‌ها
+
+این برنامه فقط موارد زیر را می‌تواند دانلود کند:
+- 🎙️ صدای میزبان و شرکت‌کنندگان
+- 🖥️ تصویر مانیتور و دوربین از **یک نفر**
+- 📎 فایل‌ها و PDF‌هایی که میزبان به اشتراک گذاشته
 
 ---
 
@@ -102,7 +167,7 @@ http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
 
 ## 🇬🇧 About
 
-This program is designed for downloading files created by **Adobe Connect** — ideal for students, professors, and employees who want to save recorded sessions without needing login credentials.
+This program is designed for downloading files created by **Adobe Connect** — ideal for students, professors, and employees who want to save recorded sessions at full quality, without screen recording.
 
 ---
 
@@ -111,30 +176,86 @@ This program is designed for downloading files created by **Adobe Connect** — 
 | Feature | Description |
 |---------|-------------|
 | 🔐 **No credentials needed** | Works without your username or password |
+| ⚡ **Direct extraction** | Communicates directly with Adobe Connect servers |
+| 🧠 **Smart content separation** | Separates audio, video, screen share and PDF streams |
 | 🎬 **Audio & Video download** | Separately or merged |
 | 📦 **Asset download** | Packaged as a ZIP file |
 | 📄 **PDF generation** | Even when direct download access is restricted |
-| 🔄 **Format conversion** | FLV to MP4, MP3, and more |
+| 🔄 **Format conversion** | FLV to MP4, MP3 and more with one click |
+| 💾 **Offline processing** | Already have the ZIP? Process it without re-downloading |
 | 📥 **Batch download** | Download multiple files at once |
 
 ---
 
-## 🚀 How to Use
+## 🏗️ How It Works
 
-**1.** Log in to your university or company website
+### ⚡ Direct Extraction
 
-**2.** Copy the link of the recorded session — it should look like this:
+Unlike screen recorders, this tool communicates directly with Adobe Connect servers and requests the source files. Since extraction is based on Adobe's own native formats, **download speed is very high** and original quality is preserved.
 
+### 🧠 Smart Content Separation
+
+In Adobe Connect, audio, webcam, screen share, and PDFs are transmitted as separate streams. The program detects this structure:
+
+> 📌 **Important:** If a teacher only uploads a PDF and lectures over it (no screen share), the program does **not** produce a heavy, low-quality video. Instead it intelligently delivers the **original PDF + high-quality audio** separately — best quality, minimum file size.
+
+---
+
+## 🚀 Step-by-Step Guide
+
+### Step 1 — Add a Class Link
+
+Launch the program and click **`Add +`**.
+
+![Step 1](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image1.png)
+
+In the dialog:
+- **File Name:** your desired output name
+- **Url or path file:** the recorded session link or path to an existing ZIP
+- **Save in:** output folder
+
+The link should look like:
 ```
 http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
 ```
 
-**3.** Paste the link into the program and start downloading
+![Step 1 - Form](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image2.png)
 
-> ⚠️ **Note:** This program can only capture:
-> - 🎙️ Audio from the host and participants
-> - 🖥️ Screen share and webcam from *one person*
-> - 📎 Files and PDFs shared by the host
+Click **`Submit`**.
+
+---
+
+### Step 2 — External Login (if needed)
+
+If the session link requires authentication, use this feature.
+
+**How to check:** Open the link in an Incognito window — if content loads, you don't need this. If access is denied, proceed:
+
+Go to **`Tools`** → **`External Login Browser`**.
+
+![Step 2 - Menu](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image3.png)
+
+In the browser window:
+1. Navigate to your university/organization site and **log in**
+2. After successful login, click **`Collect Data`**
+
+![Step 2 - Browser](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image4.png)
+
+---
+
+### Step 3 — Start Processing (Process Queue)
+
+After adding all links, click **`Process Queue`**.
+
+The program will ask:
+
+![Step 3](https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/docs/image5.png)
+
+| Option | Description |
+|--------|-------------|
+| **Yes** | Each file is processed immediately after download |
+| **No** | All files download first, then processed one by one |
+| **Cancel** | Cancel the operation |
 
 ---
 
@@ -158,12 +279,21 @@ http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
 The following files are saved in your selected folder:
 
 - 📦 Raw ZIP file from Adobe Connect
-- 🎵 Full session audio — FLV format
-- 🎬 Audio + screen video merged — FLV format
-- 🎥 Audio + webcam video merged — FLV format
-- 📷 Raw webcam video — FLV format
+- 🎵 Full session audio — FLV/MP3
+- 🎬 Audio + screen video merged — FLV/MP4
+- 🎥 Audio + webcam video merged — FLV/MP4
+- 📷 Raw webcam video — FLV
 - 📄 PDF files (if any)
 - 🖼️ PNG and JPG files
+
+---
+
+## ⚠️ Limitations
+
+This program can only capture:
+- 🎙️ Audio from the host and participants
+- 🖥️ Screen share and webcam from **one person**
+- 📎 Files and PDFs shared by the host
 
 ---
 
