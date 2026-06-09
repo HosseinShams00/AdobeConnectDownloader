@@ -1,101 +1,189 @@
-<p>
-  این برنامه مخصوص دانلود فایل‌هایی است که توسط ادوب کانکت ساخته می‌شود.
-</p>
-<p>
-  از جمله ویژگی‌های این برنامه در حال حاضر می‌توان به موارد زیر اشاره کرد:
-</p>
-
-
-- نیاز نداشتن به نام کاربری و رمز شما.
-- دانلود فایل‌های صوتی و تصویری و ترکیب این فایل‌ها با یکدیگر.
-- دانلود Asset‌های شما که اگر موجود باشند آنها را در قالب یک فایل زیپ دانلود می‌کند.
-- در صورتی که دسترسی شما برای دانلود فایل‌های کلاس مثل فایل PDF بسته باشد این برنامه می‌تواند این فایل‌ها را بسازد و خروجی آن را تحویل شما بدهد.
-- دارا بودن گزینه‌ی Convert برای دریافت خروجی‌های مختلف صوتی و تصویری مثل تبدیل flv (فرمت اصلی فایل‌های ادوب) به mp4 یا mp3 و دریافت صرفاً فایل‌های PDF کلاس هر زمان که تمایل داشتید.
-- دانلود گروهی فایل‌های مورد نظر.
-
-### راهنما
-برای کار با این نرم‌افزار کافی است به عنوان مثال اگر می‌خواهید از دانشگاه فایل مربوط به کلاستان را دانلود کنید ابتدا باید در سایت دانشگاه خود لاگین کنید، سپس لینک مربوط به کلاس ضبط شده‌ی خودتان را به برنامه بدهید. این لینک باید مشابه لینک زیر باشد:
-
-`http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true`
-
-در نهایت، با توجه به گزینه‌های موجود، دانلود را انجام دهید. البته فراموش نشود که این برنامه صرفاً:
-
-- صدای میزبان جلسه و شرکت‌کنندگان
-- تصویر مانیتور و دوربین به اشتراک گذاشته شده از *یک شخص*
-- فایل‌ها و PDF‌هایی که میزبان در برنامه ادوب به اشتراک می‌گذارد
-
-را می‌تواند دانلود کند و سپس به شما تحویل دهد. همچنین زمان ساخت هر فایل در جدول زیر آمده است:
 <div align="center">
 
-| انواع فایل          | زمان کنفرانس | زمان ساخت فایل | فرمت خروجی |
-|---------------------|--------------|-----------------|------------|
-| صدا                 | **2 ساعت**   | 1 - 20 دقیقه    | FLV        |
-| فیلم صفحه‌ی مانیتور | **2 ساعت**   | 20 - 40 دقیقه   | FLV        |
-| فیلم دوربین         | **2 ساعت**   | 2 - 15 دقیقه    | FLV        |
-| PDF                 | **30 صفحه**  | 30 ثانیه تا 2 دقیقه | PDF     |
+<img src="https://raw.githubusercontent.com/HosseinShams00/AdobeConnectDownloader/main/AdobeConnectDownloader/Resources/icon.ico" width="100" alt="Adobe Connect Downloader Logo" />
+
+# Adobe Connect Downloader
+
+**دانلود آسان فایل‌های Adobe Connect — ویدیو، صدا و PDF**
+
+[![Stars](https://img.shields.io/github/stars/HosseinShams00/AdobeConnectDownloader?style=for-the-badge&color=FFD700&labelColor=1a1a2e)](https://github.com/HosseinShams00/AdobeConnectDownloader/stargazers)
+[![Forks](https://img.shields.io/github/forks/HosseinShams00/AdobeConnectDownloader?style=for-the-badge&color=4fc3f7&labelColor=1a1a2e)](https://github.com/HosseinShams00/AdobeConnectDownloader/forks)
+[![License](https://img.shields.io/github/license/HosseinShams00/AdobeConnectDownloader?style=for-the-badge&color=a5d6a7&labelColor=1a1a2e)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/HosseinShams00/AdobeConnectDownloader?style=for-the-badge&color=ce93d8&labelColor=1a1a2e)](https://github.com/HosseinShams00/AdobeConnectDownloader/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/HosseinShams00/AdobeConnectDownloader/total?style=for-the-badge&color=f48fb1&labelColor=1a1a2e)](https://github.com/HosseinShams00/AdobeConnectDownloader/releases)
+
+---
+
+🌐 **زبان / Language:**
+[![فارسی](https://img.shields.io/badge/🇮🇷_فارسی-active-blue?style=flat-square)](#-معرفی)
+[![English](https://img.shields.io/badge/🇬🇧_English-scroll_down-gray?style=flat-square)](#-about)
 
 </div>
 
-### خروجی برنامه
-خروجی برنامه در پوشه‌ای که انتخاب می‌کنید به صورت زیر می‌باشد:
+---
 
-- فایل زیپ دانلود شده از Adobe Connect به صورت خام
-- فایل صوتی کامل از جلسه با فرمت FLV
-- ترکیب فایل صوتی با تصویر مانیتور به صورت ترکیب شده با فرمت FLV
-- ترکیب فایل صوتی با تصویر دوربین به صورت ترکیب شده با فرمت FLV
-- تصویر خام کامل از دوربین با فرمت FLV
-- فایل‌های PDF (در صورت وجود)
-- فایل‌های خاص با فرمت PNG و JPG
+> ⭐ اگه این پروژه برات مفید بود، با دادن یه **Star** حمایتم کن! کمک می‌کنه دیگران هم پیداش کنن 🙏
 
-### Software Information
+---
 
-This program is for downloading files created by Adobe Connect.
+## 🇮🇷 معرفی
 
-**Among the features of this program are:**
+این برنامه مخصوص دانلود فایل‌هایی است که توسط **Adobe Connect** ساخته می‌شود و برای دانشجویان، اساتید و کارمندانی طراحی شده که می‌خواهند جلسات ضبط‌شده را بدون نیاز به نام کاربری ذخیره کنند.
 
-- No need for your username and password.
-- Download audio and video files and combine these files together.
-- Download your assets, which if available, will download them as a zip file.
-- If your access to download class files such as PDF files is restricted, this program can create these files and deliver the output to you.
-- Having the Convert option to receive various audio and video outputs such as converting FLV (the main format of Adobe files) to MP4 or MP3, and downloading only PDF class files whenever you want.
-- Batch download the desired files.
+---
 
-### Guide
-To use this software, simply log in to your university or company website, and copy the link for the recorded session. This link should resemble the following format:
+## ✨ ویژگی‌ها
 
-`http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true`
+| ویژگی | توضیح |
+|-------|-------|
+| 🔐 **بدون نیاز به رمز** | نیازی به نام کاربری و رمز عبور ندارید |
+| 🎬 **دانلود ویدیو و صدا** | دانلود جداگانه یا ترکیب‌شده |
+| 📦 **دانلود Asset** | خروجی به صورت فایل ZIP |
+| 📄 **ساخت PDF** | حتی اگر دسترسی دانلود PDF بسته باشد |
+| 🔄 **تبدیل فرمت** | FLV به MP4، MP3 و غیره |
+| 📥 **دانلود گروهی** | چندین فایل به صورت همزمان |
 
-Finally, proceed to download according to the available options. Note that this program can only:
+---
 
-- Capture the voice of the meeting host and participants.
-- Record screen shares and webcam videos shared by *one person*.
-- Download files and PDFs that the host shares in the Adobe Connect application.
+## 🚀 راهنمای استفاده
 
-### File Creation Times
-The time required for the creation of each file is as follows:
+**۱.** در سایت دانشگاه یا شرکت خود لاگین کنید
+
+**۲.** لینک جلسه ضبط‌شده را کپی کنید — باید شبیه این باشد:
+
+```
+http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
+```
+
+**۳.** لینک را به برنامه بدهید و دانلود را شروع کنید
+
+> ⚠️ **توجه:** این برنامه فقط موارد زیر را می‌تواند دانلود کند:
+> - 🎙️ صدای میزبان و شرکت‌کنندگان
+> - 🖥️ تصویر مانیتور و دوربین از *یک نفر*
+> - 📎 فایل‌ها و PDF‌هایی که میزبان به اشتراک گذاشته
+
+---
+
+## ⏱️ زمان ساخت فایل‌ها
 
 <div align="center">
 
-| File types          | Conference time  | File creation time  | Output format |
-|---------------------|------------------|---------------------|---------------|
-| Voice               | **2 hours**      | 1 - 20 minutes      | FLV           |
-| Screen share video  | **2 hours**      | 20 - 40 minutes     | FLV           |
-| Webcam video        | **2 hours**      | 2 - 15 minutes      | FLV           |
-| PDF                 | **30 pages**     | 30 seconds to 2 minutes | PDF      |
+| نوع فایل | زمان کنفرانس | زمان ساخت | فرمت خروجی |
+|----------|-------------|-----------|------------|
+| 🎙️ صدا | ۲ ساعت | ۱ تا ۲۰ دقیقه | FLV |
+| 🖥️ فیلم مانیتور | ۲ ساعت | ۲۰ تا ۴۰ دقیقه | FLV |
+| 📷 فیلم دوربین | ۲ ساعت | ۲ تا ۱۵ دقیقه | FLV |
+| 📄 PDF | ۳۰ صفحه | ۳۰ ثانیه تا ۲ دقیقه | PDF |
 
 </div>
 
-### Program Output
-The program's output in the selected folder will be as follows:
+---
 
-- Raw Zip file downloaded from Adobe Connect
-- Full audio file of the session in FLV format
-- Combined audio file with screen share video in FLV format
-- Combined audio file with webcam video in FLV format
-- Full raw webcam video in FLV format
-- PDF files (if any)
-- Specific files in PNG and JPG format
+## 📂 خروجی برنامه
 
-### Software Components
+فایل‌های زیر در پوشه انتخابی شما ذخیره می‌شوند:
 
-This software is made with the help of FFMPEG and swfrender software, which are available in the program release file.
+- 📦 فایل ZIP خام دانلود‌شده از Adobe Connect
+- 🎵 فایل صوتی کامل جلسه — فرمت FLV
+- 🎬 ترکیب صدا + تصویر مانیتور — فرمت FLV
+- 🎥 ترکیب صدا + تصویر دوربین — فرمت FLV
+- 📷 تصویر خام دوربین — فرمت FLV
+- 📄 فایل‌های PDF (در صورت وجود)
+- 🖼️ فایل‌های PNG و JPG
+
+---
+
+## 🛠️ ابزارهای مورد استفاده
+
+این نرم‌افزار با کمک **FFMPEG** و **swfrender** ساخته شده که در فایل Release برنامه موجود هستند.
+
+---
+---
+
+## 🇬🇧 About
+
+This program is designed for downloading files created by **Adobe Connect** — ideal for students, professors, and employees who want to save recorded sessions without needing login credentials.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 🔐 **No credentials needed** | Works without your username or password |
+| 🎬 **Audio & Video download** | Separately or merged |
+| 📦 **Asset download** | Packaged as a ZIP file |
+| 📄 **PDF generation** | Even when direct download access is restricted |
+| 🔄 **Format conversion** | FLV to MP4, MP3, and more |
+| 📥 **Batch download** | Download multiple files at once |
+
+---
+
+## 🚀 How to Use
+
+**1.** Log in to your university or company website
+
+**2.** Copy the link of the recorded session — it should look like this:
+
+```
+http://Your-Site-Domain/XXXXXXX/?session=XXXXXXXXXXXXXX&proto=true
+```
+
+**3.** Paste the link into the program and start downloading
+
+> ⚠️ **Note:** This program can only capture:
+> - 🎙️ Audio from the host and participants
+> - 🖥️ Screen share and webcam from *one person*
+> - 📎 Files and PDFs shared by the host
+
+---
+
+## ⏱️ File Creation Times
+
+<div align="center">
+
+| File Type | Conference Duration | Creation Time | Output Format |
+|-----------|-------------------|---------------|---------------|
+| 🎙️ Audio | 2 hours | 1–20 minutes | FLV |
+| 🖥️ Screen video | 2 hours | 20–40 minutes | FLV |
+| 📷 Webcam video | 2 hours | 2–15 minutes | FLV |
+| 📄 PDF | 30 pages | 30 sec – 2 min | PDF |
+
+</div>
+
+---
+
+## 📂 Program Output
+
+The following files are saved in your selected folder:
+
+- 📦 Raw ZIP file from Adobe Connect
+- 🎵 Full session audio — FLV format
+- 🎬 Audio + screen video merged — FLV format
+- 🎥 Audio + webcam video merged — FLV format
+- 📷 Raw webcam video — FLV format
+- 📄 PDF files (if any)
+- 🖼️ PNG and JPG files
+
+---
+
+## 🛠️ Built With
+
+**FFMPEG** and **swfrender** — both included in the program's release package.
+
+---
+
+## 📜 License
+
+This project is licensed under the **GPL-3.0 License** — see the [LICENSE](LICENSE) file for details.
+Any derivative work must also be **open source and free**, and must credit the original author.
+
+---
+
+<div align="center">
+
+Made with ❤️ by [**Hossein Shams**](https://github.com/HosseinShams00)
+
+⭐ **If this project helped you, please give it a star!** ⭐
+
+</div>
