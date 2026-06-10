@@ -64,6 +64,15 @@
 
 ## 🚀 راهنمای گام‌به‌گام استفاده
 
+> ### 📦 قبل از شروع — نصب ابزارهای مورد نیاز
+>
+> **اگر برای اولین بار** برنامه را نصب می‌کنید، علاوه بر فایل اجرایی اصلی، باید فایل **`Adobe.Connect.Downloader.Tools.rar`** را نیز از [صفحه Releases](https://github.com/HosseinShams00/AdobeConnectDownloader/releases/latest) دانلود کنید.
+> پس از دانلود، محتویات آن را در **همان پوشه‌ای که فایل `exe` برنامه قرار دارد** اکسترکت کنید.
+>
+> **اگر صرفاً برنامه را به‌روزرسانی کرده‌اید**، نیازی به دانلود مجدد این فایل نیست و همان نسخه قبلی کافی است — مگر اینکه در یادداشت‌های نسخه جدید به‌صراحت اعلام شده باشد.
+
+---
+
 ### مرحله ۱ — افزودن لینک کلاس
 
 پس از اجرای برنامه، روی دکمه **`Add +`** کلیک کنید.
@@ -202,6 +211,15 @@ In Adobe Connect, audio, webcam, screen share, and PDFs are transmitted as separ
 ---
 
 ## 🚀 Step-by-Step Guide
+
+> ### 📦 Before You Start — Install Required Tools
+>
+> **First-time users** must download the **`Adobe.Connect.Downloader.Tools.rar`** file from the [Releases page](https://github.com/HosseinShams00/AdobeConnectDownloader/releases/latest) in addition to the main executable.
+> Extract its contents into **the same folder where the `exe` file is located**.
+>
+> **If you are only updating the program**, there is no need to re-download this file — your existing copy is sufficient, unless the release notes explicitly state otherwise.
+
+---
 
 ### Step 1 — Add a Class Link
 
