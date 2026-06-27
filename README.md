@@ -71,6 +71,12 @@
 >
 > **اگر صرفاً برنامه را به‌روزرسانی کرده‌اید**، نیازی به دانلود مجدد این فایل نیست و همان نسخه قبلی کافی است — مگر اینکه در یادداشت‌های نسخه جدید به‌صراحت اعلام شده باشد.
 
+> ⚠️ **توجه:** قبل از استفاده، حتماً این بخش از راهنما را بخوانید 👇
+
+#### 📌 توجه ویژه — تدریس روی وایت‌برد یا فایل آپلودی
+
+توجه شود در برخی موارد که استاد شما شروع به تدریس و استفاده از ابزارهایی مانند موس و قلم نوری جهت تدریس و استفاده در وایت‌برد برنامه Adobe Connect و یا آپلود فایل و تدریس به روی آن می‌کند (صرفاً فایل در برنامه آپلود شود، نه اینکه تصویر مانیتور شخص تدریس‌کننده به اشتراک گذاشته شود)، خروجی برنامه برای شما صرفاً یک **فایل صوتی** خواهد بود. اگر فایلی مانند PDF نیز آپلود شده باشد، آن فایل را نیز می‌توانید به صورت دانلود‌شده مشاهده کنید. در حال حاضر امکان نمایش تصویری برای این موارد وجود ندارد.
+
 ---
 
 ### مرحله ۱ — افزودن لینک کلاس
@@ -218,6 +224,12 @@ In Adobe Connect, audio, webcam, screen share, and PDFs are transmitted as separ
 > Extract its contents into **the same folder where the `exe` file is located**.
 >
 > **If you are only updating the program**, there is no need to re-download this file — your existing copy is sufficient, unless the release notes explicitly state otherwise.
+
+> ⚠️ **Note:** Please read this section before use 👇
+
+#### 📌 Special Note — Teaching on Whiteboard or Uploaded File
+
+Note that in some cases, when your instructor starts teaching using tools like a mouse or stylus on the Adobe Connect whiteboard, or uploads a file and teaches on top of it (only the file is uploaded to the program — not the instructor's screen being shared), the program's output for you will be **audio only**. If a file such as a PDF was also uploaded, you can view that file as a downloaded copy as well. Currently there is no way to generate a video for these cases.
 
 ---
 
